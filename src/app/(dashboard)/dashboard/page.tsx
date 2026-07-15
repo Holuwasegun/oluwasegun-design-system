@@ -1,16 +1,21 @@
 'use client';
 
-import { Box, Card, CardContent, Typography, Grid, Avatar, List, ListItem, ListItemAvatar, ListItemText, Divider, Chip, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { TrendingUp, TrendingDown, People, AttachMoney, Timeline, BarChart as BarChartIcon } from '@mui/icons-material';
+import { Box, Card, CardContent, Typography, Grid, Avatar, List, ListItem, ListItemAvatar, ListItemText, Divider, Chip, CircularProgress } from '@mui/material';
+import { TrendingUp, TrendingDown } from '@mui/icons-material';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import DashboardLayout from '@/components/organisms/DashboardLayout';
-import { kpiCards, mockAnalytics, mockActivities, timeAgo, formatCurrency, formatNumber } from '@/lib/mock-data';
+import { useAnalytics, useActivities, useKpiCards } from '@/hooks';
+import { timeAgo, formatCurrency, formatNumber } from '@/lib/mock-data';
 
 function KpiCards() {
+  const { data: kpis, isLoading } = useKpiCards();
+
+  if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress /></Box>;
+  if (!kpis) return null;
+
   return (
     <Grid container spacing={2.5}>
-      {kpiCards.map((kpi) => (
+      {kpis.map((kpi) => (
         <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={kpi.title}>
           <Card sx={{ height: '100%' }}>
             <CardContent sx={{ p: 2.5 }}>
@@ -47,6 +52,11 @@ function KpiCards() {
 }
 
 function RevenueChart() {
+  const { data: analytics, isLoading } = useAnalytics('30d');
+
+  if (isLoading) return <Card><CardContent sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></CardContent></Card>;
+  if (!analytics) return null;
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2.5 }}>
@@ -55,7 +65,7 @@ function RevenueChart() {
         </Typography>
         <Box sx={{ height: 280 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={mockAnalytics}>
+            <AreaChart data={analytics}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#6750A4" stopOpacity={0.15} />
@@ -79,6 +89,11 @@ function RevenueChart() {
 }
 
 function VisitorsChart() {
+  const { data: analytics, isLoading } = useAnalytics('30d');
+
+  if (isLoading) return <Card><CardContent sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></CardContent></Card>;
+  if (!analytics) return null;
+
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent sx={{ p: 2.5 }}>
@@ -87,7 +102,7 @@ function VisitorsChart() {
         </Typography>
         <Box sx={{ height: 280 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={mockAnalytics}>
+            <BarChart data={analytics}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E7E0EC" />
               <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
               <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
@@ -104,6 +119,7 @@ function VisitorsChart() {
 }
 
 function RecentActivity() {
+  const { data: activities, isLoading } = useActivities();
   const actionColors: Record<string, string> = {
     Login: '#2E7D32',
     View: '#0288D1',
@@ -112,6 +128,11 @@ function RecentActivity() {
     Create: '#6750A4',
     Export: '#625B71',
   };
+
+  if (isLoading) return <Card><CardContent sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></CardContent></Card>;
+  if (!activities) return null;
+
+  const items = activities.slice(0, 8);
 
   return (
     <Card sx={{ height: '100%' }}>
@@ -125,7 +146,7 @@ function RecentActivity() {
           </Typography>
         </Box>
         <List disablePadding>
-          {mockActivities.slice(0, 8).map((act, i) => (
+          {items.map((act, i) => (
             <Box key={act.id}>
               <ListItem disablePadding sx={{ py: 1 }}>
                 <ListItemAvatar sx={{ minWidth: 40 }}>
