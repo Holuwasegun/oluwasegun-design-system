@@ -127,11 +127,15 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
           {label}
         </Typography>
         {onRemove && !isDefault && (
-          <Tooltip title={`Remove ${label} key color`}>
-            <IconButton size="small" onClick={onRemove} sx={{ ml: -0.5 }}>
-              <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
-            </IconButton>
-          </Tooltip>
+          <Button
+            size="small"
+            color="error"
+            onClick={onRemove}
+            startIcon={<DeleteOutlineRoundedIcon />}
+            sx={{ textTransform: "none", minWidth: 0, fontSize: "0.7rem", px: 1 }}
+          >
+            Remove
+          </Button>
         )}
       </Box>
       <Box
@@ -201,7 +205,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   return (
     <Card variant="outlined" sx={{ height: "100%" }}>
       <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1 }}>
           <Box
             onClick={onColorClick}
             sx={{
@@ -218,20 +222,24 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
             }}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                {label}
-              </Typography>
-              {!isDefault && onRemove && (
-                <IconButton size="small" onClick={onRemove} sx={{ ml: -0.5, p: 0 }}>
-                  <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
-                </IconButton>
-              )}
-            </Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {label}
+            </Typography>
             <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
               {description}
             </Typography>
           </Box>
+          {!isDefault && onRemove && (
+            <Button
+              size="small"
+              color="error"
+              onClick={onRemove}
+              startIcon={<DeleteOutlineRoundedIcon />}
+              sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.7rem", px: 1 }}
+            >
+              Delete
+            </Button>
+          )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
           <input
@@ -564,7 +572,7 @@ export default function ColorPage() {
 
       <Grid container spacing={2} sx={{ mb: 4 }}>
         {SCHEME_KEY_ORDER.map((key) => (
-          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
+          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <KeyColorPicker
               label={getKeyLabel(key)}
               description={getKeyDescription(key)}
@@ -575,7 +583,7 @@ export default function ColorPage() {
           </Grid>
         ))}
         {customKeys.map((key) => (
-          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
+          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <KeyColorPicker
               label={getKeyLabel(key)}
               description={getKeyDescription(key)}

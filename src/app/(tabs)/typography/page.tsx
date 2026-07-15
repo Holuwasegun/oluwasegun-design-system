@@ -189,58 +189,64 @@ function ScaleTable({ styles }: { styles: TypeStyle[] }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {styles.map((style) => (
-            <TableRow key={style.name} hover>
-              <TableCell>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Chip
-                    label={FAMILY_LABELS[style.family]}
-                    size="small"
-                    color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
-                    variant="outlined"
-                    sx={{ minWidth: 72, fontWeight: 500 }}
-                  />
-                  <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
-                    {style.size}
+          {styles.map((style) => {
+            const displaySize = Math.min(style.fontSize, 32);
+            const rowHeight = Math.max(displaySize * 1.4, 48);
+            return (
+              <TableRow key={style.name} hover sx={{ height: rowHeight }}>
+                <TableCell sx={{ verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Chip
+                      label={FAMILY_LABELS[style.family]}
+                      size="small"
+                      color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                      variant="outlined"
+                      sx={{ minWidth: 72, fontWeight: 500 }}
+                    />
+                    <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+                      {style.size}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell sx={{ verticalAlign: 'middle', overflow: 'hidden' }}>
+                  <Typography
+                    noWrap
+                    sx={{
+                      fontSize: displaySize,
+                      fontWeight: style.fontWeight,
+                      lineHeight: 1.4,
+                      letterSpacing: `${style.letterSpacing}em`,
+                      maxWidth: 360,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {PREVIEW_TEXT}
                   </Typography>
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Typography
-                  noWrap
-                  sx={{
-                    fontSize: Math.min(style.fontSize, 36),
-                    fontWeight: style.fontWeight,
-                    lineHeight: 1.3,
-                    letterSpacing: `${style.letterSpacing}em`,
-                    maxWidth: 360,
-                  }}
-                >
-                  {PREVIEW_TEXT}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
-                  {style.fontSize.toFixed(1)}px
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
-                  {style.lineHeight}px
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                  {style.fontWeight}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
-                  {style.letterSpacing}em
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                <TableCell align="right" sx={{ verticalAlign: 'middle' }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
+                    {style.fontSize.toFixed(1)}px
+                  </Typography>
+                </TableCell>
+                <TableCell align="right" sx={{ verticalAlign: 'middle' }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
+                    {style.lineHeight}px
+                  </Typography>
+                </TableCell>
+                <TableCell align="right" sx={{ verticalAlign: 'middle' }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                    {style.fontWeight}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right" sx={{ verticalAlign: 'middle' }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
+                    {style.letterSpacing}em
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
@@ -251,41 +257,47 @@ function ScaleCards({ styles }: { styles: TypeStyle[] }) {
   return (
     <Box sx={{ display: { xs: 'block', md: 'none' } }}>
       <Stack spacing={2}>
-        {styles.map((style) => (
-          <Card key={style.name} variant="outlined">
-            <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                <Chip
-                  label={FAMILY_LABELS[style.family]}
-                  size="small"
-                  color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
-                  variant="outlined"
-                  sx={{ fontWeight: 500 }}
-                />
-                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
-                  {style.size}
+        {styles.map((style) => {
+          const displaySize = Math.min(style.fontSize, 28);
+          return (
+            <Card key={style.name} variant="outlined">
+              <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <Chip
+                    label={FAMILY_LABELS[style.family]}
+                    size="small"
+                    color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                    variant="outlined"
+                    sx={{ fontWeight: 500 }}
+                  />
+                  <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+                    {style.size}
+                  </Typography>
+                </Box>
+                <Typography
+                  gutterBottom
+                  noWrap
+                  sx={{
+                    fontSize: displaySize,
+                    fontWeight: style.fontWeight,
+                    lineHeight: 1.4,
+                    letterSpacing: `${style.letterSpacing}em`,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {PREVIEW_TEXT}
                 </Typography>
-              </Box>
-              <Typography
-                gutterBottom
-                sx={{
-                  fontSize: style.fontSize,
-                  fontWeight: style.fontWeight,
-                  lineHeight: `${style.lineHeight / style.fontSize}`,
-                  letterSpacing: `${style.letterSpacing}em`,
-                }}
-              >
-                {PREVIEW_TEXT}
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mt: 1 }}>
-                <Chip label={`${style.fontSize.toFixed(1)}px`} size="small" variant="outlined" />
-                <Chip label={`${style.lineHeight}px lh`} size="small" variant="outlined" />
-                <Chip label={`w${style.fontWeight}`} size="small" variant="outlined" />
-                <Chip label={`${style.letterSpacing}em`} size="small" variant="outlined" />
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mt: 1 }}>
+                  <Chip label={`${style.fontSize.toFixed(1)}px`} size="small" variant="outlined" />
+                  <Chip label={`${style.lineHeight}px lh`} size="small" variant="outlined" />
+                  <Chip label={`w${style.fontWeight}`} size="small" variant="outlined" />
+                  <Chip label={`${style.letterSpacing}em`} size="small" variant="outlined" />
+                </Box>
+              </CardContent>
+            </Card>
+          );
+        })}
       </Stack>
     </Box>
   );
@@ -322,35 +334,41 @@ function LivePreview({ styles }: { styles: TypeStyle[] }) {
         >
           <Box sx={{ bgcolor: 'grey.100', px: { xs: 2.5, md: 4 }, py: { xs: 3, md: 5 }, borderBottom: 1, borderColor: 'divider' }}>
             <Typography
+              noWrap
               sx={{
-                fontSize: displayLarge?.fontSize ?? 57,
+                fontSize: { xs: Math.min(displayLarge?.fontSize ?? 57, 36), md: Math.min(displayLarge?.fontSize ?? 57, 57) },
                 fontWeight: displayLarge?.fontWeight ?? 400,
-                lineHeight: `${(displayLarge?.lineHeight ?? 64) / (displayLarge?.fontSize ?? 57)}`,
+                lineHeight: 1.2,
                 letterSpacing: `${displayLarge?.letterSpacing ?? -0.25}em`,
                 mb: 2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               Typography Scale
             </Typography>
             <Typography
+              noWrap
               sx={{
-                fontSize: titleMedium?.fontSize ?? 16,
+                fontSize: { xs: Math.min(titleMedium?.fontSize ?? 16, 18), md: titleMedium?.fontSize ?? 16 },
                 fontWeight: titleMedium?.fontWeight ?? 500,
-                lineHeight: `${(titleMedium?.lineHeight ?? 24) / (titleMedium?.fontSize ?? 16)}`,
+                lineHeight: 1.4,
                 letterSpacing: `${titleMedium?.letterSpacing ?? 0.15}em`,
                 color: 'text.secondary',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               Material Design 3 · Type Scale Generator
             </Typography>
           </Box>
 
-          <Box sx={{ px: { xs: 2.5, md: 4 }, py: { xs: 2, md: 3 } }}>
+          <Box sx={{ px: { xs: 2.5, md: 4 }, py: { xs: 2, md: 3 }, overflow: 'hidden' }}>
             <Typography
               sx={{
-                fontSize: bodyLarge?.fontSize ?? 16,
+                fontSize: { xs: Math.min(bodyLarge?.fontSize ?? 16, 16), md: bodyLarge?.fontSize ?? 16 },
                 fontWeight: bodyLarge?.fontWeight ?? 400,
-                lineHeight: `${(bodyLarge?.lineHeight ?? 24) / (bodyLarge?.fontSize ?? 16)}`,
+                lineHeight: 1.6,
                 letterSpacing: `${bodyLarge?.letterSpacing ?? 0.5}em`,
                 mb: 2,
               }}
@@ -361,9 +379,9 @@ function LivePreview({ styles }: { styles: TypeStyle[] }) {
             </Typography>
             <Typography
               sx={{
-                fontSize: bodyMedium?.fontSize ?? 14,
+                fontSize: { xs: Math.min(bodyMedium?.fontSize ?? 14, 14), md: bodyMedium?.fontSize ?? 14 },
                 fontWeight: bodyMedium?.fontWeight ?? 400,
-                lineHeight: `${(bodyMedium?.lineHeight ?? 20) / (bodyMedium?.fontSize ?? 14)}`,
+                lineHeight: 1.6,
                 letterSpacing: `${bodyMedium?.letterSpacing ?? 0.25}em`,
                 color: 'text.secondary',
                 mb: 3,
