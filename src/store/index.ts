@@ -37,6 +37,25 @@ interface ThemeStore {
   importConfig: (json: string) => boolean;
 }
 
+function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
+  const p = persisted as Partial<ThemeStore>;
+  const persistedConfig = p?.config;
+  const c = current.config;
+  return {
+    ...current,
+    ...p,
+    config: {
+      ...c,
+      ...(persistedConfig ?? {}),
+      keyColors: { ...c.keyColors, ...(persistedConfig?.keyColors ?? {}) },
+      typography: { ...c.typography, ...(persistedConfig?.typography ?? {}) },
+      spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}) },
+      mode: persistedConfig?.mode ?? c.mode,
+    },
+    currentProjectId: p?.currentProjectId ?? null,
+  };
+}
+
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
@@ -120,7 +139,7 @@ export const useThemeStore = create<ThemeStore>()(
         }
       },
     }),
-    { name: "oluwasegun-design-system-theme" }
+    { name: "oluwasegun-design-system-theme", merge: (p, c) => mergeConfig(p, c as ThemeStore) }
   )
 );
 
