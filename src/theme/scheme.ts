@@ -1,6 +1,5 @@
 import {
   generateTonalPalette,
-  generateNeutralPalette,
   type TonalTone,
 } from "./tonal-palette";
 
@@ -51,146 +50,156 @@ export interface ColorScheme {
   surfaceContainerHighest: string;
 }
 
-function tone(
-  palette: Record<TonalTone, string>,
-  tone: TonalTone
-): string {
+function t(palette: Record<TonalTone, string>, tone: TonalTone): string {
   return palette[tone];
 }
+
+const DEFAULT_ERROR_HEX = "#B3261E";
 
 export function generateColorScheme(
   primaryHex: string,
   secondaryHex: string,
   tertiaryHex: string,
-  errorHex: string,
+  neutralHex: string,
+  neutralVariantHex: string,
   mode: SchemeMode
 ): ColorScheme {
   const primary = generateTonalPalette(primaryHex);
   const secondary = generateTonalPalette(secondaryHex);
   const tertiary = generateTonalPalette(tertiaryHex);
-  const error = generateTonalPalette(errorHex);
-  const neutral = generateNeutralPalette();
+  const neutral = generateTonalPalette(neutralHex);
+  const neutralVariant = generateTonalPalette(neutralVariantHex);
+  const error = generateTonalPalette(DEFAULT_ERROR_HEX);
 
   if (mode === "light") {
     return {
-      primary: tone(primary, 40),
-      onPrimary: tone(primary, 100),
-      primaryContainer: tone(primary, 90),
-      onPrimaryContainer: tone(primary, 10),
+      primary: t(primary, 40),
+      onPrimary: t(primary, 100),
+      primaryContainer: t(primary, 90),
+      onPrimaryContainer: t(primary, 10),
 
-      secondary: tone(secondary, 40),
-      onSecondary: tone(secondary, 100),
-      secondaryContainer: tone(secondary, 90),
-      onSecondaryContainer: tone(secondary, 10),
+      secondary: t(secondary, 40),
+      onSecondary: t(secondary, 100),
+      secondaryContainer: t(secondary, 90),
+      onSecondaryContainer: t(secondary, 10),
 
-      tertiary: tone(tertiary, 40),
-      onTertiary: tone(tertiary, 100),
-      tertiaryContainer: tone(tertiary, 90),
-      onTertiaryContainer: tone(tertiary, 10),
+      tertiary: t(tertiary, 40),
+      onTertiary: t(tertiary, 100),
+      tertiaryContainer: t(tertiary, 90),
+      onTertiaryContainer: t(tertiary, 10),
 
-      error: tone(error, 40),
-      onError: tone(error, 100),
-      errorContainer: tone(error, 90),
-      onErrorContainer: tone(error, 10),
+      error: t(error, 40),
+      onError: t(error, 100),
+      errorContainer: t(error, 90),
+      onErrorContainer: t(error, 10),
 
-      background: tone(neutral, 99),
-      onBackground: tone(neutral, 10),
+      background: t(neutral, 99),
+      onBackground: t(neutral, 10),
 
-      surface: tone(neutral, 99),
-      onSurface: tone(neutral, 10),
-      surfaceVariant: tone(primary, 90),
-      onSurfaceVariant: tone(primary, 30),
+      surface: t(neutral, 99),
+      onSurface: t(neutral, 10),
+      surfaceVariant: t(neutralVariant, 90),
+      onSurfaceVariant: t(neutralVariant, 30),
 
-      outline: tone(primary, 50),
-      outlineVariant: tone(primary, 80),
+      outline: t(neutralVariant, 50),
+      outlineVariant: t(neutralVariant, 80),
 
-      inverseSurface: tone(neutral, 20),
-      inverseOnSurface: tone(neutral, 95),
-      inversePrimary: tone(primary, 80),
+      inverseSurface: t(neutral, 20),
+      inverseOnSurface: t(neutral, 95),
+      inversePrimary: t(primary, 80),
 
-      surfaceDim: tone(neutral, 87),
-      surfaceBright: tone(neutral, 98),
-      surfaceContainerLowest: tone(neutral, 100),
-      surfaceContainerLow: tone(neutral, 96),
-      surfaceContainer: tone(neutral, 94),
-      surfaceContainerHigh: tone(neutral, 92),
-      surfaceContainerHighest: tone(neutral, 90),
+      surfaceDim: t(neutral, 87),
+      surfaceBright: t(neutral, 98),
+      surfaceContainerLowest: t(neutral, 100),
+      surfaceContainerLow: t(neutral, 96),
+      surfaceContainer: t(neutral, 94),
+      surfaceContainerHigh: t(neutral, 92),
+      surfaceContainerHighest: t(neutral, 90),
     };
   }
 
-  // Dark scheme
   return {
-    primary: tone(primary, 80),
-    onPrimary: tone(primary, 20),
-    primaryContainer: tone(primary, 30),
-    onPrimaryContainer: tone(primary, 90),
+    primary: t(primary, 80),
+    onPrimary: t(primary, 20),
+    primaryContainer: t(primary, 30),
+    onPrimaryContainer: t(primary, 90),
 
-    secondary: tone(secondary, 80),
-    onSecondary: tone(secondary, 20),
-    secondaryContainer: tone(secondary, 30),
-    onSecondaryContainer: tone(secondary, 90),
+    secondary: t(secondary, 80),
+    onSecondary: t(secondary, 20),
+    secondaryContainer: t(secondary, 30),
+    onSecondaryContainer: t(secondary, 90),
 
-    tertiary: tone(tertiary, 80),
-    onTertiary: tone(tertiary, 20),
-    tertiaryContainer: tone(tertiary, 30),
-    onTertiaryContainer: tone(tertiary, 90),
+    tertiary: t(tertiary, 80),
+    onTertiary: t(tertiary, 20),
+    tertiaryContainer: t(tertiary, 30),
+    onTertiaryContainer: t(tertiary, 90),
 
-    error: tone(error, 80),
-    onError: tone(error, 20),
-    errorContainer: tone(error, 30),
-    onErrorContainer: tone(error, 90),
+    error: t(error, 80),
+    onError: t(error, 20),
+    errorContainer: t(error, 30),
+    onErrorContainer: t(error, 90),
 
-    background: tone(neutral, 6),
-    onBackground: tone(neutral, 90),
+    background: t(neutral, 6),
+    onBackground: t(neutral, 90),
 
-    surface: tone(neutral, 6),
-    onSurface: tone(neutral, 90),
-    surfaceVariant: tone(primary, 30),
-    onSurfaceVariant: tone(primary, 80),
+    surface: t(neutral, 6),
+    onSurface: t(neutral, 90),
+    surfaceVariant: t(neutralVariant, 30),
+    onSurfaceVariant: t(neutralVariant, 80),
 
-    outline: tone(primary, 60),
-    outlineVariant: tone(primary, 30),
+    outline: t(neutralVariant, 60),
+    outlineVariant: t(neutralVariant, 30),
 
-    inverseSurface: tone(neutral, 90),
-    inverseOnSurface: tone(neutral, 20),
-    inversePrimary: tone(primary, 40),
+    inverseSurface: t(neutral, 90),
+    inverseOnSurface: t(neutral, 20),
+    inversePrimary: t(primary, 40),
 
-    surfaceDim: tone(neutral, 6),
-    surfaceBright: tone(neutral, 24),
-    surfaceContainerLowest: tone(neutral, 4),
-    surfaceContainerLow: tone(neutral, 10),
-    surfaceContainer: tone(neutral, 12),
-    surfaceContainerHigh: tone(neutral, 17),
-    surfaceContainerHighest: tone(neutral, 22),
+    surfaceDim: t(neutral, 6),
+    surfaceBright: t(neutral, 24),
+    surfaceContainerLowest: t(neutral, 4),
+    surfaceContainerLow: t(neutral, 10),
+    surfaceContainer: t(neutral, 12),
+    surfaceContainerHigh: t(neutral, 17),
+    surfaceContainerHighest: t(neutral, 22),
   };
 }
 
 export interface ThemeConfig {
-  keyColors: {
-    primary: string;
-    secondary: string;
-    tertiary: string;
-    error: string;
-  };
+  keyColors: Record<string, string>;
   mode: SchemeMode;
 }
 
+export const DEFAULT_KEY_COLORS: Record<string, string> = {
+  primary: "#6750A4",
+  secondary: "#625B71",
+  tertiary: "#7D5260",
+  neutral: "#79747E",
+  neutralVariant: "#CAC4D0",
+};
+
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
-  keyColors: {
-    primary: "#6750A4",
-    secondary: "#625B71",
-    tertiary: "#7D5260",
-    error: "#B3261E",
-  },
+  keyColors: { ...DEFAULT_KEY_COLORS },
   mode: "light",
 };
 
+export const DEFAULT_KEY_COLOR_NAMES: Record<string, string> = {
+  primary: "Primary",
+  secondary: "Secondary",
+  tertiary: "Tertiary",
+  neutral: "Neutral",
+  neutralVariant: "Neutral Variant",
+};
+
+export const SCHEME_KEY_ORDER = ["primary", "secondary", "tertiary", "neutral", "neutralVariant"];
+
 export function generateSchemeFromConfig(config: ThemeConfig): ColorScheme {
+  const kc = config.keyColors;
   return generateColorScheme(
-    config.keyColors.primary,
-    config.keyColors.secondary,
-    config.keyColors.tertiary,
-    config.keyColors.error,
+    kc.primary ?? DEFAULT_KEY_COLORS.primary,
+    kc.secondary ?? DEFAULT_KEY_COLORS.secondary,
+    kc.tertiary ?? DEFAULT_KEY_COLORS.tertiary,
+    kc.neutral ?? DEFAULT_KEY_COLORS.neutral,
+    kc.neutralVariant ?? DEFAULT_KEY_COLORS.neutralVariant,
     config.mode
   );
 }

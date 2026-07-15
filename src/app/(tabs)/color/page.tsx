@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,102 +8,99 @@ import {
   CardContent,
   Grid,
   TextField,
-  Chip,
   Divider,
   Tooltip,
   IconButton,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useThemeStore } from "@/store";
-import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
+import {
+  generateSchemeFromConfig,
+  DEFAULT_KEY_COLORS,
+  DEFAULT_KEY_COLOR_NAMES,
+  SCHEME_KEY_ORDER,
+  type ColorScheme,
+} from "@/theme/scheme";
 import {
   generateTonalPalette,
-  generateNeutralPalette,
   UI_TONE_LEVELS,
   type TonalPalette,
 } from "@/theme/tonal-palette";
 
-const KEY_COLOR_FIELDS = [
-  { key: "primary" as const, label: "Primary", description: "The primary brand color" },
-  { key: "secondary" as const, label: "Secondary", description: "A secondary accent color" },
-  { key: "tertiary" as const, label: "Tertiary", description: "A third accent color" },
-  { key: "error" as const, label: "Error", description: "Error and destructive actions" },
-];
-
 const SCHEME_GROUPS = [
   {
     label: "Primary",
-    keys: ["primary", "onPrimary", "primaryContainer", "onPrimaryContainer"] as const,
+    keys: ["primary", "onPrimary", "primaryContainer", "onPrimaryContainer"],
   },
   {
     label: "Secondary",
-    keys: ["secondary", "onSecondary", "secondaryContainer", "onSecondaryContainer"] as const,
+    keys: ["secondary", "onSecondary", "secondaryContainer", "onSecondaryContainer"],
   },
   {
     label: "Tertiary",
-    keys: ["tertiary", "onTertiary", "tertiaryContainer", "onTertiaryContainer"] as const,
+    keys: ["tertiary", "onTertiary", "tertiaryContainer", "onTertiaryContainer"],
   },
   {
     label: "Error",
-    keys: ["error", "onError", "errorContainer", "onErrorContainer"] as const,
+    keys: ["error", "onError", "errorContainer", "onErrorContainer"],
   },
   {
     label: "Surface",
-    keys: [
-      "background", "onBackground", "surface", "onSurface",
-      "surfaceVariant", "onSurfaceVariant",
-    ] as const,
+    keys: ["background", "onBackground", "surface", "onSurface", "surfaceVariant", "onSurfaceVariant"],
   },
   {
     label: "Surface Containers",
-    keys: [
-      "surfaceDim", "surfaceBright",
-      "surfaceContainerLowest", "surfaceContainerLow",
-      "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest",
-    ] as const,
+    keys: ["surfaceDim", "surfaceBright", "surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"],
   },
   {
     label: "Outline",
-    keys: ["outline", "outlineVariant"] as const,
+    keys: ["outline", "outlineVariant"],
   },
   {
     label: "Inverse",
-    keys: ["inverseSurface", "inverseOnSurface", "inversePrimary"] as const,
+    keys: ["inverseSurface", "inverseOnSurface", "inversePrimary"],
   },
 ];
 
-function formatTokenName(key: string): string {
+function formatName(key: string): string {
   return key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
-}
-
-function hexToRgbStr(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `${r}, ${g}, ${b}`;
 }
 
 function getTextColor(bgHex: string): string {
   const r = parseInt(bgHex.slice(1, 3), 16);
   const g = parseInt(bgHex.slice(3, 5), 16);
   const b = parseInt(bgHex.slice(5, 7), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? "#1D1B20" : "#FFFFFF";
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? "#1D1B20" : "#FFFFFF";
 }
 
 // ---------- Tonal Palette Strip ----------
-function TonalPaletteStrip({
-  label,
-  palette,
-}: {
+function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
   label: string;
   palette: TonalPalette;
+  onRemove?: () => void;
+  isDefault: boolean;
 }) {
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-        {label}
-      </Typography>
+    <Box sx={{ mb: 2.5 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+          {label}
+        </Typography>
+        {onRemove && !isDefault && (
+          <Tooltip title={`Remove ${label} key color`}>
+            <IconButton size="small" onClick={onRemove} sx={{ ml: -0.5 }}>
+              <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -117,11 +114,10 @@ function TonalPaletteStrip({
           <Tooltip
             key={tone}
             title={
-              <Box>
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="caption" sx={{ fontWeight: 700, display: "block" }}>
                   Tone {tone}
                 </Typography>
-                <br />
                 <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
                   {palette[tone]}
                 </Typography>
@@ -131,7 +127,7 @@ function TonalPaletteStrip({
             <Box
               sx={{
                 flex: 1,
-                height: 56,
+                height: { xs: 40, sm: 56 },
                 bgcolor: palette[tone],
                 display: "flex",
                 alignItems: "center",
@@ -142,11 +138,10 @@ function TonalPaletteStrip({
               }}
             >
               <Typography
-                variant="caption"
                 sx={{
                   color: getTextColor(palette[tone]),
                   fontWeight: tone === 40 || tone === 80 ? 700 : 400,
-                  fontSize: "0.6rem",
+                  fontSize: { xs: "0.5rem", sm: "0.6rem" },
                   userSelect: "none",
                 }}
               >
@@ -161,16 +156,13 @@ function TonalPaletteStrip({
 }
 
 // ---------- Key Color Picker ----------
-function KeyColorPicker({
-  label,
-  description,
-  value,
-  onChange,
-}: {
+function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault }: {
   label: string;
   description: string;
   value: string;
   onChange: (hex: string) => void;
+  onRemove?: () => void;
+  isDefault: boolean;
 }) {
   return (
     <Card variant="outlined" sx={{ height: "100%" }}>
@@ -187,11 +179,18 @@ function KeyColorPicker({
               flexShrink: 0,
             }}
           />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {label}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {label}
+              </Typography>
+              {!isDefault && onRemove && (
+                <IconButton size="small" onClick={onRemove} sx={{ ml: -0.5, p: 0 }}>
+                  <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
+                </IconButton>
+              )}
+            </Box>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
               {description}
             </Typography>
           </Box>
@@ -201,14 +200,7 @@ function KeyColorPicker({
             type="color"
             value={value}
             onChange={(e) => onChange(e.target.value.toUpperCase())}
-            style={{
-              width: 36,
-              height: 36,
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              borderRadius: 4,
-            }}
+            style={{ width: 36, height: 36, border: "none", padding: 0, cursor: "pointer", borderRadius: 4 }}
           />
           <TextField
             size="small"
@@ -216,18 +208,10 @@ function KeyColorPicker({
             onChange={(e) => {
               let val = e.target.value;
               if (!val.startsWith("#")) val = "#" + val;
-              if (/^#[0-9A-F]{6}$/i.test(val)) {
-                onChange(val.toUpperCase());
-              }
+              if (/^#[0-9A-F]{6}$/i.test(val)) onChange(val.toUpperCase());
             }}
             slotProps={{
-              input: {
-                style: {
-                  fontFamily: "monospace",
-                  textTransform: "uppercase" as const,
-                  fontSize: "0.8rem",
-                },
-              },
+              input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const, fontSize: "0.8rem" } },
             }}
             fullWidth
           />
@@ -238,19 +222,13 @@ function KeyColorPicker({
 }
 
 // ---------- Color Role Card ----------
-function ColorRoleCard({
-  label,
-  hex,
-}: {
-  label: string;
-  hex: string;
-}) {
+function ColorRoleCard({ label, hex }: { label: string; hex: string }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
       <Box
         sx={{
-          width: 36,
-          height: 36,
+          width: 32,
+          height: 32,
           borderRadius: 1,
           bgcolor: hex,
           border: "1px solid",
@@ -260,12 +238,9 @@ function ColorRoleCard({
       />
       <Box sx={{ minWidth: 0, flex: 1 }}>
         <Typography variant="caption" sx={{ fontWeight: 600, display: "block", lineHeight: 1.2 }}>
-          {formatTokenName(label)}
+          {formatName(label)}
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.65rem" }}
-        >
+        <Typography variant="caption" sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.6rem" }}>
           {hex}
         </Typography>
       </Box>
@@ -273,35 +248,104 @@ function ColorRoleCard({
   );
 }
 
+// ---------- Add Key Color Dialog ----------
+function AddKeyColorDialog({ open, onClose, onAdd }: {
+  open: boolean;
+  onClose: () => void;
+  onAdd: (name: string, color: string) => void;
+}) {
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("#6750A4");
+
+  const handleAdd = () => {
+    const key = name.trim().replace(/\s+/g, "");
+    if (!key) return;
+    onAdd(key, color);
+    setName("");
+    setColor("#6750A4");
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ fontWeight: 600 }}>Add Key Color</DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+          <TextField
+            label="Color name"
+            placeholder="e.g. Brand Blue"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+            fullWidth
+            autoFocus
+          />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value.toUpperCase())}
+              style={{ width: 48, height: 48, border: "none", padding: 0, cursor: "pointer", borderRadius: 6 }}
+            />
+            <TextField
+              size="small"
+              label="Hex value"
+              value={color}
+              onChange={(e) => {
+                let val = e.target.value;
+                if (!val.startsWith("#")) val = "#" + val;
+                if (/^#[0-9A-F]{6}$/i.test(val)) setColor(val.toUpperCase());
+              }}
+              slotProps={{
+                input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const } },
+              }}
+              fullWidth
+            />
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button variant="contained" onClick={handleAdd} disabled={!name.trim()}>
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 // ---------- Main Page ----------
 export default function ColorPage() {
-  const { config, setKeyColor, resetConfig } = useThemeStore();
+  const { config, setKeyColor, addKeyColor, removeKeyColor, resetConfig } = useThemeStore();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-  const scheme: ColorScheme = useMemo(
-    () => generateSchemeFromConfig(config),
-    [config]
-  );
+  const scheme: ColorScheme = useMemo(() => generateSchemeFromConfig(config), [config]);
 
-  const primaryPalette = useMemo(
-    () => generateTonalPalette(config.keyColors.primary),
-    [config.keyColors.primary]
-  );
-  const secondaryPalette = useMemo(
-    () => generateTonalPalette(config.keyColors.secondary),
-    [config.keyColors.secondary]
-  );
-  const tertiaryPalette = useMemo(
-    () => generateTonalPalette(config.keyColors.tertiary),
-    [config.keyColors.tertiary]
-  );
-  const errorPalette = useMemo(
-    () => generateTonalPalette(config.keyColors.error),
-    [config.keyColors.error]
-  );
-  const neutralPalette = useMemo(() => generateNeutralPalette(), []);
+  const palettes = useMemo(() => {
+    const result: Record<string, TonalPalette> = {};
+    for (const [key, hex] of Object.entries(config.keyColors)) {
+      result[key] = generateTonalPalette(hex);
+    }
+    return result;
+  }, [config.keyColors]);
+
+  const customKeys = useMemo(() => {
+    return Object.keys(config.keyColors).filter((k) => !SCHEME_KEY_ORDER.includes(k));
+  }, [config.keyColors]);
+
+  const getKeyLabel = (key: string): string => DEFAULT_KEY_COLOR_NAMES[key] ?? formatName(key);
+  const getKeyDescription = (key: string): string => {
+    if (key === "primary") return "The primary brand color";
+    if (key === "secondary") return "A secondary accent color";
+    if (key === "tertiary") return "A third accent color";
+    if (key === "neutral") return "Backgrounds, surfaces, containers";
+    if (key === "neutralVariant") return "Surface variants, outlines";
+    return "Custom key color";
+  };
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: "auto" }}>
+      {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Color
@@ -317,17 +361,41 @@ export default function ColorPage() {
       </Typography>
 
       {/* Key Color Pickers */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-        Key Colors
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          Key Colors
+        </Typography>
+        <Button
+          size="small"
+          startIcon={<AddRoundedIcon />}
+          onClick={() => setAddDialogOpen(true)}
+          sx={{ textTransform: "none" }}
+        >
+          Add Key Color
+        </Button>
+      </Box>
+
       <Grid container spacing={2} sx={{ mb: 4 }}>
-        {KEY_COLOR_FIELDS.map((field) => (
-          <Grid key={field.key} size={{ xs: 12, sm: 6, md: 3 }}>
+        {SCHEME_KEY_ORDER.map((key) => (
+          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
             <KeyColorPicker
-              label={field.label}
-              description={field.description}
-              value={config.keyColors[field.key]}
-              onChange={(hex) => setKeyColor(field.key, hex)}
+              label={getKeyLabel(key)}
+              description={getKeyDescription(key)}
+              value={config.keyColors[key] ?? "#000000"}
+              onChange={(hex) => setKeyColor(key, hex)}
+              isDefault
+            />
+          </Grid>
+        ))}
+        {customKeys.map((key) => (
+          <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
+            <KeyColorPicker
+              label={getKeyLabel(key)}
+              description={getKeyDescription(key)}
+              value={config.keyColors[key]}
+              onChange={(hex) => setKeyColor(key, hex)}
+              onRemove={() => removeKeyColor(key)}
+              isDefault={false}
             />
           </Grid>
         ))}
@@ -338,11 +406,23 @@ export default function ColorPage() {
         Tonal Palettes
       </Typography>
       <Box sx={{ mb: 4 }}>
-        <TonalPaletteStrip label="Primary" palette={primaryPalette} />
-        <TonalPaletteStrip label="Secondary" palette={secondaryPalette} />
-        <TonalPaletteStrip label="Tertiary" palette={tertiaryPalette} />
-        <TonalPaletteStrip label="Error" palette={errorPalette} />
-        <TonalPaletteStrip label="Neutral" palette={neutralPalette} />
+        {SCHEME_KEY_ORDER.map((key) => (
+          <TonalPaletteStrip
+            key={key}
+            label={getKeyLabel(key)}
+            palette={palettes[key]}
+            isDefault
+          />
+        ))}
+        {customKeys.map((key) => (
+          <TonalPaletteStrip
+            key={key}
+            label={getKeyLabel(key)}
+            palette={palettes[key]}
+            onRemove={() => removeKeyColor(key)}
+            isDefault={false}
+          />
+        ))}
       </Box>
 
       <Divider sx={{ my: 4 }} />
@@ -355,7 +435,7 @@ export default function ColorPage() {
         All 30 color roles derived from your key colors using MD3 tonal mapping
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {SCHEME_GROUPS.map((group) => (
           <Grid key={group.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Card variant="outlined" sx={{ height: "100%" }}>
@@ -364,13 +444,20 @@ export default function ColorPage() {
                   {group.label}
                 </Typography>
                 {group.keys.map((key) => (
-                  <ColorRoleCard key={key} label={key} hex={scheme[key]} />
+                  <ColorRoleCard key={key} label={key} hex={scheme[key as keyof ColorScheme]} />
                 ))}
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+
+      {/* Add Key Color Dialog */}
+      <AddKeyColorDialog
+        open={addDialogOpen}
+        onClose={() => setAddDialogOpen(false)}
+        onAdd={(name, color) => addKeyColor(name, color)}
+      />
     </Box>
   );
 }

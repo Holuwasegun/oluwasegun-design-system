@@ -4,12 +4,29 @@ import {
   type ThemeConfig,
   type SchemeMode,
   DEFAULT_THEME_CONFIG,
+  DEFAULT_KEY_COLORS,
 } from "@/theme/scheme";
 
-// ---------- Theme Store (persisted to localStorage) ----------
+// ---------- Project ----------
+export interface Project {
+  id: string;
+  name: string;
+  config: ThemeConfig;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+// ---------- Theme Store ----------
 interface ThemeStore {
   config: ThemeConfig;
-  setKeyColor: (key: "primary" | "secondary" | "tertiary" | "error", color: string) => void;
+  currentProjectId: string | null;
+  setKeyColor: (key: string, color: string) => void;
+  addKeyColor: (key: string, color: string) => void;
+  removeKeyColor: (key: string) => void;
   setMode: (mode: SchemeMode) => void;
   toggleMode: () => void;
   resetConfig: () => void;
@@ -21,6 +38,7 @@ export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
       config: { ...DEFAULT_THEME_CONFIG },
+      currentProjectId: null,
 
       setKeyColor: (key, color) =>
         set((state) => ({
@@ -30,10 +48,22 @@ export const useThemeStore = create<ThemeStore>()(
           },
         })),
 
-      setMode: (mode) =>
+      addKeyColor: (key, color) =>
         set((state) => ({
-          config: { ...state.config, mode },
+          config: {
+            ...state.config,
+            keyColors: { ...state.config.keyColors, [key]: color },
+          },
         })),
+
+      removeKeyColor: (key) =>
+        set((state) => {
+          const { [key]: _, ...rest } = state.config.keyColors;
+          return { config: { ...state.config, keyColors: rest } };
+        }),
+
+      setMode: (mode) =>
+        set((state) => ({ config: { ...state.config, mode } })),
 
       toggleMode: () =>
         set((state) => ({
@@ -43,22 +73,19 @@ export const useThemeStore = create<ThemeStore>()(
           },
         })),
 
-      resetConfig: () => set({ config: { ...DEFAULT_THEME_CONFIG } }),
+      resetConfig: () =>
+        set({
+          config: { ...DEFAULT_THEME_CONFIG },
+          currentProjectId: null,
+        }),
 
       exportConfig: () => JSON.stringify(get().config, null, 2),
 
       importConfig: (json) => {
         try {
           const parsed = JSON.parse(json) as ThemeConfig;
-          if (
-            parsed.keyColors &&
-            typeof parsed.keyColors.primary === "string" &&
-            typeof parsed.keyColors.secondary === "string" &&
-            typeof parsed.keyColors.tertiary === "string" &&
-            typeof parsed.keyColors.error === "string" &&
-            (parsed.mode === "light" || parsed.mode === "dark")
-          ) {
-            set({ config: parsed });
+          if (parsed.keyColors && typeof parsed.mode === "string") {
+            set({ config: parsed, currentProjectId: null });
             return true;
           }
           return false;
@@ -68,6 +95,94 @@ export const useThemeStore = create<ThemeStore>()(
       },
     }),
     { name: "oluwasegun-design-system-theme" }
+  )
+);
+
+// ---------- Project Store ----------
+interface ProjectStore {
+  projects: Project[];
+  createProject: (name: string) => Project;
+  saveToProject: (id: string) => void;
+  saveAsProject: (name: string) => Project;
+  loadProject: (id: string) => void;
+  deleteProject: (id: string) => void;
+  renameProject: (id: string, name: string) => void;
+  getCurrentProject: () => Project | null;
+}
+
+export const useProjectStore = create<ProjectStore>()(
+  persist(
+    (set, get) => ({
+      projects: [],
+
+      createProject: (name) => {
+        const id = generateId();
+        const now = new Date().toISOString();
+        const config = useThemeStore.getState().config;
+        const project: Project = {
+          id,
+          name,
+          config: { ...config },
+          createdAt: now,
+          updatedAt: now,
+        };
+        set((state) => ({
+          projects: [...state.projects, project],
+        }));
+        useThemeStore.setState({ currentProjectId: id });
+        return project;
+      },
+
+      saveToProject: (id) => {
+        const config = useThemeStore.getState().config;
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === id
+              ? { ...p, config: { ...config }, updatedAt: new Date().toISOString() }
+              : p
+          ),
+        }));
+      },
+
+      saveAsProject: (name) => {
+        const project = get().createProject(name);
+        return project;
+      },
+
+      loadProject: (id) => {
+        const project = get().projects.find((p) => p.id === id);
+        if (project) {
+          useThemeStore.setState({
+            config: { ...project.config },
+            currentProjectId: id,
+          });
+        }
+      },
+
+      deleteProject: (id) => {
+        set((state) => ({
+          projects: state.projects.filter((p) => p.id !== id),
+        }));
+        if (useThemeStore.getState().currentProjectId === id) {
+          useThemeStore.setState({ currentProjectId: null });
+        }
+      },
+
+      renameProject: (id, name) => {
+        set((state) => ({
+          projects: state.projects.map((p) =>
+            p.id === id ? { ...p, name, updatedAt: new Date().toISOString() } : p
+          ),
+        }));
+      },
+
+      getCurrentProject: () => {
+        const id = useThemeStore.getState().currentProjectId;
+        if (!id) return null;
+        return get().projects.find((p) => p.id === id) ?? null;
+      },
+    }),
+    { name: "oluwasegun-design-system-projects" }
   )
 );
 
