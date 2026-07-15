@@ -23,11 +23,11 @@ const shapeScale = [
 
 export default function RadiusPage() {
   return (
-    <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h3" gutterBottom sx={{ fontWeight: 700 }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
         Border Radius
       </Typography>
-      <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
         Shape scale for corners
       </Typography>
 
@@ -73,7 +73,7 @@ export default function RadiusPage() {
       <Stack spacing={3} sx={{ mb: 4 }}>
         {shapeScale.map(({ name, value }) => (
           <Stack key={`btn-${name}`} direction="row" spacing={2} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography variant="body2" sx={{ width: 120, color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ width: { xs: 80, sm: 120 }, color: 'text.secondary', flexShrink: 0 }}>
               {name}
             </Typography>
             <Chip

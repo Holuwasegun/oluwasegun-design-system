@@ -142,9 +142,11 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
         sx={{
           display: "flex",
           borderRadius: 2,
-          overflow: "hidden",
+          overflow: "auto",
           border: "1px solid",
           borderColor: "divider",
+          "&::-webkit-scrollbar": { height: 4 },
+          "&::-webkit-scrollbar-thumb": { bgcolor: "action.hover", borderRadius: 2 },
         }}
       >
         {UI_TONE_LEVELS.map((tone) => (
@@ -163,7 +165,8 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
           >
             <Box
               sx={{
-                flex: 1,
+                flex: "0 0 auto",
+                width: { xs: 32, sm: 40 },
                 height: { xs: 40, sm: 56 },
                 bgcolor: palette[tone],
                 display: "flex",
@@ -178,7 +181,7 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
                 sx={{
                   color: getTextColor(palette[tone]),
                   fontWeight: tone === 40 || tone === 80 ? 700 : 400,
-                  fontSize: { xs: "0.5rem", sm: "0.6rem" },
+                  fontSize: { xs: "0.6rem", sm: "0.7rem" },
                   userSelect: "none",
                 }}
               >

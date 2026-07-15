@@ -152,8 +152,8 @@ export default function DashboardPage() {
               </Box>
               <Box sx={{ display: "flex", gap: 0.5, mb: 1 }}>
                 {["surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"].map((key) => (
-                  <Box key={key} sx={{ flex: 1, height: 40, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Typography sx={{ fontSize: "0.45rem", color: scheme.onSurface, textAlign: "center", px: 0.25 }}>
+                  <Box key={key} sx={{ flex: 1, height: 40, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                    <Typography sx={{ fontSize: { xs: "0.4rem", sm: "0.5rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap" }}>
                       {key.replace("surfaceContainer", "SC")}
                     </Typography>
                   </Box>

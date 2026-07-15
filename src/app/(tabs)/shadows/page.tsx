@@ -60,11 +60,11 @@ for (let i = 6; i <= 24; i++) {
 
 export default function ShadowsPage() {
   return (
-    <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h3" gutterBottom sx={{ fontWeight: 700 }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
         Shadows
       </Typography>
-      <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
         Material Design elevation shadow values
       </Typography>
 
