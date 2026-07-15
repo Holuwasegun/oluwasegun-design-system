@@ -4,7 +4,6 @@ import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material
 import Sidebar from '@/components/Sidebar';
 import TopBar from '@/components/TopBar';
 
-const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 64;
 const TOPBAR_HEIGHT = 64;
 

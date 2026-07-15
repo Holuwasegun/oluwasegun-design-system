@@ -25,7 +25,6 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useThemeStore } from "@/store";
 import {
   generateSchemeFromConfig,
-  DEFAULT_KEY_COLORS,
   DEFAULT_KEY_COLOR_NAMES,
   SCHEME_KEY_ORDER,
   type ColorScheme,

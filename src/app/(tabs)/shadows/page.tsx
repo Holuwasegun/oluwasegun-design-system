@@ -48,8 +48,6 @@ function generateGenericShadow(level: number): string {
   return `0px ${y}px ${blur}px ${spread}px rgba(0,0,0,${opacityAmbient.toFixed(2)}), 0px ${Math.floor(y / 2)}px ${Math.floor(blur / 3)}px rgba(0,0,0,${opacityKey.toFixed(2)})`;
 }
 
-const allLevels = shadowLevels.map((s) => s.level);
-
 for (let i = 6; i <= 24; i++) {
   shadowLevels.push({
     level: i,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Container, Typography, Button, Card, CardContent, CardActions, IconButton, CssBaseline, Stack } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import StarIcon from '@mui/icons-material/Star';

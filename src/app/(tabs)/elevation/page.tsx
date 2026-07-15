@@ -59,7 +59,7 @@ const liftedShadows: Record<number, string> = {
 };
 
 export default function ElevationPage() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
@@ -75,11 +75,11 @@ export default function ElevationPage() {
       </Typography>
       <Grid container spacing={3} sx={{ mb: 5 }}>
         {elevationLevels.map(({ level, label, description, shadow }) => {
-          const isHovered = hoveredCard === level;
+          const isHovered = hoveredCard === `level-${level}`;
           return (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={level}>
               <Card
-                onMouseEnter={() => setHoveredCard(level)}
+                onMouseEnter={() => setHoveredCard(`level-${level}`)}
                 onMouseLeave={() => setHoveredCard(null)}
                 sx={{
                   height: 180,
@@ -118,11 +118,11 @@ export default function ElevationPage() {
       </Typography>
       <Grid container spacing={3} sx={{ mb: 5 }}>
         {elevationLevels.map(({ level, shadow }) => {
-          const isHovered = hoveredCard === `demo-${level}` as unknown as number;
+          const isHovered = hoveredCard === `demo-${level}`;
           return (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={`demo-${level}`}>
               <Card
-                onMouseEnter={() => setHoveredCard(level)}
+                onMouseEnter={() => setHoveredCard(`demo-${level}`)}
                 onMouseLeave={() => setHoveredCard(null)}
                 sx={{
                   height: 120,

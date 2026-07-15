@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, TextField, Button, Typography, Avatar, CssBaseline } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';

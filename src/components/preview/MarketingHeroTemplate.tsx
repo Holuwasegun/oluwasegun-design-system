@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Container, Typography, Button, CssBaseline, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
