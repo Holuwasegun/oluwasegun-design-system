@@ -200,7 +200,7 @@ function RadiusBuilder() {
                 multiline
                 rows={2}
                 value={cssCode}
-                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13 } } }}
+                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13, pr: 8 } } }}
                 size="small"
               />
               <Button

@@ -64,7 +64,7 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', height: '70vh', bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: '70vh', bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
         <CssBaseline />
         <AppBar position="absolute" sx={{ bgcolor: scheme.primary, boxShadow: 'none' }}>
           <Toolbar sx={{ pr: '24px' }}>

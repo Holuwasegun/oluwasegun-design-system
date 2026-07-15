@@ -47,6 +47,14 @@ function MiniPalette({ colors }: { colors: string[] }) {
   );
 }
 
+function getTextColor(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? "#000" : "#fff";
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const { config, currentProjectId } = useThemeStore();
@@ -149,7 +157,7 @@ export default function DashboardPage() {
                     key={key}
                     label={key}
                     size="small"
-                    sx={{ bgcolor: config.keyColors[key], color: "#fff", fontWeight: 600, fontSize: "0.625rem", height: 22 }}
+                    sx={{ bgcolor: config.keyColors[key], color: getTextColor(config.keyColors[key]), fontWeight: 600, fontSize: "0.625rem", height: 22 }}
                   />
                 ))}
               </Box>

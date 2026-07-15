@@ -76,8 +76,8 @@ interface ShadowBuilderState {
 const SHADOW_DEFAULTS: ShadowBuilderState = { offsetX: 0, offsetY: 4, blur: 8, spread: 2, opacity: 0.15 };
 
 function buildShadowCSS(s: ShadowBuilderState): string {
-  const ambient = `0px ${s.offsetY}px ${s.blur}px ${s.spread}px rgba(0,0,0,${s.opacity.toFixed(2)})`;
-  const key = `0px ${Math.round(s.offsetY * 0.5)}px ${Math.round(s.blur / 3)}px rgba(0,0,0,${Math.min(s.opacity + 0.15, 1).toFixed(2)})`;
+  const ambient = `${s.offsetX}px ${s.offsetY}px ${s.blur}px ${s.spread}px rgba(0,0,0,${s.opacity.toFixed(2)})`;
+  const key = `${Math.round(s.offsetX * 0.5)}px ${Math.round(s.offsetY * 0.5)}px ${Math.round(s.blur / 3)}px rgba(0,0,0,${Math.min(s.opacity + 0.15, 1).toFixed(2)})`;
   return `${ambient}, ${key}`;
 }
 
@@ -192,7 +192,7 @@ function ShadowBuilder() {
                 multiline
                 rows={2}
                 value={cssCode}
-                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13 } } }}
+                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13, pr: 8 } } }}
                 size="small"
               />
               <Button

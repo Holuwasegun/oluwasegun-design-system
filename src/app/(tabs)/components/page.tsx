@@ -668,7 +668,7 @@ export default function ComponentsPage() {
         <Box sx={{ mb: 3 }}>
           <Tabs
             value={activeTab}
-            onChange={(_, v) => setActiveTab(v)}
+            onChange={(_, v) => setActiveTab(v as TabKey)}
             variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile
@@ -694,7 +694,7 @@ export default function ComponentsPage() {
           >
             <Tabs
               value={activeTab}
-              onChange={(_, v) => setActiveTab(v)}
+              onChange={(_, v) => setActiveTab(v as TabKey)}
               orientation="vertical"
               sx={{
                 '& .MuiTabs-indicator': {

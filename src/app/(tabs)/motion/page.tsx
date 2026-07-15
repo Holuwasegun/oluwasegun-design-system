@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import {
   Typography,
   Box,
@@ -45,7 +45,6 @@ export default function MotionPage() {
   const [animDuration, setAnimDuration] = useState(300);
   const [animEasing, setAnimEasing] = useState(easingTokens[0].value);
   const [boxPosition, setBoxPosition] = useState(0);
-  const boxRef = useRef<HTMLDivElement>(null);
 
   const handleAnimate = () => {
     setBoxPosition(0);
@@ -176,7 +175,6 @@ export default function MotionPage() {
               }}
             >
               <Box
-                ref={boxRef}
                 sx={{
                   width: 60,
                   height: 60,

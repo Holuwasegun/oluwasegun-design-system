@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -318,6 +318,13 @@ function HslDetailDialog({ open, hex, onClose, onChange }: {
   const [localS, setLocalS] = useState(hsl.s);
   const [localL] = useState(hsl.l);
   const [hexInput, setHexInput] = useState(hex);
+
+  useEffect(() => {
+    const hslNew = hexToHsl(hex);
+    setLocalH(hslNew.h);
+    setLocalS(hslNew.s);
+    setHexInput(hex);
+  }, [hex]);
 
   const updateFromHsl = useCallback((h: number, s: number, l: number) => {
     const newHex = hslToHex(h, s, l);

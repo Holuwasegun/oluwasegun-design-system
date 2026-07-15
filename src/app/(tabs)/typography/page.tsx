@@ -20,8 +20,6 @@ import {
   Chip,
   Divider,
   Stack,
-  useMediaQuery,
-  useTheme,
   Autocomplete,
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -110,7 +108,7 @@ function TrackingControls({ styles }: { styles: TypeStyle[] }) {
                     <Chip
                       label={FAMILY_LABELS[style.family]}
                       size="small"
-                      color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                      color={FAMILY_COLORS[style.family]}
                       variant="outlined"
                       sx={{ minWidth: 72, fontWeight: 500 }}
                     />
@@ -168,7 +166,7 @@ const SCALE_PRESETS = Object.entries(TYPOGRAPHY_SCALES).map(([key, v]) => ({
   value: v.value,
 }));
 
-const FAMILY_COLORS: Record<TypeStyle['family'], string> = {
+const FAMILY_COLORS: Record<TypeStyle['family'], 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'> = {
   display: 'primary',
   headline: 'secondary',
   title: 'info',
@@ -327,7 +325,7 @@ function ScaleTable({ styles }: { styles: TypeStyle[] }) {
                     <Chip
                       label={FAMILY_LABELS[style.family]}
                       size="small"
-                      color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                      color={FAMILY_COLORS[style.family]}
                       variant="outlined"
                       sx={{ minWidth: 72, fontWeight: 500 }}
                     />
@@ -394,7 +392,7 @@ function ScaleCards({ styles }: { styles: TypeStyle[] }) {
                   <Chip
                     label={FAMILY_LABELS[style.family]}
                     size="small"
-                    color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                    color={FAMILY_COLORS[style.family]}
                     variant="outlined"
                     sx={{ fontWeight: 500 }}
                   />
@@ -579,8 +577,6 @@ function LivePreview({ styles }: { styles: TypeStyle[] }) {
 }
 
 export default function TypographyPage() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { config } = useThemeStore();
 
   const styles = useMemo(
