@@ -89,13 +89,13 @@ export default function Sidebar() {
             variant="h6"
             sx={{ color: '#fff', fontWeight: 700, lineHeight: 1 }}
           >
-            M
+            O
           </Typography>
         </Box>
         {sidebarOpen && (
           <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
-              Matisse
+              Oluwasegun
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               Design System

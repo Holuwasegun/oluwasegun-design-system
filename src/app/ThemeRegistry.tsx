@@ -6,14 +6,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import { createTheme } from "@mui/material/styles";
-import { tokens } from "@/theme/tokens";
 import { useThemeStore } from "@/store";
-
-function makeTheme(overrides: Record<string, string>) {
-  const hasOverrides = Object.keys(overrides).length > 0;
-  if (!hasOverrides) return tokens;
-  return { ...tokens, ...overrides };
-}
+import { generateSchemeFromConfig } from "@/theme/scheme";
 
 interface ThemeRegistryProps {
   children: ReactNode;
@@ -21,44 +15,45 @@ interface ThemeRegistryProps {
 
 export default function ThemeRegistry({ children }: ThemeRegistryProps) {
   const cache = useMemo(() => createCache({ key: "mui", prepend: true }), []);
-  const overrides = useThemeStore((s) => s.overrides);
+  const config = useThemeStore((s) => s.config);
 
   const theme = useMemo(() => {
-    const merged = makeTheme(overrides);
+    const scheme = generateSchemeFromConfig(config);
     return createTheme({
       palette: {
+        mode: config.mode,
         primary: {
-          main: merged.primary,
-          light: merged.primaryContainer,
-          dark: merged.onPrimaryContainer,
-          contrastText: merged.onPrimary,
+          main: scheme.primary,
+          light: scheme.primaryContainer,
+          dark: scheme.onPrimaryContainer,
+          contrastText: scheme.onPrimary,
         },
         secondary: {
-          main: merged.secondary,
-          light: merged.secondaryContainer,
-          dark: merged.onSecondaryContainer,
-          contrastText: merged.onSecondary,
+          main: scheme.secondary,
+          light: scheme.secondaryContainer,
+          dark: scheme.onSecondaryContainer,
+          contrastText: scheme.onSecondary,
         },
         error: {
-          main: merged.error,
-          light: merged.errorContainer,
-          dark: merged.onErrorContainer,
-          contrastText: merged.onError,
+          main: scheme.error,
+          light: scheme.errorContainer,
+          dark: scheme.onErrorContainer,
+          contrastText: scheme.onError,
         },
         background: {
-          default: merged.background,
-          paper: merged.surfaceContainerLow,
+          default: scheme.background,
+          paper: scheme.surfaceContainerLow,
         },
         text: {
-          primary: merged.onBackground,
-          secondary: merged.onSurfaceVariant,
+          primary: scheme.onBackground,
+          secondary: scheme.onSurfaceVariant,
         },
-        divider: merged.outlineVariant,
+        divider: scheme.outlineVariant,
         warning: {
-          main: merged.tertiary,
-          light: merged.tertiaryContainer,
-          dark: merged.onTertiaryContainer,
-          contrastText: merged.onTertiary,
+          main: scheme.tertiary,
+          light: scheme.tertiaryContainer,
+          dark: scheme.onTertiaryContainer,
+          contrastText: scheme.onTertiary,
         },
       },
       typography: {
@@ -79,7 +74,7 @@ export default function ThemeRegistry({ children }: ThemeRegistryProps) {
       },
       shape: { borderRadius: 12 },
     });
-  }, [overrides]);
+  }, [config]);
 
   return (
     <CacheProvider value={cache}>

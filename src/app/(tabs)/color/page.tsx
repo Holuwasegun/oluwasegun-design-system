@@ -1,76 +1,74 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
-  Grid,
+  Box,
+  Typography,
   Card,
   CardContent,
-  Typography,
-  Box,
-  IconButton,
-  Popover,
+  Grid,
   TextField,
   Chip,
-  Alert,
-  Button,
+  Divider,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
-import { tokens, TokenKey, hexToRgb } from "@/theme/tokens";
 import { useThemeStore } from "@/store";
+import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
+import {
+  generateTonalPalette,
+  generateNeutralPalette,
+  UI_TONE_LEVELS,
+  type TonalPalette,
+} from "@/theme/tonal-palette";
 
-interface TokenGroup {
-  label: string;
-  keys: TokenKey[];
-}
+const KEY_COLOR_FIELDS = [
+  { key: "primary" as const, label: "Primary", description: "The primary brand color" },
+  { key: "secondary" as const, label: "Secondary", description: "A secondary accent color" },
+  { key: "tertiary" as const, label: "Tertiary", description: "A third accent color" },
+  { key: "error" as const, label: "Error", description: "Error and destructive actions" },
+];
 
-const groups: TokenGroup[] = [
+const SCHEME_GROUPS = [
   {
-    label: "Key Colors",
-    keys: [
-      "primary",
-      "onPrimary",
-      "primaryContainer",
-      "onPrimaryContainer",
-      "secondary",
-      "onSecondary",
-      "secondaryContainer",
-      "onSecondaryContainer",
-      "tertiary",
-      "onTertiary",
-      "tertiaryContainer",
-      "onTertiaryContainer",
-      "error",
-      "onError",
-      "errorContainer",
-      "onErrorContainer",
-    ],
+    label: "Primary",
+    keys: ["primary", "onPrimary", "primaryContainer", "onPrimaryContainer"] as const,
   },
   {
-    label: "Surface & Background",
+    label: "Secondary",
+    keys: ["secondary", "onSecondary", "secondaryContainer", "onSecondaryContainer"] as const,
+  },
+  {
+    label: "Tertiary",
+    keys: ["tertiary", "onTertiary", "tertiaryContainer", "onTertiaryContainer"] as const,
+  },
+  {
+    label: "Error",
+    keys: ["error", "onError", "errorContainer", "onErrorContainer"] as const,
+  },
+  {
+    label: "Surface",
     keys: [
-      "background",
-      "onBackground",
-      "surface",
-      "onSurface",
-      "surfaceVariant",
-      "onSurfaceVariant",
-      "surfaceDim",
-      "surfaceBright",
-      "surfaceContainerLowest",
-      "surfaceContainerLow",
-      "surfaceContainer",
-      "surfaceContainerHigh",
-      "surfaceContainerHighest",
-    ],
+      "background", "onBackground", "surface", "onSurface",
+      "surfaceVariant", "onSurfaceVariant",
+    ] as const,
+  },
+  {
+    label: "Surface Containers",
+    keys: [
+      "surfaceDim", "surfaceBright",
+      "surfaceContainerLowest", "surfaceContainerLow",
+      "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest",
+    ] as const,
   },
   {
     label: "Outline",
-    keys: ["outline", "outlineVariant"],
+    keys: ["outline", "outlineVariant"] as const,
   },
   {
     label: "Inverse",
-    keys: ["inverseSurface", "inverseOnSurface", "inversePrimary"],
+    keys: ["inverseSurface", "inverseOnSurface", "inversePrimary"] as const,
   },
 ];
 
@@ -78,186 +76,301 @@ function formatTokenName(key: string): string {
   return key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
 }
 
-interface ColorCardProps {
-  tokenKey: TokenKey;
-  hex: string;
-  isOverridden: boolean;
-  onOverride: (key: TokenKey, value: string) => void;
-  onRemove: (key: TokenKey) => void;
+function hexToRgbStr(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
 }
 
-function ColorCard({ tokenKey, hex, isOverridden, onOverride, onRemove }: ColorCardProps) {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [localHex, setLocalHex] = useState(hex);
+function getTextColor(bgHex: string): string {
+  const r = parseInt(bgHex.slice(1, 3), 16);
+  const g = parseInt(bgHex.slice(3, 5), 16);
+  const b = parseInt(bgHex.slice(5, 7), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? "#1D1B20" : "#FFFFFF";
+}
 
-  const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
-    setLocalHex(hex);
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClose = () => setAnchorEl(null);
-
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newHex = e.target.value.toUpperCase();
-    setLocalHex(newHex);
-    onOverride(tokenKey, newHex);
-  };
-
-  const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    if (!val.startsWith("#")) val = "#" + val;
-    setLocalHex(val.toUpperCase());
-    if (/^#[0-9A-F]{6}$/i.test(val)) {
-      onOverride(tokenKey, val.toUpperCase());
-    }
-  };
-
+// ---------- Tonal Palette Strip ----------
+function TonalPaletteStrip({
+  label,
+  palette,
+}: {
+  label: string;
+  palette: TonalPalette;
+}) {
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        height: "100%",
-        borderColor: isOverridden ? "warning.main" : "divider",
-        borderWidth: isOverridden ? 2 : 1,
-        transition: "border-color 0.2s",
-      }}
-    >
-      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, wordBreak: "break-word" }}>
-            {formatTokenName(tokenKey)}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 0.5, flexShrink: 0, ml: 1 }}>
-            <IconButton size="small" onClick={handleOpen} title="Override color">
-              <WarningAmberRoundedIcon fontSize="small" color={isOverridden ? "warning" : "disabled"} />
-            </IconButton>
-            {isOverridden && (
-              <IconButton size="small" onClick={() => onRemove(tokenKey)} title="Reset color">
-                <RestartAltRoundedIcon fontSize="small" color="warning" />
-              </IconButton>
-            )}
-          </Box>
-        </Box>
-
-        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace" }}>
-          {hex}
-        </Typography>
-
-        <Box
-          sx={{
-            height: 80,
-            borderRadius: 1.5,
-            bgcolor: hex,
-            mt: 1,
-            border: "1px solid",
-            borderColor: "divider",
-          }}
-        />
-
-        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace", mt: 0.5, display: "block" }}>
-          rgb({hexToRgb(hex)})
-        </Typography>
-
-        {isOverridden && (
-          <Chip label="Overridden" size="small" color="warning" variant="outlined" sx={{ mt: 1, height: 20, fontSize: 11 }} />
-        )}
-
-        <Popover
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        >
-          <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 200 }}>
-            <Typography variant="subtitle2">{formatTokenName(tokenKey)}</Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <input
-                type="color"
-                value={localHex}
-                onChange={handleColorChange}
-                style={{ width: 40, height: 40, border: "none", padding: 0, cursor: "pointer", borderRadius: 4 }}
-              />
-              <TextField
-                size="small"
-                value={localHex}
-                onChange={handleHexInput}
-                slotProps={{ input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const } } }}
-                fullWidth
-              />
-            </Box>
-            {isOverridden && (
-              <Button
-                size="small"
-                startIcon={<RestartAltRoundedIcon />}
-                onClick={() => {
-                  onRemove(tokenKey);
-                  handleClose();
+    <Box sx={{ mb: 3 }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+        {label}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          borderRadius: 2,
+          overflow: "hidden",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        {UI_TONE_LEVELS.map((tone) => (
+          <Tooltip
+            key={tone}
+            title={
+              <Box>
+                <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                  Tone {tone}
+                </Typography>
+                <br />
+                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                  {palette[tone]}
+                </Typography>
+              </Box>
+            }
+          >
+            <Box
+              sx={{
+                flex: 1,
+                height: 56,
+                bgcolor: palette[tone],
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "transform 0.15s",
+                "&:hover": { transform: "scaleY(1.15)", zIndex: 1 },
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: getTextColor(palette[tone]),
+                  fontWeight: tone === 40 || tone === 80 ? 700 : 400,
+                  fontSize: "0.6rem",
+                  userSelect: "none",
                 }}
               >
-                Reset to default
-              </Button>
-            )}
+                {tone}
+              </Typography>
+            </Box>
+          </Tooltip>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+// ---------- Key Color Picker ----------
+function KeyColorPicker({
+  label,
+  description,
+  value,
+  onChange,
+}: {
+  label: string;
+  description: string;
+  value: string;
+  onChange: (hex: string) => void;
+}) {
+  return (
+    <Card variant="outlined" sx={{ height: "100%" }}>
+      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: 1.5,
+              bgcolor: value,
+              border: "2px solid",
+              borderColor: "divider",
+              flexShrink: 0,
+            }}
+          />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {label}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {description}
+            </Typography>
           </Box>
-        </Popover>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
+          <input
+            type="color"
+            value={value}
+            onChange={(e) => onChange(e.target.value.toUpperCase())}
+            style={{
+              width: 36,
+              height: 36,
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              borderRadius: 4,
+            }}
+          />
+          <TextField
+            size="small"
+            value={value}
+            onChange={(e) => {
+              let val = e.target.value;
+              if (!val.startsWith("#")) val = "#" + val;
+              if (/^#[0-9A-F]{6}$/i.test(val)) {
+                onChange(val.toUpperCase());
+              }
+            }}
+            slotProps={{
+              input: {
+                style: {
+                  fontFamily: "monospace",
+                  textTransform: "uppercase" as const,
+                  fontSize: "0.8rem",
+                },
+              },
+            }}
+            fullWidth
+          />
+        </Box>
       </CardContent>
     </Card>
   );
 }
 
-export default function ColorPage() {
-  const { overrides, setOverride, removeOverride, resetOverrides, hasOverrides } = useThemeStore();
+// ---------- Color Role Card ----------
+function ColorRoleCard({
+  label,
+  hex,
+}: {
+  label: string;
+  hex: string;
+}) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+      <Box
+        sx={{
+          width: 36,
+          height: 36,
+          borderRadius: 1,
+          bgcolor: hex,
+          border: "1px solid",
+          borderColor: "divider",
+          flexShrink: 0,
+        }}
+      />
+      <Box sx={{ minWidth: 0, flex: 1 }}>
+        <Typography variant="caption" sx={{ fontWeight: 600, display: "block", lineHeight: 1.2 }}>
+          {formatTokenName(label)}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.65rem" }}
+        >
+          {hex}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
 
-  const effectiveColors = useMemo(() => {
-    const result: Record<string, string> = {};
-    for (const key of Object.keys(tokens) as TokenKey[]) {
-      result[key] = (overrides[key] as string) ?? tokens[key];
-    }
-    return result;
-  }, [overrides]);
+// ---------- Main Page ----------
+export default function ColorPage() {
+  const { config, setKeyColor, resetConfig } = useThemeStore();
+
+  const scheme: ColorScheme = useMemo(
+    () => generateSchemeFromConfig(config),
+    [config]
+  );
+
+  const primaryPalette = useMemo(
+    () => generateTonalPalette(config.keyColors.primary),
+    [config.keyColors.primary]
+  );
+  const secondaryPalette = useMemo(
+    () => generateTonalPalette(config.keyColors.secondary),
+    [config.keyColors.secondary]
+  );
+  const tertiaryPalette = useMemo(
+    () => generateTonalPalette(config.keyColors.tertiary),
+    [config.keyColors.tertiary]
+  );
+  const errorPalette = useMemo(
+    () => generateTonalPalette(config.keyColors.error),
+    [config.keyColors.error]
+  );
+  const neutralPalette = useMemo(() => generateNeutralPalette(), []);
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: "auto" }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-        Color
-      </Typography>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: "auto" }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          Color
+        </Typography>
+        <Tooltip title="Reset all colors to defaults">
+          <IconButton onClick={resetConfig} size="small">
+            <RestartAltRoundedIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Material Design 3 color tokens for the Matisse theme
+        Material Design 3 color system — pick key colors and watch the full palette generate automatically
       </Typography>
 
-      {hasOverrides() && (
-        <Alert
-          severity="warning"
-          action={
-            <Button color="inherit" size="small" onClick={resetOverrides}>
-              Reset All
-            </Button>
-          }
-          sx={{ mb: 3 }}
-        >
-          You have custom color overrides
-        </Alert>
-      )}
-
-      {groups.map((group) => (
-        <Box key={group.label} sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            {group.label}
-          </Typography>
-          <Grid container spacing={2}>
-            {group.keys.map((key) => (
-              <Grid key={key} size={{ xs: 12, sm: 6, md: 3 }}>
-                <ColorCard
-                  tokenKey={key}
-                  hex={effectiveColors[key]}
-                  isOverridden={key in overrides}
-                  onOverride={(k, v) => setOverride(k, v)}
-                  onRemove={(k) => removeOverride(k)}
-                />
-              </Grid>
-            ))}
+      {/* Key Color Pickers */}
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+        Key Colors
+      </Typography>
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        {KEY_COLOR_FIELDS.map((field) => (
+          <Grid key={field.key} size={{ xs: 12, sm: 6, md: 3 }}>
+            <KeyColorPicker
+              label={field.label}
+              description={field.description}
+              value={config.keyColors[field.key]}
+              onChange={(hex) => setKeyColor(field.key, hex)}
+            />
           </Grid>
-        </Box>
-      ))}
+        ))}
+      </Grid>
+
+      {/* Tonal Palettes */}
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+        Tonal Palettes
+      </Typography>
+      <Box sx={{ mb: 4 }}>
+        <TonalPaletteStrip label="Primary" palette={primaryPalette} />
+        <TonalPaletteStrip label="Secondary" palette={secondaryPalette} />
+        <TonalPaletteStrip label="Tertiary" palette={tertiaryPalette} />
+        <TonalPaletteStrip label="Error" palette={errorPalette} />
+        <TonalPaletteStrip label="Neutral" palette={neutralPalette} />
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+      {/* Generated Color Scheme */}
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+        Generated Color Scheme ({config.mode})
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        All 30 color roles derived from your key colors using MD3 tonal mapping
+      </Typography>
+
+      <Grid container spacing={3}>
+        {SCHEME_GROUPS.map((group) => (
+          <Grid key={group.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <Card variant="outlined" sx={{ height: "100%" }}>
+              <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5 }}>
+                  {group.label}
+                </Typography>
+                {group.keys.map((key) => (
+                  <ColorRoleCard key={key} label={key} hex={scheme[key]} />
+                ))}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 }

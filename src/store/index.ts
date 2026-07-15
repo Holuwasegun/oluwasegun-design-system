@@ -1,33 +1,77 @@
 import { create } from "zustand";
-import { tokens, type TokenKey } from "@/theme/tokens";
+import { persist } from "zustand/middleware";
+import {
+  type ThemeConfig,
+  type SchemeMode,
+  DEFAULT_THEME_CONFIG,
+} from "@/theme/scheme";
 
+// ---------- Theme Store (persisted to localStorage) ----------
 interface ThemeStore {
-  overrides: Partial<Record<TokenKey, string>>;
-  setOverride: (key: string, value: string) => void;
-  removeOverride: (key: string) => void;
-  resetOverrides: () => void;
-  hasOverrides: () => boolean;
+  config: ThemeConfig;
+  setKeyColor: (key: "primary" | "secondary" | "tertiary" | "error", color: string) => void;
+  setMode: (mode: SchemeMode) => void;
+  toggleMode: () => void;
+  resetConfig: () => void;
+  exportConfig: () => string;
+  importConfig: (json: string) => boolean;
 }
 
-export const useThemeStore = create<ThemeStore>((set, get) => ({
-  overrides: {},
+export const useThemeStore = create<ThemeStore>()(
+  persist(
+    (set, get) => ({
+      config: { ...DEFAULT_THEME_CONFIG },
 
-  setOverride: (key, value) =>
-    set((state) => ({
-      overrides: { ...state.overrides, [key]: value },
-    })),
+      setKeyColor: (key, color) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            keyColors: { ...state.config.keyColors, [key]: color },
+          },
+        })),
 
-  removeOverride: (key) =>
-    set((state) => {
-      const { [key as TokenKey]: _, ...rest } = state.overrides;
-      return { overrides: rest };
+      setMode: (mode) =>
+        set((state) => ({
+          config: { ...state.config, mode },
+        })),
+
+      toggleMode: () =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            mode: state.config.mode === "light" ? "dark" : "light",
+          },
+        })),
+
+      resetConfig: () => set({ config: { ...DEFAULT_THEME_CONFIG } }),
+
+      exportConfig: () => JSON.stringify(get().config, null, 2),
+
+      importConfig: (json) => {
+        try {
+          const parsed = JSON.parse(json) as ThemeConfig;
+          if (
+            parsed.keyColors &&
+            typeof parsed.keyColors.primary === "string" &&
+            typeof parsed.keyColors.secondary === "string" &&
+            typeof parsed.keyColors.tertiary === "string" &&
+            typeof parsed.keyColors.error === "string" &&
+            (parsed.mode === "light" || parsed.mode === "dark")
+          ) {
+            set({ config: parsed });
+            return true;
+          }
+          return false;
+        } catch {
+          return false;
+        }
+      },
     }),
+    { name: "oluwasegun-design-system-theme" }
+  )
+);
 
-  resetOverrides: () => set({ overrides: {} }),
-
-  hasOverrides: () => Object.keys(get().overrides).length > 0,
-}));
-
+// ---------- Sidebar Store ----------
 interface SidebarStore {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
