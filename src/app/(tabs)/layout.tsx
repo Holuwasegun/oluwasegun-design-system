@@ -33,21 +33,42 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
       >
         <Box sx={{ flex: 1 }}>{children}</Box>
 
-        <Divider sx={{ mx: { xs: 2, md: 4 } }} />
         <Box
           component="footer"
           sx={{
-            px: { xs: 2, md: 4 },
-            py: 3,
-            textAlign: 'center',
+            mt: 8,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            bgcolor: `${theme.palette.background.paper}80`,
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
           }}
         >
-          <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.8, display: 'block' }}>
-            &copy; 2026 Oluwasegun. All rights reserved.
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.8, display: 'block' }}>
-            Built with Next.js, React, Material UI (MUI), Emotion, Zustand, TypeScript &amp; Tailwind CSS
-          </Typography>
+          <Box sx={{ px: { xs: 3, md: 6 }, py: { xs: 3, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box
+                  sx={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 1.5,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.75rem', lineHeight: 1 }}>O</Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                  &copy; 2026 Oluwasegun
+                </Typography>
+              </Box>
+
+              <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em' }}>
+                Built with Next.js, React, Material UI, Emotion, Zustand, TypeScript &amp; Tailwind CSS
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>

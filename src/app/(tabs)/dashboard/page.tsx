@@ -39,7 +39,7 @@ const sections = [
 
 function MiniPalette({ colors }: { colors: string[] }) {
   return (
-    <Box sx={{ display: "flex", borderRadius: 1, overflow: "hidden", height: 24, border: "1px solid", borderColor: "divider" }}>
+    <Box sx={{ display: "flex", borderRadius: 1.5, overflow: "hidden", height: 28, border: "1px solid", borderColor: "divider" }}>
       {colors.map((c, i) => (
         <Box key={i} sx={{ flex: 1, bgcolor: c }} />
       ))}
@@ -61,18 +61,41 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: "auto" }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-          Oluwasegun Design System
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Material Design 3 tokens, scales, and components — all configurable and exportable
-        </Typography>
+      {/* Hero Header */}
+      <Box
+        sx={{
+          mb: 5,
+          p: { xs: 3, md: 5 },
+          borderRadius: 4,
+          background: `linear-gradient(135deg, ${scheme.primary}08 0%, ${scheme.tertiary}08 50%, ${scheme.secondary}05 100%)`,
+          border: `1px solid ${scheme.primary}15`,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -40,
+            right: -40,
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${scheme.primary}10 0%, transparent 70%)`,
+          }}
+        />
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, letterSpacing: '-0.02em' }}>
+            Oluwasegun Design System
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.6 }}>
+            Material Design 3 tokens, scales, and components — all configurable and exportable
+          </Typography>
+        </Box>
       </Box>
 
       {/* Quick Stats */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
+      <Grid container spacing={2} sx={{ mb: 5 }}>
         {[
           { label: "Mode", value: config.mode === "light" ? "Light" : "Dark", color: scheme.primary },
           { label: "Key Colors", value: String(keyColorCount), color: scheme.secondary },
@@ -82,12 +105,19 @@ export default function DashboardPage() {
           { label: "Projects", value: String(projects.length), color: scheme.tertiary },
         ].map((stat) => (
           <Grid key={stat.label} size={{ xs: 6, sm: 4, md: 2 }}>
-            <Card variant="outlined" sx={{ height: "100%" }}>
+            <Card
+              variant="outlined"
+              sx={{
+                height: "100%",
+                transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+                '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.06)', transform: 'translateY(-1px)' },
+              }}
+            >
               <CardContent sx={{ p: 2, "&:last-child": { pb: 2 }, textAlign: "center" }}>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.625rem' }}>
                   {stat.label}
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: stat.color }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: stat.color, letterSpacing: '-0.01em' }}>
                   {stat.value}
                 </Typography>
               </CardContent>
@@ -99,20 +129,27 @@ export default function DashboardPage() {
       <Grid container spacing={3}>
         {/* Color Preview */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card variant="outlined" sx={{ height: "100%" }}>
+          <Card
+            variant="outlined"
+            sx={{
+              height: "100%",
+              transition: 'box-shadow 0.2s ease',
+              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+            }}
+          >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                <PaletteIcon sx={{ color: scheme.primary }} />
+                <PaletteIcon sx={{ color: scheme.primary, fontSize: 20 }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Color Palette</Typography>
               </Box>
               <MiniPalette colors={UI_TONE_LEVELS.slice(0, 12).map((t) => primaryPalette[t])} />
-              <Box sx={{ display: "flex", gap: 1, mt: 2, flexWrap: "wrap" }}>
+              <Box sx={{ display: "flex", gap: 0.75, mt: 2, flexWrap: "wrap" }}>
                 {["primary", "secondary", "tertiary", "neutral", "neutralVariant"].map((key) => (
                   <Chip
                     key={key}
                     label={key}
                     size="small"
-                    sx={{ bgcolor: config.keyColors[key], color: "#fff", fontWeight: 600, fontSize: "0.65rem" }}
+                    sx={{ bgcolor: config.keyColors[key], color: "#fff", fontWeight: 600, fontSize: "0.625rem", height: 22 }}
                   />
                 ))}
               </Box>
@@ -122,20 +159,27 @@ export default function DashboardPage() {
 
         {/* Typography Preview */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card variant="outlined" sx={{ height: "100%" }}>
+          <Card
+            variant="outlined"
+            sx={{
+              height: "100%",
+              transition: 'box-shadow 0.2s ease',
+              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+            }}
+          >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                <TextFieldsIcon sx={{ color: scheme.secondary }} />
+                <TextFieldsIcon sx={{ color: scheme.secondary, fontSize: 20 }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Type Scale</Typography>
-                <Chip label={`${config.typography.scale}×`} size="small" sx={{ ml: "auto" }} />
+                <Chip label={`${config.typography.scale}×`} size="small" sx={{ ml: "auto", fontWeight: 600, fontSize: '0.7rem' }} />
               </Box>
-              <Typography sx={{ fontSize: config.typography.baseSize * Math.pow(config.typography.scale, 3), fontWeight: 400, lineHeight: 1.2, display: "block" }}>
+              <Typography sx={{ fontSize: config.typography.baseSize * Math.pow(config.typography.scale, 3), fontWeight: 700, lineHeight: 1.2, display: "block", letterSpacing: '-0.02em' }}>
                 Display
               </Typography>
               <Typography sx={{ fontSize: config.typography.baseSize * Math.pow(config.typography.scale, 1), fontWeight: 500, lineHeight: 1.4, display: "block" }}>
                 Title Medium
               </Typography>
-              <Typography sx={{ fontSize: config.typography.baseSize, fontWeight: 400, lineHeight: 1.5, display: "block", color: "text.secondary" }}>
+              <Typography sx={{ fontSize: config.typography.baseSize, fontWeight: 400, lineHeight: 1.6, display: "block", color: "text.secondary" }}>
                 Body — The quick brown fox jumps over the lazy dog
               </Typography>
             </CardContent>
@@ -144,16 +188,23 @@ export default function DashboardPage() {
 
         {/* Surface Colors */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card variant="outlined" sx={{ height: "100%" }}>
+          <Card
+            variant="outlined"
+            sx={{
+              height: "100%",
+              transition: 'box-shadow 0.2s ease',
+              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+            }}
+          >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                <LayersIcon sx={{ color: scheme.tertiary }} />
+                <LayersIcon sx={{ color: scheme.tertiary, fontSize: 20 }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Surface System</Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 0.5, mb: 1 }}>
                 {["surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"].map((key) => (
-                  <Box key={key} sx={{ flex: 1, height: 40, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                    <Typography sx={{ fontSize: { xs: "0.4rem", sm: "0.5rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap" }}>
+                  <Box key={key} sx={{ flex: 1, height: 44, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                    <Typography sx={{ fontSize: { xs: "0.375rem", sm: "0.4375rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap", fontWeight: 500 }}>
                       {key.replace("surfaceContainer", "SC")}
                     </Typography>
                   </Box>
@@ -161,7 +212,7 @@ export default function DashboardPage() {
               </Box>
               <Box sx={{ display: "flex", gap: 0.5 }}>
                 {["primary", "secondary", "tertiary", "error"].map((key) => (
-                  <Box key={key} sx={{ flex: 1, height: 32, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Box key={key} sx={{ flex: 1, height: 36, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Typography sx={{ fontSize: "0.5rem", color: scheme[`on${key.charAt(0).toUpperCase() + key.slice(1)}` as keyof ColorScheme] ?? "#fff", fontWeight: 600 }}>
                       {key}
                     </Typography>
@@ -174,10 +225,17 @@ export default function DashboardPage() {
 
         {/* Section Nav */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card variant="outlined" sx={{ height: "100%" }}>
+          <Card
+            variant="outlined"
+            sx={{
+              height: "100%",
+              transition: 'box-shadow 0.2s ease',
+              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+            }}
+          >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                <WidgetsIcon sx={{ color: scheme.primary }} />
+                <WidgetsIcon sx={{ color: scheme.primary, fontSize: 20 }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Sections</Typography>
               </Box>
               <Grid container spacing={1}>
@@ -187,21 +245,21 @@ export default function DashboardPage() {
                       onClick={() => router.push(section.href)}
                       sx={{
                         p: 1.5,
-                        borderRadius: 1.5,
+                        borderRadius: 2,
                         cursor: "pointer",
                         border: "1px solid",
                         borderColor: "divider",
-                        transition: "all 0.15s",
-                        "&:hover": { borderColor: "primary.main", bgcolor: "action.hover" },
+                        transition: "all 0.15s ease",
+                        "&:hover": { borderColor: "primary.main", bgcolor: `${scheme.primary}08`, transform: 'translateY(-1px)' },
                       }}
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 0.25 }}>
-                        <Avatar sx={{ width: 24, height: 24, bgcolor: "transparent", color: "text.secondary" }}>
+                        <Avatar sx={{ width: 24, height: 24, bgcolor: "transparent", color: "text.secondary", '& svg': { fontSize: 16 } }}>
                           {section.icon}
                         </Avatar>
-                        <Typography variant="caption" sx={{ fontWeight: 600 }}>{section.label}</Typography>
+                        <Typography variant="caption" sx={{ fontWeight: 600, letterSpacing: '0.01em' }}>{section.label}</Typography>
                       </Box>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontSize: "0.6rem" }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontSize: "0.6rem", lineHeight: 1.4 }}>
                         {section.description}
                       </Typography>
                     </Box>
@@ -215,10 +273,16 @@ export default function DashboardPage() {
 
       {/* Current Project */}
       {currentProject && (
-        <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 2 }} />
+        <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Chip
+            label={`Active: ${currentProject.name}`}
+            size="small"
+            color="primary"
+            variant="outlined"
+            sx={{ fontWeight: 500 }}
+          />
           <Typography variant="caption" color="text.secondary">
-            Active project: <strong>{currentProject.name}</strong> — saved {new Date(currentProject.updatedAt).toLocaleDateString()}
+            saved {new Date(currentProject.updatedAt).toLocaleDateString()}
           </Typography>
         </Box>
       )}

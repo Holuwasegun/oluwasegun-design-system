@@ -6,7 +6,6 @@ import {
   Box,
   Card,
   CardContent,
-  Alert,
   Button,
   Grid,
   Slider,
@@ -65,15 +64,6 @@ export default function MotionPage() {
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         Animation principles for Material Design 3
       </Typography>
-
-      <Alert severity="info" sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-          Coming Soon
-        </Typography>
-        <Typography variant="body2">
-          Full motion documentation and interactive playground are under development. Reference values below.
-        </Typography>
-      </Alert>
 
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         Duration Tokens

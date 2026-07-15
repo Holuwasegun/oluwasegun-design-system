@@ -38,6 +38,19 @@ const pageTitles: Record<string, string> = {
   "/preview": "Preview",
 };
 
+const pageDescriptions: Record<string, string> = {
+  "/dashboard": "Overview of your design system",
+  "/color": "Key colors, tonal palettes, and color roles",
+  "/typography": "Type scale generator with letter spacing control",
+  "/spacing": "Base unit, spacing scale, and grid system",
+  "/shadows": "Shadow tokens and custom builder",
+  "/elevation": "Surface elevation levels and hover demos",
+  "/radius": "Shape scale and corner radius builder",
+  "/motion": "Duration, easing, and interactive demos",
+  "/components": "Live, theme-aware component demos",
+  "/preview": "Real-world UI patterns with your tokens",
+};
+
 export default function TopBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -48,6 +61,7 @@ export default function TopBar() {
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
 
   const title = pageTitles[pathname] || "Design System";
+  const description = pageDescriptions[pathname] || "";
   const currentProject = projects.find((p) => p.id === currentProjectId);
 
   const handleExport = () => {
@@ -81,25 +95,33 @@ export default function TopBar() {
         position="fixed"
         elevation={0}
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: `${theme.palette.background.paper}CC`,
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
           borderBottom: `1px solid ${theme.palette.divider}`,
           color: "text.primary",
         }}
       >
-        <Toolbar sx={{ minHeight: 64, gap: 1 }}>
+        <Toolbar sx={{ minHeight: 64, gap: 1, px: { xs: 2, md: 3 } }}>
           {isMobile && (
             <IconButton edge="start" onClick={toggleSidebar} sx={{ mr: 1 }}>
               <MenuIcon />
             </IconButton>
           )}
 
-          <Typography variant="h6" sx={{ fontWeight: 600, flexShrink: 0 }}>
-            {title}
-          </Typography>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', fontSize: { xs: '0.95rem', md: '1rem' } }}>
+              {title}
+            </Typography>
+            {!isMobile && (
+              <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
+                {description}
+              </Typography>
+            )}
+          </Box>
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Project button */}
           <Tooltip title="Manage projects">
             <Button
               size="small"
@@ -110,19 +132,19 @@ export default function TopBar() {
                 color: "text.secondary",
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
+                borderRadius: 2,
               }}
             >
               {isMobile ? (
                 <ProjectIcon fontSize="small" />
               ) : (
-                <Typography variant="caption" noWrap sx={{ maxWidth: 120 }}>
+                <Typography variant="caption" noWrap sx={{ maxWidth: 120, fontWeight: 500 }}>
                   {currentProject?.name || "Untitled"}
                 </Typography>
               )}
             </Button>
           </Tooltip>
 
-          {/* Export */}
           <Tooltip title="Export theme as JSON">
             <Button
               size="small"
@@ -133,13 +155,13 @@ export default function TopBar() {
                 color: "text.secondary",
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
+                borderRadius: 2,
               }}
             >
               {isMobile ? <ExportIcon fontSize="small" /> : "Export"}
             </Button>
           </Tooltip>
 
-          {/* Import */}
           <Tooltip title="Import theme from JSON">
             <Button
               size="small"
@@ -150,15 +172,22 @@ export default function TopBar() {
                 color: "text.secondary",
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
+                borderRadius: 2,
               }}
             >
               {isMobile ? <ImportIcon fontSize="small" /> : "Import"}
             </Button>
           </Tooltip>
 
-          {/* Mode toggle */}
           <Tooltip title={`Switch to ${config.mode === "light" ? "dark" : "light"} mode`}>
-            <IconButton size="small" onClick={toggleMode}>
+            <IconButton
+              size="small"
+              onClick={toggleMode}
+              sx={{
+                color: 'text.secondary',
+                '&:hover': { color: 'text.primary' },
+              }}
+            >
               {config.mode === "light" ? (
                 <DarkModeIcon fontSize="small" />
               ) : (
@@ -169,14 +198,15 @@ export default function TopBar() {
 
           <Avatar
             sx={{
-              width: 36,
-              height: 36,
+              width: 34,
+              height: 34,
               bgcolor: "primary.main",
               color: "primary.contrastText",
-              fontSize: "0.875rem",
-              fontWeight: 600,
+              fontSize: "0.8125rem",
+              fontWeight: 700,
               ml: 0.5,
               flexShrink: 0,
+              boxShadow: `0 2px 8px ${theme.palette.primary.main}33`,
             }}
           >
             O

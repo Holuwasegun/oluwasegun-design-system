@@ -66,6 +66,7 @@ export default function Sidebar() {
           duration: theme.transitions.duration.standard,
         }),
         overflow: 'hidden',
+        bgcolor: 'background.paper',
       }}
     >
       <Box
@@ -73,62 +74,76 @@ export default function Sidebar() {
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          p: 2,
-          minHeight: 64,
+          px: 2,
+          py: 2.5,
+          minHeight: 72,
         }}
       >
         <Box
           sx={{
             width: 36,
             height: 36,
-            borderRadius: 1.5,
+            borderRadius: 2,
             background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
+            boxShadow: `0 2px 8px ${theme.palette.primary.main}33`,
           }}
         >
           <Typography
             variant="h6"
-            sx={{ color: '#fff', fontWeight: 700, lineHeight: 1 }}
+            sx={{ color: '#fff', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
           >
             O
           </Typography>
         </Box>
         {sidebarOpen && (
           <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em' }}>
               Oluwasegun
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em' }}>
               Design System
             </Typography>
           </Box>
         )}
       </Box>
 
-      <Divider />
+      <Divider sx={{ mx: sidebarOpen ? 2 : 1 }} />
 
-      <List sx={{ flex: 1, px: 1, py: 1 }}>
+      <List sx={{ flex: 1, px: 1, py: 1.5 }}>
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <ListItem key={item.href} disablePadding sx={{ mb: 0.5 }}>
+            <ListItem key={item.href} disablePadding sx={{ mb: 0.25 }}>
               <ListItemButton
                 component={Link}
                 href={item.href}
                 onClick={() => isMobile && setSidebarOpen(false)}
                 sx={{
                   borderRadius: 2,
-                  minHeight: 44,
+                  minHeight: 42,
                   justifyContent: sidebarOpen ? 'initial' : 'center',
                   px: sidebarOpen ? 2 : 1.5,
-                  backgroundColor: isActive ? 'primary.light' : 'transparent',
-                  color: isActive ? 'primary.dark' : 'text.secondary',
-                  fontWeight: isActive ? 600 : 400,
+                  position: 'relative',
+                  backgroundColor: isActive ? `${theme.palette.primary.main}0D` : 'transparent',
+                  color: isActive ? 'primary.main' : 'text.secondary',
+                  transition: 'all 0.15s ease',
+                  '&::before': isActive ? {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: 3,
+                    height: 20,
+                    borderRadius: '0 4px 4px 0',
+                    bgcolor: 'primary.main',
+                  } : {},
                   '&:hover': {
-                    backgroundColor: isActive ? 'primary.light' : 'action.hover',
+                    backgroundColor: isActive ? `${theme.palette.primary.main}0D` : `${theme.palette.action.hover}`,
                   },
                 }}
               >
@@ -148,8 +163,9 @@ export default function Sidebar() {
                     slotProps={{
                       primary: {
                         sx: {
-                          fontSize: '0.875rem',
+                          fontSize: '0.8125rem',
                           fontWeight: isActive ? 600 : 400,
+                          letterSpacing: '0.01em',
                         },
                       },
                     }}
@@ -161,12 +177,12 @@ export default function Sidebar() {
         })}
       </List>
 
-      <Divider />
+      <Divider sx={{ mx: sidebarOpen ? 2 : 1 }} />
 
       {!isMobile && (
         <Box sx={{ p: 1, display: 'flex', justifyContent: sidebarOpen ? 'flex-end' : 'center' }}>
-          <IconButton onClick={toggleSidebar} size="small">
-            {sidebarOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          <IconButton onClick={toggleSidebar} size="small" sx={{ color: 'text.secondary' }}>
+            {sidebarOpen ? <ChevronLeftIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
           </IconButton>
         </Box>
       )}

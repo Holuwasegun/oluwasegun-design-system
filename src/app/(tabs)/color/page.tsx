@@ -144,6 +144,8 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
           overflow: "auto",
           border: "1px solid",
           borderColor: "divider",
+          gap: '1px',
+          bgcolor: 'divider',
           "&::-webkit-scrollbar": { height: 4 },
           "&::-webkit-scrollbar-thumb": { bgcolor: "action.hover", borderRadius: 2 },
         }}
@@ -173,6 +175,7 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
                 justifyContent: "center",
                 cursor: "pointer",
                 transition: "transform 0.15s",
+                borderRadius: 0.5,
                 "&:hover": { transform: "scaleY(1.15)", zIndex: 1 },
               }}
             >
