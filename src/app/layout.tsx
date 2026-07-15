@@ -6,8 +6,8 @@ import ThemeRegistry from './ThemeRegistry';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Oluwasegun Design System',
-  description: 'Enterprise-grade dashboard application inspired by Material Design 3',
+  title: 'Matisse Design System',
+  description: 'Material Design 3 design system for building consistent, beautiful user interfaces',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
