@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CssBaseline, Drawer, AppBar, Toolbar, Typography, List, ListItem, ListItemIcon, ListItemText, IconButton, Badge, Avatar } from '@mui/material';
+import { Box, CssBaseline, Drawer, AppBar, Toolbar, Typography, List, ListItemIcon, ListItemText, IconButton, Badge, Avatar } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -27,18 +27,18 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
         <CssBaseline />
         <AppBar position="absolute" sx={{ bgcolor: scheme.primary, boxShadow: 'none' }}>
           <Toolbar sx={{ pr: '24px' }}>
-            <IconButton edge="start" color="inherit" sx={{ mr: 2 }}>
+            <IconButton edge="start" color="inherit" sx={{ mr: 2 }} disableRipple>
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1, fontWeight: 700 }}>
               Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <IconButton color="inherit" disableRipple>
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <IconButton color="inherit" sx={{ ml: 1 }}>
+            <IconButton color="inherit" sx={{ ml: 1 }} disableRipple>
               <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.secondary }}>A</Avatar>
             </IconButton>
           </Toolbar>
@@ -54,22 +54,22 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
         >
           <Toolbar />
           <List>
-            <ListItem sx={{ bgcolor: scheme.primaryContainer, color: scheme.onPrimaryContainer, borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5 }}>
-              <ListItemIcon sx={{ color: 'inherit' }}><DashboardIcon /></ListItemIcon>
+            <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: scheme.primaryContainer, color: scheme.onPrimaryContainer, borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5, px: 2, py: 1 }}>
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><DashboardIcon /></ListItemIcon>
               <ListItemText primary="Dashboard" />
-            </ListItem>
-            <ListItem sx={{ borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5 }}>
-              <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5, px: 2, py: 1 }}>
+              <ListItemIcon sx={{ minWidth: 40 }}><ShoppingCartIcon /></ListItemIcon>
               <ListItemText primary="Orders" />
-            </ListItem>
-            <ListItem sx={{ borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5 }}>
-              <ListItemIcon><BarChartIcon /></ListItemIcon>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5, px: 2, py: 1 }}>
+              <ListItemIcon sx={{ minWidth: 40 }}><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Reports" />
-            </ListItem>
-            <ListItem sx={{ borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5 }}>
-              <ListItemIcon><LayersIcon /></ListItemIcon>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: '0 24px 24px 0', mr: 2, mb: 0.5, px: 2, py: 1 }}>
+              <ListItemIcon sx={{ minWidth: 40 }}><LayersIcon /></ListItemIcon>
               <ListItemText primary="Integrations" />
-            </ListItem>
+            </Box>
           </List>
         </Drawer>
 

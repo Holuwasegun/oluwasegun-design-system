@@ -72,10 +72,10 @@ export default function EcommerceProductCard({ scheme }: { scheme: ColorScheme }
                   <Typography variant="h5" sx={{ fontWeight: 800, color: scheme.primary }}>{product.price}</Typography>
                 </CardContent>
                 <CardActions sx={{ p: 2, bgcolor: scheme.surfaceContainerLowest, borderTop: '1px solid', borderColor: 'divider' }}>
-                  <Button variant="contained" sx={{ flexGrow: 1, fontWeight: 700, borderRadius: 30, py: 1.5 }}>
+                  <Button variant="contained" sx={{ flexGrow: 1, fontWeight: 700, borderRadius: 30, py: 1.5 }} disableRipple>
                     Add to Cart
                   </Button>
-                  <IconButton sx={{ color: scheme.secondary, border: '1px solid', borderColor: 'divider', borderRadius: '50%' }}>
+                  <IconButton sx={{ color: scheme.secondary, border: '1px solid', borderColor: 'divider', borderRadius: '50%' }} disableRipple>
                     <FavoriteBorderIcon />
                   </IconButton>
                 </CardActions>

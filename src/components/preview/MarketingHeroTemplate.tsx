@@ -21,9 +21,9 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
         <Box component="header" sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: scheme.surfaceContainerLowest }}>
           <Typography variant="h6" sx={{ fontWeight: 800, color: scheme.primary }}>BrandName</Typography>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>Features</Button>
-            <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>Pricing</Button>
-            <Button variant="contained" sx={{ fontWeight: 700, borderRadius: 20 }}>Get Started</Button>
+            <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }} disableRipple>Features</Button>
+            <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }} disableRipple>Pricing</Button>
+            <Button variant="contained" sx={{ fontWeight: 700, borderRadius: 20 }} disableRipple>Get Started</Button>
           </Stack>
         </Box>
 
@@ -37,10 +37,10 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
                 The all-in-one solution that helps you scale your business, delight your customers, and dominate your market.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
-                <Button variant="contained" size="large" endIcon={<ArrowForwardIcon />} sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }}>
+                <Button variant="contained" size="large" endIcon={<ArrowForwardIcon />} sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }} disableRipple>
                   Start Free Trial
                 </Button>
-                <Button variant="outlined" size="large" sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }}>
+                <Button variant="outlined" size="large" sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }} disableRipple>
                   Watch Demo
                 </Button>
               </Stack>
