@@ -1,9 +1,11 @@
-import { Layers, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
 import { useOluwasegunGenerator } from './hooks/useOluwasegunGenerator';
-import { SidebarInputs } from './components/SidebarInputs';
-import { TonalGrids } from './components/TonalGrids';
-import { RoleTable } from './components/RoleTable';
-import { ExportPanel } from './components/ExportPanel';
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { ColorBuilder } from './components/ColorBuilder';
+import { Preview } from './components/Preview';
+
+type MainTab = 'color-builder' | 'preview';
 
 export default function App() {
   const {
@@ -11,79 +13,82 @@ export default function App() {
     tonalPalettes,
     semanticRoles,
     themeMode,
-    contrastLevel,
     setThemeMode,
-    setContrastLevel,
     updateKeyColor,
     addKeyColor,
     removeKeyColor,
     exportSchema,
   } = useOluwasegunGenerator();
 
+  const [activeTab, setActiveTab] = useState<MainTab>('color-builder');
+
+  const tabs: { id: MainTab; label: string }[] = [
+    { id: 'color-builder', label: 'Color Builder' },
+    { id: 'preview', label: 'Preview' },
+  ];
+
   return (
-    <div className="flex h-screen flex-col bg-[var(--ods-bg)]">
-      {/* Global Header */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-[var(--ods-border)] bg-[var(--ods-surface)] px-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--ods-accent)]">
-            <Layers size={14} className="text-black" />
-          </div>
-          <span className="text-sm font-bold tracking-tight text-[var(--ods-text)]">
-            Oluwasegun Design System
-          </span>
-          <span className="rounded-full bg-[var(--ods-surface-raised)] px-2 py-0.5 text-[10px] font-medium text-[var(--ods-text-muted)]">
-            M3 HCT Engine
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={12} className="text-[var(--ods-text-muted)]" />
-            <span className="text-[10px] text-[var(--ods-text-muted)]">Contrast</span>
-            <input
-              type="range"
-              min={-1}
-              max={1}
-              step={0.1}
-              value={contrastLevel}
-              onChange={(e) => setContrastLevel(parseFloat(e.target.value))}
-              className="h-1 w-20 accent-[var(--ods-accent)]"
-            />
-            <span className="w-8 text-center text-[10px] font-mono text-[var(--ods-text-muted)]">
-              {contrastLevel.toFixed(1)}
-            </span>
-          </div>
-          <ExportPanel onExport={exportSchema} />
-        </div>
-      </header>
+    <div className="flex h-screen flex-col" style={{ background: 'var(--matisse-bg)' }}>
+      <Header onExport={exportSchema} />
 
-      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar */}
-        <aside className="flex w-72 shrink-0 flex-col border-r border-[var(--ods-border)] bg-[var(--ods-surface)] overflow-y-auto">
-          <SidebarInputs
-            keyColors={keyColors}
-            onUpdate={updateKeyColor}
-            onAdd={addKeyColor}
-            onRemove={removeKeyColor}
-          />
-        </aside>
+        <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as MainTab)} />
 
-        {/* Center-Right Content */}
-        <main className="flex flex-1 overflow-y-auto">
-          <div className="flex w-full flex-col gap-8 p-6">
-            {/* Tonal Grids */}
-            <section className="rounded-2xl border border-[var(--ods-border)] bg-[var(--ods-surface)] p-5">
-              <TonalGrids keyColors={keyColors} tonalPalettes={tonalPalettes} />
-            </section>
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-[960px] px-8 py-6">
+            {/* Tab Switcher */}
+            <div className="mb-6 flex items-center">
+              <div
+                className="flex overflow-hidden rounded-xl p-1"
+                style={{ background: 'var(--matisse-tab-active)' }}
+              >
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="flex items-center gap-2 rounded-lg px-5 py-2 text-xs font-semibold transition-all"
+                    style={{
+                      background:
+                        activeTab === tab.id
+                          ? '#ffffff'
+                          : 'transparent',
+                      color:
+                        activeTab === tab.id
+                          ? 'var(--matisse-tab-active)'
+                          : 'rgba(255,255,255,0.55)',
+                      boxShadow:
+                        activeTab === tab.id
+                          ? '0 1px 4px rgba(0,0,0,0.15)'
+                          : 'none',
+                    }}
+                  >
+                    {activeTab === tab.id && (
+                      <span
+                        className="inline-block h-1.5 w-1.5 rounded-full"
+                        style={{ background: 'var(--matisse-purple)' }}
+                      />
+                    )}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            {/* Role Mapping */}
-            <section className="rounded-2xl border border-[var(--ods-border)] bg-[var(--ods-surface)] p-5">
-              <RoleTable
+            {/* Tab Content */}
+            {activeTab === 'color-builder' ? (
+              <ColorBuilder
+                keyColors={keyColors}
+                tonalPalettes={tonalPalettes}
                 semanticRoles={semanticRoles}
                 themeMode={themeMode}
                 onThemeModeChange={setThemeMode}
+                onUpdate={updateKeyColor}
+                onAdd={addKeyColor}
+                onRemove={removeKeyColor}
               />
-            </section>
+            ) : (
+              <Preview keyColors={keyColors} />
+            )}
           </div>
         </main>
       </div>
