@@ -16,7 +16,7 @@ interface Props {
 
 export function ColorBuilder({ keyColors, tonalPalettes, semanticRoles, themeMode, onThemeModeChange, onUpdate, onAdd, onRemove }: Props) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <KeyColors keyColors={keyColors} onUpdate={onUpdate} onAdd={onAdd} onRemove={onRemove} />
       <TonalPalettes keyColors={keyColors} tonalPalettes={tonalPalettes} />
       <RoleMapping semanticRoles={semanticRoles} themeMode={themeMode} onThemeModeChange={onThemeModeChange} />

@@ -64,17 +64,23 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Pro
   };
 
   return (
-    <section className="rounded-lg p-4" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-      <div className="mb-4 flex items-center justify-between">
+    <section className="section-card">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <h3 className="text-[13px] font-semibold" style={{ color: 'var(--text)' }}>Role Mapping</h3>
-          <p className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>Assign palette tones to semantic roles.</p>
+          <h3 className="text-[15px] font-semibold" style={{ color: 'var(--text)' }}>Role Mapping</h3>
+          <p className="text-[12px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>Assign palette tones to semantic roles.</p>
         </div>
-        <div className="flex overflow-hidden rounded-md" style={{ border: '1px solid var(--border)' }}>
+        <div
+          className="flex overflow-hidden rounded-lg"
+          style={{ border: '1px solid var(--border)' }}
+        >
           {(['light', 'dark'] as ThemeMode[]).map((m) => (
             <button key={m} onClick={() => onThemeModeChange(m)}
-              className="px-3 py-1 text-[11px] font-medium transition-colors"
-              style={{ background: themeMode === m ? 'var(--text)' : 'var(--surface)', color: themeMode === m ? '#fff' : 'var(--text-tertiary)' }}>
+              className="px-3.5 py-1.5 text-[11px] font-medium transition-all"
+              style={{
+                background: themeMode === m ? 'var(--text)' : 'var(--surface)',
+                color: themeMode === m ? '#fff' : 'var(--text-tertiary)',
+              }}>
               {m === 'light' ? 'Light' : 'Dark'}
             </button>
           ))}
@@ -82,9 +88,12 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Pro
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-md" style={{ border: '1px solid var(--border)' }}>
+      <div className="overflow-hidden rounded-lg" style={{ border: '1px solid var(--border)' }}>
         {/* Head */}
-        <div className="grid grid-cols-[1fr_44px_1fr] gap-3 px-3 py-2" style={{ background: 'var(--surface-hover)' }}>
+        <div
+          className="grid grid-cols-[1fr_44px_1fr] gap-3 px-4 py-2.5"
+          style={{ background: 'var(--bg)' }}
+        >
           <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Role Name</span>
           <span className="text-center text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Swatch</span>
           <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Source Reference</span>
@@ -102,8 +111,11 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Pro
           return (
             <div
               key={roleName}
-              className="group grid grid-cols-[1fr_44px_1fr] items-center gap-3 px-3 py-2 transition-colors hover:bg-[var(--surface-hover)]"
-              style={{ borderTop: '1px solid var(--border-light)', background: i % 2 === 0 ? 'transparent' : 'var(--surface)' }}
+              className="group grid grid-cols-[1fr_44px_1fr] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--surface-hover)]"
+              style={{
+                borderTop: '1px solid var(--border-light)',
+                background: i % 2 === 0 ? 'transparent' : 'var(--surface)',
+              }}
             >
               <div className="flex items-center gap-2 min-w-0">
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: cc }} />
@@ -111,18 +123,30 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Pro
               </div>
               <div className="flex justify-center">
                 <button onClick={() => copy(d.hex, roleName)}
-                  className="rounded transition-transform hover:scale-110"
-                  style={{ width: 28, height: 28, backgroundColor: d.hex, border: '1px solid var(--border)' }}>
+                  className="rounded-md transition-transform hover:scale-110"
+                  style={{ width: 28, height: 28, backgroundColor: d.hex, border: '1px solid var(--border)', borderRadius: 6 }}>
                   {copied === roleName && <Check size={10} color="#fff" className="mx-auto" />}
                 </button>
               </div>
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="truncate rounded px-1.5 py-0.5 text-[9px]" style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border-light)', fontFamily: 'monospace' }}>
+                <span
+                  className="truncate rounded-md px-2 py-0.5 text-[9px]"
+                  style={{
+                    background: 'var(--bg)',
+                    color: 'var(--text-secondary)',
+                    border: '1px solid var(--border-light)',
+                    fontFamily: 'monospace',
+                  }}
+                >
                   {src}
                 </span>
                 {ov && (
-                  <span className="flex shrink-0 items-center gap-0.5 rounded px-1.5 py-0.5 text-[9px] font-semibold" style={{ background: 'var(--amber-bg)', color: 'var(--amber)' }}>
-                    <AlertTriangle size={9} /> Override
+                  <span
+                    className="flex shrink-0 items-center gap-0.5 rounded-md px-2 py-0.5 text-[9px] font-semibold"
+                    style={{ background: 'var(--amber-bg)', color: 'var(--amber)' }}
+                  >
+                    <AlertTriangle size={9} />
+                    Override
                   </span>
                 )}
               </div>
