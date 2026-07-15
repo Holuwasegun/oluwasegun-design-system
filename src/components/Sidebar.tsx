@@ -16,6 +16,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import {
+  Dashboard as DashboardIcon,
   Palette as PaletteIcon,
   TextFields as TextFieldsIcon,
   SpaceBar as SpaceBarIcon,
@@ -34,6 +35,7 @@ const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 64;
 
 const navItems = [
+  { label: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
   { label: 'Color', icon: <PaletteIcon />, href: '/color' },
   { label: 'Typography', icon: <TextFieldsIcon />, href: '/typography' },
   { label: 'Spacing', icon: <SpaceBarIcon />, href: '/spacing' },

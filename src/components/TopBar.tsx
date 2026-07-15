@@ -27,6 +27,7 @@ import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
 
 const pageTitles: Record<string, string> = {
+  "/dashboard": "Dashboard",
   "/color": "Color",
   "/typography": "Typography",
   "/spacing": "Spacing",
