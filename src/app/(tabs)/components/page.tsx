@@ -18,375 +18,623 @@ import {
   Stack,
   Tabs,
   Tab,
+  Avatar,
+  IconButton,
+  Badge,
+  Switch,
+  FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  LinearProgress,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineIcon from '@mui/icons-material/Delete';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import ShareIcon from '@mui/icons-material/Share';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import InfoIcon from '@mui/icons-material/Info';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import ErrorIcon from '@mui/icons-material/Error';
+import ErrorOutlineIcon from '@mui/icons-material/Error';
 import CloseIcon from '@mui/icons-material/Close';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import TokenIcon from '@mui/icons-material/Token';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import PersonOutlineIcon from '@mui/icons-material/Person';
+import PaletteIcon from '@mui/icons-material/Palette';
 import SmartButtonIcon from '@mui/icons-material/SmartButton';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 import { useThemeStore } from '@/store';
 import { generateSchemeFromConfig } from '@/theme/scheme';
 
 const TABS = [
-  { key: 'tokens', label: 'Design Tokens', icon: <TokenIcon /> },
   { key: 'buttons', label: 'Buttons', icon: <SmartButtonIcon /> },
-  { key: 'textfields', label: 'Text Fields', icon: <TextFieldsIcon /> },
-  { key: 'cards', label: 'Cards & Panels', icon: <DashboardIcon /> },
-  { key: 'alerts', label: 'Alerts & Toasts', icon: <NotificationImportantIcon /> },
+  { key: 'forms', label: 'Forms', icon: <TextFieldsIcon /> },
+  { key: 'cards', label: 'Cards', icon: <DashboardIcon /> },
+  { key: 'feedback', label: 'Feedback', icon: <NotificationsIcon /> },
 ] as const;
 
 type TabKey = (typeof TABS)[number]['key'];
 
-function ColorSwatch({ label, color }: { label: string; color: string }) {
-  return (
-    <Stack sx={{ alignItems: 'center', gap: 0.5 }}>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          borderRadius: 1.5,
-          bgcolor: color,
-          border: '1px solid',
-          borderColor: 'divider',
-        }}
-      />
-      <Typography variant="caption" sx={{ fontWeight: 500 }}>
-        {label}
-      </Typography>
-      <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.65rem' }}>
-        {color}
-      </Typography>
-    </Stack>
-  );
-}
+/* ─── Shared ─── */
 
-function GlossyButton({
-  children,
-  variant = 'contained',
-  color = 'primary',
-  disabled = false,
-  startIcon,
-}: {
-  children: React.ReactNode;
-  variant?: 'contained' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
-  disabled?: boolean;
-  startIcon?: React.ReactNode;
-}) {
-  const isContained = variant === 'contained';
-
+function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <Button
-      variant={variant}
-      color={color}
-      disabled={disabled}
-      startIcon={startIcon}
+    <Typography
+      variant="caption"
       sx={{
-        position: 'relative',
-        overflow: 'hidden',
-        textTransform: 'none',
-        ...(isContained && {
-          background: `linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%)`,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)',
-          '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25)',
-            background: `linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%)`,
-          },
-        }),
-        ...(!isContained && {
-          border: '1px solid',
-          borderColor: 'primary.main',
-        }),
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+        fontWeight: 600,
+        color: 'text.secondary',
+        mb: 1.5,
+        display: 'block',
       }}
     >
       {children}
-    </Button>
+    </Typography>
   );
 }
 
-/* ─── Tab Panels ─── */
-
-function TokensPanel() {
-  const config = useThemeStore((s) => s.config);
-  const scheme = useMemo(() => generateSchemeFromConfig(config), [config]);
-
-  const colorRoles = [
-    { label: 'Primary', color: scheme.primary },
-    { label: 'On Primary', color: scheme.onPrimary },
-    { label: 'Primary Container', color: scheme.primaryContainer },
-    { label: 'On Primary Container', color: scheme.onPrimaryContainer },
-    { label: 'Secondary', color: scheme.secondary },
-    { label: 'Secondary Container', color: scheme.secondaryContainer },
-    { label: 'Tertiary', color: scheme.tertiary },
-    { label: 'Tertiary Container', color: scheme.tertiaryContainer },
-    { label: 'Error', color: scheme.error },
-    { label: 'Error Container', color: scheme.errorContainer },
-    { label: 'Surface', color: scheme.surface },
-    { label: 'On Surface', color: scheme.onSurface },
-    { label: 'Outline', color: scheme.outline },
-    { label: 'Background', color: scheme.background },
-  ];
-
-  return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Current theme configuration rendered as live values. These drive every component below.
-      </Typography>
-
-      <Paper variant="outlined" sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, bgcolor: 'background.paper' }}>
-        <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>Color Roles</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 2, mb: 3 }}>
-          {colorRoles.map((cr) => (
-            <ColorSwatch key={cr.label} label={cr.label} color={cr.color} />
-          ))}
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: { xs: 2, md: 4 } }}>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Typography</Typography>
-            <Chip label={`Base size: ${config.typography.baseSize}px`} size="small" sx={{ mr: 1, mb: 1 }} />
-            <Chip label={`Scale ratio: ${config.typography.scale}`} size="small" sx={{ mr: 1, mb: 1 }} />
-            <Chip label="Inter / System" size="small" sx={{ mr: 1, mb: 1 }} />
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Spacing</Typography>
-            <Chip label={`Base unit: ${config.spacing.baseUnit}px`} size="small" sx={{ mr: 1, mb: 1 }} />
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Border Radius</Typography>
-            <Chip label="Default: 12px" size="small" sx={{ mr: 1, mb: 1 }} />
-            <Chip label="Small: 8px" size="small" sx={{ mr: 1, mb: 1 }} />
-            <Chip label="Large: 16px" size="small" sx={{ mr: 1, mb: 1 }} />
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Scheme Mode</Typography>
-            <Chip
-              label={config.mode === 'light' ? 'Light' : 'Dark'}
-              color={config.mode === 'light' ? 'primary' : 'secondary'}
-              size="small"
-              sx={{ mr: 1, mb: 1 }}
-            />
-          </Box>
-        </Stack>
-      </Paper>
-    </Box>
-  );
-}
+/* ─── Buttons Panel ─── */
 
 function ButtonsPanel() {
+  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
+
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Buttons with a subtle gradient overlay that adds depth and shine. Tap to interact.
-      </Typography>
-
-      <Paper variant="outlined" sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, bgcolor: 'background.paper' }}>
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Contained</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
-          <GlossyButton variant="contained">Primary</GlossyButton>
-          <GlossyButton variant="contained" color="secondary">Secondary</GlossyButton>
-          <GlossyButton variant="contained" color="error">Error</GlossyButton>
-          <GlossyButton variant="contained" color="success">Success</GlossyButton>
-          <GlossyButton variant="contained" color="warning">Warning</GlossyButton>
-          <GlossyButton variant="contained" color="info">Info</GlossyButton>
-          <GlossyButton variant="contained" disabled>Disabled</GlossyButton>
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Outlined</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
-          <GlossyButton variant="outlined">Primary</GlossyButton>
-          <GlossyButton variant="outlined" color="secondary">Secondary</GlossyButton>
-          <GlossyButton variant="outlined" color="error">Error</GlossyButton>
-          <GlossyButton variant="outlined" disabled>Disabled</GlossyButton>
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Text</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
-          <GlossyButton variant="text">Primary</GlossyButton>
-          <GlossyButton variant="text" color="secondary">Secondary</GlossyButton>
-          <GlossyButton variant="text" color="error">Error</GlossyButton>
-          <GlossyButton variant="text" disabled>Disabled</GlossyButton>
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>With Icons</Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      {/* Primary Actions */}
+      <Box>
+        <SectionLabel>Primary Actions</SectionLabel>
         <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
-          <GlossyButton variant="contained" startIcon={<SendIcon />}>Send</GlossyButton>
-          <GlossyButton variant="outlined" startIcon={<DeleteIcon />}>Delete</GlossyButton>
-          <GlossyButton variant="contained" color="secondary" startIcon={<NotificationsIcon />}>Notify</GlossyButton>
+          <Button variant="contained" startIcon={<SendIcon />} sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Send Invite
+          </Button>
+          <Button variant="contained" sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Get Started
+          </Button>
+          <Button variant="contained" disabled sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Processing...
+          </Button>
         </Stack>
-      </Paper>
+      </Box>
+
+      <Divider />
+
+      {/* Secondary Actions */}
+      <Box>
+        <SectionLabel>Secondary Actions</SectionLabel>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
+          <Button variant="outlined" startIcon={<BookmarkBorderIcon />} sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Save Draft
+          </Button>
+          <Button variant="outlined" sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Cancel
+          </Button>
+          <Button variant="text" startIcon={<ShareIcon />} sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Share
+          </Button>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* Destructive */}
+      <Box>
+        <SectionLabel>Destructive</SectionLabel>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteOutlineIcon />}
+            sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}
+          >
+            Delete Project
+          </Button>
+          <Button variant="text" color="error" sx={{ textTransform: 'none', borderRadius: 2, px: 3 }}>
+            Remove Account
+          </Button>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* Icon Only */}
+      <Box>
+        <SectionLabel>Icon Buttons</SectionLabel>
+        <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
+          <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <BookmarkBorderIcon fontSize="small" />
+          </IconButton>
+          <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <ShareIcon fontSize="small" />
+          </IconButton>
+          <IconButton color="error" sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <DeleteOutlineIcon fontSize="small" />
+          </IconButton>
+          <IconButton>
+            <MoreVertIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* FAB */}
+      <Box>
+        <SectionLabel>Floating Action Button</SectionLabel>
+        <Stack direction="row" sx={{ gap: 2, alignItems: 'center' }}>
+          <Button
+            variant="contained"
+            sx={{
+              minWidth: 56,
+              height: 56,
+              borderRadius: '16px',
+              textTransform: 'none',
+              boxShadow: `0 4px 14px ${scheme.primary}55`,
+              '&:hover': { boxShadow: `0 6px 20px ${scheme.primary}77` },
+            }}
+          >
+            <SendIcon />
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              height: 56,
+              borderRadius: '16px',
+              textTransform: 'none',
+              px: 3,
+              boxShadow: `0 4px 14px ${scheme.primary}55`,
+            }}
+          >
+            <SendIcon sx={{ mr: 1 }} />
+            Compose
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 }
 
-function TextFieldsPanel() {
+/* ─── Forms Panel ─── */
+
+function FormsPanel() {
+  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
+
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Input controls with different variants, states, and helper text.
-      </Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      {/* Signup form mock */}
+      <Box>
+        <SectionLabel>Sign Up Form</SectionLabel>
+        <Card variant="outlined" sx={{ borderRadius: 3, maxWidth: 480 }}>
+          <CardContent sx={{ p: { xs: 3, sm: 4 }, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <Box sx={{ textAlign: 'center', mb: 1 }}>
+              <Avatar
+                sx={{
+                  width: 56,
+                  height: 56,
+                  mx: 'auto',
+                  mb: 1.5,
+                  bgcolor: scheme.primaryContainer,
+                  color: scheme.onPrimaryContainer,
+                }}
+              >
+                <PersonOutlineIcon />
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>Create Account</Typography>
+              <Typography variant="body2" color="text.secondary">Start your free trial today</Typography>
+            </Box>
 
-      <Paper variant="outlined" sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, bgcolor: 'background.paper' }}>
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Variants</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 2, mb: 3 }}>
-          <TextField label="Filled" variant="filled" size="small" />
-          <TextField label="Outlined" variant="outlined" size="small" />
-          <TextField label="Standard" variant="standard" size="small" />
-        </Stack>
+            <TextField label="Full Name" variant="outlined" size="small" placeholder="Jane Cooper" fullWidth />
+            <TextField label="Email" variant="outlined" size="small" placeholder="jane@example.com" fullWidth />
+            <TextField
+              label="Password"
+              variant="outlined"
+              size="small"
+              type="password"
+              fullWidth
+              helperText="Must be at least 8 characters"
+            />
 
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>States</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 2 }}>
-          <TextField label="With Helper" helperText="Some helpful guidance" variant="outlined" size="small" />
-          <TextField label="Placeholder" placeholder="Type something..." variant="outlined" size="small" />
-          <TextField label="Error State" helperText="This field is required" variant="outlined" size="small" error />
-          <TextField label="Disabled" variant="outlined" size="small" disabled />
+            <FormControlLabel
+              control={<Switch size="small" />}
+              label={<Typography variant="body2">I agree to the Terms of Service</Typography>}
+            />
+
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ textTransform: 'none', borderRadius: 2, py: 1.25, fontWeight: 600 }}
+            >
+              Create Account
+            </Button>
+
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+              Already have an account?{' '}
+              <Typography component="span" variant="body2" sx={{ color: scheme.primary, fontWeight: 600, cursor: 'pointer' }}>
+                Sign in
+              </Typography>
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <Divider />
+
+      {/* Input states */}
+      <Box>
+        <SectionLabel>Input States</SectionLabel>
+        <Stack sx={{ gap: 2, maxWidth: 400 }}>
+          <TextField label="Default" variant="outlined" size="small" fullWidth />
+          <TextField label="With Helper" variant="outlined" size="small" helperText="Enter your workspace name" fullWidth />
+          <TextField label="Error" variant="outlined" size="small" error helperText="This name is already taken" fullWidth />
+          <TextField label="Disabled" variant="outlined" size="small" disabled fullWidth />
         </Stack>
-      </Paper>
+      </Box>
+
+      <Divider />
+
+      {/* Variants */}
+      <Box>
+        <SectionLabel>Field Variants</SectionLabel>
+        <Stack sx={{ gap: 2, maxWidth: 400 }}>
+          <TextField label="Outlined" variant="outlined" size="small" fullWidth />
+          <TextField label="Filled" variant="filled" size="small" fullWidth />
+          <TextField label="Standard" variant="standard" size="small" fullWidth />
+        </Stack>
+      </Box>
     </Box>
   );
 }
+
+/* ─── Cards Panel ─── */
 
 function CardsPanel() {
-  const config = useThemeStore((s) => s.config);
-  const scheme = useMemo(() => generateSchemeFromConfig(config), [config]);
+  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
+  const [liked, setLiked] = useState(false);
 
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Content containers with different layouts for media, stats, and info.
-      </Typography>
-
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card sx={{ height: '100%', borderRadius: 3, overflow: 'hidden' }}>
-            <Box
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      {/* Content Card */}
+      <Box>
+        <SectionLabel>Content Card</SectionLabel>
+        <Card
+          sx={{
+            borderRadius: 3,
+            maxWidth: 480,
+            overflow: 'hidden',
+            transition: 'box-shadow 0.3s, transform 0.3s',
+            '&:hover': { boxShadow: '0 8px 30px rgba(0,0,0,0.08)', transform: 'translateY(-2px)' },
+          }}
+        >
+          <Box
+            sx={{
+              height: 180,
+              background: `linear-gradient(135deg, ${scheme.primary} 0%, ${scheme.tertiary} 100%)`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+            }}
+          >
+            <Typography variant="h3" sx={{ color: '#fff', opacity: 0.4, fontWeight: 300 }}>DS</Typography>
+            <Chip
+              label="New"
+              size="small"
               sx={{
-                height: 160,
-                background: `linear-gradient(135deg, ${scheme.primary} 0%, ${scheme.tertiary} 100%)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                position: 'absolute',
+                top: 12,
+                right: 12,
+                bgcolor: 'rgba(255,255,255,0.9)',
+                color: scheme.primary,
+                fontWeight: 600,
+                fontSize: '0.7rem',
+              }}
+            />
+          </Box>
+          <CardContent sx={{ pb: 1 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+              Design System v2.0
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+              A comprehensive collection of design tokens, components, and guidelines for building consistent interfaces.
+            </Typography>
+          </CardContent>
+          <CardActions sx={{ px: 2, pb: 2, pt: 1 }}>
+            <Button size="small" variant="contained" sx={{ textTransform: 'none', borderRadius: 1.5 }}>
+              View Details
+            </Button>
+            <IconButton size="small" onClick={() => setLiked(!liked)}>
+              <Badge color="error" variant="dot" invisible={!liked}>
+                <FavoriteBorderIcon sx={{ color: liked ? 'error.main' : 'text.secondary', fontSize: 20 }} />
+              </Badge>
+            </IconButton>
+          </CardActions>
+        </Card>
+      </Box>
+
+      <Divider />
+
+      {/* Stat Card */}
+      <Box>
+        <SectionLabel>Stat Card</SectionLabel>
+        <Grid container spacing={2} sx={{ maxWidth: 600 }}>
+          {[
+            { label: 'Total Revenue', value: '$48,290', change: '+12.5%', up: true, color: scheme.primary },
+            { label: 'Active Users', value: '2,847', change: '+8.2%', up: true, color: scheme.secondary },
+            { label: 'Bounce Rate', value: '24.3%', change: '-3.1%', up: false, color: scheme.tertiary },
+          ].map((stat) => (
+            <Grid key={stat.label} size={{ xs: 12, sm: 4 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  borderRadius: 3,
+                  height: '100%',
+                  transition: 'box-shadow 0.3s',
+                  '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.06)' },
+                }}
+              >
+                <CardContent sx={{ p: 2.5 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+                    {stat.label}
+                  </Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5, mb: 0.75 }}>
+                    {stat.value}
+                  </Typography>
+                  <Chip
+                    label={stat.change}
+                    size="small"
+                    sx={{
+                      height: 22,
+                      fontSize: '0.7rem',
+                      fontWeight: 600,
+                      bgcolor: stat.up ? `${scheme.primary}15` : '#B3261E15',
+                      color: stat.up ? scheme.primary : '#B3261E',
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      <Divider />
+
+      {/* Profile Card */}
+      <Box>
+        <SectionLabel>Profile Card</SectionLabel>
+        <Card variant="outlined" sx={{ borderRadius: 3, maxWidth: 360 }}>
+          <CardContent sx={{ p: 3, textAlign: 'center' }}>
+            <Avatar
+              sx={{
+                width: 72,
+                height: 72,
+                mx: 'auto',
+                mb: 2,
+                bgcolor: scheme.primaryContainer,
+                color: scheme.onPrimaryContainer,
+                fontSize: '1.5rem',
+                fontWeight: 600,
               }}
             >
-              <Typography variant="h4" sx={{ color: '#fff', opacity: 0.6, fontWeight: 300 }}>Image</Typography>
-            </Box>
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>Media Card</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                A card with a visual header area, body text, and action buttons. Ideal for articles or product showcases.
-              </Typography>
-            </CardContent>
-            <CardActions sx={{ px: 2, pb: 2 }}>
-              <Button size="small" variant="contained">Learn More</Button>
-              <Button size="small" variant="text">Dismiss</Button>
-            </CardActions>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card sx={{ height: '100%', borderRadius: 3, bgcolor: scheme.primaryContainer }}>
-            <CardContent>
-              <Typography variant="overline" sx={{ color: scheme.onPrimaryContainer, opacity: 0.7 }}>Total Users</Typography>
-              <Typography variant="h2" sx={{ fontWeight: 700, color: scheme.onPrimaryContainer, mt: 1, mb: 1 }}>12,847</Typography>
-              <Chip label="+12.3% this month" size="small" sx={{ bgcolor: scheme.primary, color: scheme.onPrimary, fontWeight: 500 }} />
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Active users across all platforms in the current billing cycle.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card sx={{ height: '100%', borderRadius: 3, border: '1px solid', borderColor: scheme.outlineVariant, bgcolor: 'background.paper' }}>
-            <CardContent>
-              <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mb: 1.5 }}>
-                <InfoIcon sx={{ color: scheme.tertiary }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>Info Panel</Typography>
-              </Stack>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                This card uses an outlined variant style. Useful for secondary information, tips, or callouts.
-              </Typography>
-              <Chip label="Status: Active" size="small" variant="outlined" sx={{ borderColor: scheme.tertiary, color: scheme.tertiary }} />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+              OC
+            </Avatar>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Olumide Chen</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Product Designer
+            </Typography>
+            <Stack direction="row" sx={{ justifyContent: 'center', gap: 3, mb: 2 }}>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>128</Typography>
+                <Typography variant="caption" color="text.secondary">Projects</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>2.4k</Typography>
+                <Typography variant="caption" color="text.secondary">Followers</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>89</Typography>
+                <Typography variant="caption" color="text.secondary">Following</Typography>
+              </Box>
+            </Stack>
+            <Button
+              variant="outlined"
+              fullWidth
+              size="small"
+              sx={{ textTransform: 'none', borderRadius: 2 }}
+            >
+              View Profile
+            </Button>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
   );
 }
 
-function AlertsPanel({ toastOpen, setToastOpen, errorToastOpen, setErrorToastOpen }: {
-  toastOpen: boolean; setToastOpen: (v: boolean) => void;
-  errorToastOpen: boolean; setErrorToastOpen: (v: boolean) => void;
-}) {
+/* ─── Feedback Panel ─── */
+
+function FeedbackPanel() {
+  const [toastOpen, setToastOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
+
   return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Feedback components for success, info, warning, and error states.
-      </Typography>
-
-      <Paper variant="outlined" sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, bgcolor: 'background.paper' }}>
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Filled Alerts</Typography>
-        <Stack sx={{ gap: 1.5, mb: 3 }}>
-          <Alert severity="success" icon={<CheckCircleIcon />} sx={{ borderRadius: 2 }}>Operation completed successfully.</Alert>
-          <Alert severity="info" icon={<InfoIcon />} sx={{ borderRadius: 2 }}>Here is some helpful information you should know.</Alert>
-          <Alert severity="warning" icon={<WarningAmberIcon />} sx={{ borderRadius: 2 }}>Please review before proceeding.</Alert>
-          <Alert severity="error" icon={<ErrorIcon />} sx={{ borderRadius: 2 }}>Something went wrong. Please try again.</Alert>
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Outlined Alerts</Typography>
-        <Stack sx={{ gap: 1.5, mb: 3 }}>
-          <Alert severity="success" variant="outlined" icon={<CheckCircleIcon />} sx={{ borderRadius: 2 }}>Your changes have been saved.</Alert>
-          <Alert severity="info" variant="outlined" icon={<InfoIcon />} sx={{ borderRadius: 2 }}>A new version is available for download.</Alert>
-          <Alert severity="warning" variant="outlined" icon={<WarningAmberIcon />} sx={{ borderRadius: 2 }}>Your session will expire in 5 minutes.</Alert>
-          <Alert severity="error" variant="outlined" icon={<ErrorIcon />} sx={{ borderRadius: 2 }}>Access denied. Insufficient permissions.</Alert>
-        </Stack>
-
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>Toast / Snackbar</Typography>
-        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
-          <Button variant="outlined" size="small" onClick={() => setToastOpen(true)}>Success Toast</Button>
-          <Button variant="outlined" size="small" onClick={() => setErrorToastOpen(true)}>Error Toast</Button>
-        </Stack>
-
-        <Stack sx={{ mt: 2, gap: 1.5 }}>
-          <Alert severity="success" icon={<CheckCircleIcon />} action={<CloseIcon sx={{ cursor: 'pointer', opacity: 0.6 }} />} sx={{ borderRadius: 2, boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}>
-            File uploaded successfully!
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      {/* Alerts */}
+      <Box>
+        <SectionLabel>Alerts</SectionLabel>
+        <Stack sx={{ gap: 1.5, maxWidth: 520 }}>
+          <Alert
+            severity="success"
+            icon={<CheckCircleIcon />}
+            sx={{ borderRadius: 2 }}
+          >
+            Your changes have been saved successfully.
           </Alert>
-          <Alert severity="error" icon={<ErrorIcon />} action={<CloseIcon sx={{ cursor: 'pointer', opacity: 0.6 }} />} sx={{ borderRadius: 2, boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}>
-            Failed to save changes.
+          <Alert
+            severity="info"
+            icon={<InfoOutlinedIcon />}
+            sx={{ borderRadius: 2 }}
+          >
+            A new version is available. Refresh to update.
+          </Alert>
+          <Alert
+            severity="warning"
+            icon={<WarningAmberIcon />}
+            sx={{ borderRadius: 2 }}
+          >
+            Your session will expire in 5 minutes.
+          </Alert>
+          <Alert
+            severity="error"
+            icon={<ErrorOutlineIcon />}
+            sx={{ borderRadius: 2 }}
+          >
+            Unable to process your payment. Please try again.
           </Alert>
         </Stack>
-      </Paper>
+      </Box>
 
-      <Snackbar open={toastOpen} autoHideDuration={3000} onClose={() => setToastOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert onClose={() => setToastOpen(false)} severity="success" variant="filled" sx={{ width: '100%', borderRadius: 2 }}>
-          Changes saved successfully!
+      <Divider />
+
+      {/* Inline Feedback */}
+      <Box>
+        <SectionLabel>Inline Feedback</SectionLabel>
+        <Stack sx={{ gap: 1.5, maxWidth: 520 }}>
+          <Alert
+            severity="success"
+            variant="outlined"
+            icon={<CheckCircleIcon />}
+            action={<IconButton size="small" aria-label="close"><CloseIcon fontSize="inherit" /></IconButton>}
+            sx={{ borderRadius: 2 }}
+          >
+            File uploaded — 3 items ready for review.
+          </Alert>
+          <Alert
+            severity="error"
+            variant="outlined"
+            icon={<ErrorOutlineIcon />}
+            action={<Button size="small" color="inherit" sx={{ textTransform: 'none' }}>Retry</Button>}
+            sx={{ borderRadius: 2 }}
+          >
+            Network error — check your connection.
+          </Alert>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* Toast Trigger */}
+      <Box>
+        <SectionLabel>Toast Notification</SectionLabel>
+        <Stack direction="row" sx={{ gap: 1.5 }}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setToastOpen(true)}
+            sx={{ textTransform: 'none', borderRadius: 2 }}
+          >
+            Show Toast
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setDialogOpen(true)}
+            sx={{ textTransform: 'none', borderRadius: 2 }}
+          >
+            Show Dialog
+          </Button>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* Progress */}
+      <Box>
+        <SectionLabel>Progress Indicators</SectionLabel>
+        <Stack sx={{ gap: 2.5, maxWidth: 400 }}>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.75 }}>
+              <Typography variant="body2" sx={{ fontWeight: 500 }}>Uploading...</Typography>
+              <Typography variant="body2" color="text.secondary">72%</Typography>
+            </Box>
+            <LinearProgress variant="determinate" value={72} sx={{ borderRadius: 2, height: 6 }} />
+          </Box>
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.75 }}>
+              <Typography variant="body2" sx={{ fontWeight: 500 }}>Processing</Typography>
+              <Typography variant="body2" color="text.secondary">34%</Typography>
+            </Box>
+            <LinearProgress variant="determinate" value={34} color="secondary" sx={{ borderRadius: 2, height: 6 }} />
+          </Box>
+        </Stack>
+      </Box>
+
+      <Divider />
+
+      {/* Snackbar Demo */}
+      <Box>
+        <SectionLabel>Live Toast</SectionLabel>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+          Click to see a real toast notification appear.
+        </Typography>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => setToastOpen(true)}
+          sx={{ textTransform: 'none', borderRadius: 2 }}
+        >
+          Trigger Toast
+        </Button>
+      </Box>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={3000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity="success"
+          variant="filled"
+          icon={<CheckCircleIcon />}
+          sx={{ width: '100%', borderRadius: 2 }}
+        >
+          Changes saved successfully.
         </Alert>
       </Snackbar>
-      <Snackbar open={errorToastOpen} autoHideDuration={4000} onClose={() => setErrorToastOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert onClose={() => setErrorToastOpen(false)} severity="error" variant="filled" sx={{ width: '100%', borderRadius: 2 }}>
-          Unable to process your request.
-        </Alert>
-      </Snackbar>
+
+      {/* Dialog */}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 600 }}>Confirm Action</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            Are you sure you want to delete this project? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)} sx={{ textTransform: 'none' }}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => setDialogOpen(false)}
+            sx={{ textTransform: 'none' }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
@@ -396,33 +644,29 @@ function AlertsPanel({ toastOpen, setToastOpen, errorToastOpen, setErrorToastOpe
 export default function ComponentsPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [activeTab, setActiveTab] = useState<TabKey>('tokens');
-  const [toastOpen, setToastOpen] = useState(false);
-  const [errorToastOpen, setErrorToastOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('buttons');
 
   const renderPanel = () => {
     switch (activeTab) {
-      case 'tokens': return <TokensPanel />;
       case 'buttons': return <ButtonsPanel />;
-      case 'textfields': return <TextFieldsPanel />;
+      case 'forms': return <FormsPanel />;
       case 'cards': return <CardsPanel />;
-      case 'alerts': return <AlertsPanel toastOpen={toastOpen} setToastOpen={setToastOpen} errorToastOpen={errorToastOpen} setErrorToastOpen={setErrorToastOpen} />;
+      case 'feedback': return <FeedbackPanel />;
     }
   };
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
           Components
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Material Design 3 component showcase with live theme tokens
+          Live, theme-aware components — styled with your current design tokens
         </Typography>
       </Box>
 
       {isMobile ? (
-        /* ── Mobile: horizontal scrollable tabs ── */
         <Box sx={{ mb: 3 }}>
           <Tabs
             value={activeTab}
@@ -431,27 +675,23 @@ export default function ComponentsPage() {
             scrollButtons="auto"
             allowScrollButtonsMobile
             sx={{
-              '& .MuiTab-root': { minHeight: 48, textTransform: 'none', fontWeight: 500, fontSize: '0.85rem' },
+              mb: 2,
+              '& .MuiTab-root': { minHeight: 44, textTransform: 'none', fontWeight: 500, fontSize: '0.85rem' },
             }}
           >
             {TABS.map((t) => (
               <Tab key={t.key} value={t.key} label={t.label} icon={t.icon} iconPosition="start" />
             ))}
           </Tabs>
-          <Divider />
         </Box>
       ) : (
-        /* ── Desktop: sidebar tabs layout ── */
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-          <Paper
-            variant="outlined"
+        <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
+          <Box
             sx={{
-              width: 220,
+              width: 200,
               flexShrink: 0,
-              borderRadius: 3,
               position: 'sticky',
               top: 80,
-              bgcolor: 'background.paper',
             }}
           >
             <Tabs
@@ -459,16 +699,22 @@ export default function ComponentsPage() {
               onChange={(_, v) => setActiveTab(v)}
               orientation="vertical"
               sx={{
-                '& .MuiTabs-indicator': { left: 0, width: 3, borderRadius: '0 3px 3px 0' },
+                '& .MuiTabs-indicator': {
+                  left: 0,
+                  width: 2.5,
+                  borderRadius: '0 2px 2px 0',
+                },
                 '& .MuiTab-root': {
                   textTransform: 'none',
                   fontWeight: 500,
                   fontSize: '0.875rem',
-                  minHeight: 48,
+                  minHeight: 44,
                   alignItems: 'flex-start',
                   justifyContent: 'flex-start',
-                  px: 2.5,
-                  gap: 1.5,
+                  px: 2,
+                  gap: 1.25,
+                  color: 'text.secondary',
+                  '&.Mui-selected': { color: 'text.primary' },
                 },
               }}
             >
@@ -476,15 +722,17 @@ export default function ComponentsPage() {
                 <Tab key={t.key} value={t.key} label={t.label} icon={t.icon} iconPosition="start" />
               ))}
             </Tabs>
-          </Paper>
+          </Box>
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box sx={{ flex: 1, minWidth: 0, maxWidth: 640 }}>
             {renderPanel()}
           </Box>
         </Box>
       )}
 
-      {isMobile && renderPanel()}
+      {isMobile && (
+        <Box sx={{ maxWidth: 640 }}>{renderPanel()}</Box>
+      )}
     </Box>
   );
 }
