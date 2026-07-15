@@ -17,12 +17,14 @@ import AuthLoginTemplate from '@/components/preview/AuthLoginTemplate';
 import SaaSDashboardTemplate from '@/components/preview/SaaSDashboardTemplate';
 import MarketingHeroTemplate from '@/components/preview/MarketingHeroTemplate';
 import EcommerceProductCard from '@/components/preview/EcommerceProductCard';
+import SocialMediaFlyerTemplate from '@/components/preview/SocialMediaFlyerTemplate';
 
 const PRESETS = [
   { key: 'auth-login', label: 'Auth Login Form', description: 'Sign-in page with hero panel, form fields, and action buttons' },
   { key: 'saas-dashboard', label: 'SaaS App Dashboard', description: 'Sidebar navigation, top bar, stat cards with theme colors' },
   { key: 'marketing-hero', label: 'Marketing Hero Page', description: 'Landing page with headline, CTA buttons, and preview card' },
   { key: 'ecommerce-card', label: 'E-commerce Product Card', description: 'Product cards with ratings, descriptions, and add-to-cart' },
+  { key: 'social-flyer', label: 'Social Media Flyer', description: 'Instagram-style posts with gradient hero, testimonial, and feature announcement' },
 ] as const;
 
 type PresetKey = (typeof PRESETS)[number]['key'];
@@ -115,6 +117,7 @@ export default function PreviewPage() {
         {selectedPreset === 'saas-dashboard' && <SaaSDashboardTemplate scheme={scheme} />}
         {selectedPreset === 'marketing-hero' && <MarketingHeroTemplate scheme={scheme} />}
         {selectedPreset === 'ecommerce-card' && <EcommerceProductCard scheme={scheme} />}
+        {selectedPreset === 'social-flyer' && <SocialMediaFlyerTemplate scheme={scheme} />}
       </Box>
 
       {/* Token Summary */}
