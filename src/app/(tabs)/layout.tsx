@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from '@/components/Sidebar';
 import TopBar from '@/components/TopBar';
 
@@ -28,9 +28,28 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
           }),
           minHeight: '100vh',
           backgroundColor: theme.palette.background.default,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        {children}
+        <Box sx={{ flex: 1 }}>{children}</Box>
+
+        <Divider sx={{ mx: { xs: 2, md: 4 } }} />
+        <Box
+          component="footer"
+          sx={{
+            px: { xs: 2, md: 4 },
+            py: 3,
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.8, display: 'block' }}>
+            &copy; 2026 Oluwasegun. All rights reserved.
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.8, display: 'block' }}>
+            Built with Next.js, React, Material UI (MUI), Emotion, Zustand, TypeScript &amp; Tailwind CSS
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
