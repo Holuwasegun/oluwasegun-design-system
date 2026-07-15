@@ -1,9 +1,14 @@
-import { Box, Container, Typography, Button, CssBaseline, Stack } from '@mui/material';
+import { useState } from 'react';
+import { Box, Container, Typography, Button, CssBaseline, Stack, Drawer, IconButton, List, ListItem, ListItemText } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { ColorScheme } from '@/theme/scheme';
 
 export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme }) {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   const theme = createTheme({
     palette: {
       primary: { main: scheme.primary },
@@ -17,29 +22,68 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
     <ThemeProvider theme={theme}>
       <Box sx={{ minHeight: '70vh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column', borderRadius: 4, overflow: 'hidden' }}>
         <CssBaseline />
+
+        {/* Header */}
         <Box component="header" sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: scheme.surfaceContainerLowest }}>
           <Typography variant="h6" sx={{ fontWeight: 800, color: scheme.primary }}>BrandName</Typography>
+
+          {/* Desktop nav */}
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }} disableRipple>Features</Button>
             <Button color="inherit" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }} disableRipple>Pricing</Button>
-            <Button variant="contained" sx={{ fontWeight: 700, borderRadius: 20 }} disableRipple>Get Started</Button>
+            <Button variant="contained" sx={{ fontWeight: 700, borderRadius: 20, display: { xs: 'none', sm: 'inline-flex' } }} disableRipple>Get Started</Button>
           </Stack>
+
+          {/* Mobile hamburger */}
+          <IconButton
+            sx={{ display: { xs: 'inline-flex', sm: 'none' }, minWidth: 44, minHeight: 44 }}
+            onClick={() => setMobileNavOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
         </Box>
 
-        <Container maxWidth="lg" sx={{ my: 8, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 6, alignItems: 'center', width: '100%' }}>
+        {/* Mobile nav drawer */}
+        <Drawer
+          anchor="right"
+          open={mobileNavOpen}
+          onClose={() => setMobileNavOpen(false)}
+          sx={{ '& .MuiDrawer-paper': { width: 260, bgcolor: scheme.surfaceContainerLowest } }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
+            <IconButton onClick={() => setMobileNavOpen(false)} sx={{ minWidth: 44, minHeight: 44 }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List>
+            {['Features', 'Pricing'].map((item) => (
+              <ListItem key={item} onClick={() => setMobileNavOpen(false)} sx={{ cursor: 'pointer' }}>
+                <ListItemText primary={item} sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />
+              </ListItem>
+            ))}
+          </List>
+          <Box sx={{ px: 2, pb: 2 }}>
+            <Button variant="contained" fullWidth sx={{ fontWeight: 700, borderRadius: 20, py: 1.25 }} disableRipple>
+              Get Started
+            </Button>
+          </Box>
+        </Drawer>
+
+        {/* Hero */}
+        <Container maxWidth="lg" sx={{ my: { xs: 4, md: 8 }, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 4, md: 6 }, alignItems: 'center', width: '100%' }}>
             <Box sx={{ flex: 1 }}>
-              <Typography variant="h2" sx={{ fontWeight: 900, color: 'text.primary', mb: 3, lineHeight: 1.2, fontSize: { xs: '2rem', md: '3rem' } }}>
+              <Typography variant="h2" sx={{ fontWeight: 900, color: 'text.primary', mb: 3, lineHeight: 1.2, fontSize: { xs: '1.75rem', sm: '2rem', md: '3rem' } }}>
                 Build Something Amazing with Our Platform
               </Typography>
-              <Typography variant="h5" color="text.secondary" sx={{ mb: 5, lineHeight: 1.6, fontSize: { xs: '1rem', md: '1.25rem' } }}>
+              <Typography variant="h5" color="text.secondary" sx={{ mb: 5, lineHeight: 1.6, fontSize: { xs: '0.9375rem', md: '1.25rem' } }}>
                 The all-in-one solution that helps you scale your business, delight your customers, and dominate your market.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
-                <Button variant="contained" size="large" endIcon={<ArrowForwardIcon />} sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }} disableRipple>
+                <Button variant="contained" size="large" endIcon={<ArrowForwardIcon />} sx={{ py: 2, px: { xs: 3, md: 4 }, fontWeight: 700, borderRadius: 30 }} disableRipple>
                   Start Free Trial
                 </Button>
-                <Button variant="outlined" size="large" sx={{ py: 2, px: 4, fontWeight: 700, borderRadius: 30 }} disableRipple>
+                <Button variant="outlined" size="large" sx={{ py: 2, px: { xs: 3, md: 4 }, fontWeight: 700, borderRadius: 30 }} disableRipple>
                   Watch Demo
                 </Button>
               </Stack>
@@ -50,20 +94,20 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
                   p: 2,
                   borderRadius: 8,
                   overflow: 'hidden',
-                  height: { xs: 250, md: 400 },
+                  height: { xs: 200, sm: 250, md: 400 },
                   bgcolor: scheme.surfaceContainerHigh,
                   boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
                 }}
               >
                 <Box sx={{ width: '100%', height: '100%', bgcolor: scheme.primaryContainer, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Typography variant="h3" sx={{ color: scheme.onPrimaryContainer, fontWeight: 800, fontSize: { xs: '1.5rem', md: '2.5rem' } }}>Dashboard Preview</Typography>
+                  <Typography variant="h3" sx={{ color: scheme.onPrimaryContainer, fontWeight: 800, fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2.5rem' } }}>Dashboard Preview</Typography>
                 </Box>
               </Box>
             </Box>
           </Box>
         </Container>
 
-        <Box component="footer" sx={{ py: 4, bgcolor: scheme.surfaceContainerLowest, textAlign: 'center', color: 'text.secondary' }}>
+        <Box component="footer" sx={{ py: { xs: 3, md: 4 }, bgcolor: scheme.surfaceContainerLowest, textAlign: 'center', color: 'text.secondary' }}>
           <Typography variant="body2">&copy; 2026 BrandName. All rights reserved.</Typography>
         </Box>
       </Box>

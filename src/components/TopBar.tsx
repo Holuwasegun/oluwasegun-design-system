@@ -104,7 +104,7 @@ export default function TopBar() {
       >
         <Toolbar sx={{ minHeight: 64, gap: 1, px: { xs: 2, md: 3 } }}>
           {isMobile && (
-            <IconButton edge="start" onClick={toggleSidebar} sx={{ mr: 1 }}>
+            <IconButton edge="start" onClick={toggleSidebar} sx={{ mr: 1, minWidth: 44, minHeight: 44 }}>
               <MenuIcon />
             </IconButton>
           )}
@@ -185,6 +185,8 @@ export default function TopBar() {
               onClick={toggleMode}
               sx={{
                 color: 'text.secondary',
+                minWidth: 44,
+                minHeight: 44,
                 '&:hover': { color: 'text.primary' },
               }}
             >

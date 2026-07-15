@@ -61,6 +61,10 @@ const liftedShadows: Record<number, string> = {
 export default function ElevationPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
+  const handleTap = (id: string) => {
+    setHoveredCard((prev) => (prev === id ? null : id));
+  };
+
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
@@ -81,8 +85,9 @@ export default function ElevationPage() {
               <Card
                 onMouseEnter={() => setHoveredCard(`level-${level}`)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => handleTap(`level-${level}`)}
                 sx={{
-                  height: 180,
+                  height: { xs: 140, sm: 180 },
                   boxShadow: isHovered ? liftedShadows[level] : shadow,
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.3s cubic-bezier(0.2, 0, 0, 1)',
@@ -93,7 +98,7 @@ export default function ElevationPage() {
               >
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                   <Box>
-                    <Typography variant="h2" color="primary.main" sx={{ fontWeight: 700 }}>
+                    <Typography variant="h2" color="primary.main" sx={{ fontWeight: 700, fontSize: { xs: '1.75rem', sm: '2rem' } }}>
                       {level}
                     </Typography>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 0.5 }}>
@@ -111,28 +116,33 @@ export default function ElevationPage() {
       </Grid>
 
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-        Interactive Demo — Hover to Lift
+        Interactive Demo
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Hover over any card below to see it transition from its resting elevation to a lifted state.
+        Hover over any card (or tap on mobile) to see it transition from its resting elevation to a lifted state.
       </Typography>
       <Grid container spacing={3} sx={{ mb: 5 }}>
         {elevationLevels.map(({ level, shadow }) => {
-          const isHovered = hoveredCard === `demo-${level}`;
+          const id = `demo-${level}`;
+          const isHovered = hoveredCard === id;
           return (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={`demo-${level}`}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={id}>
               <Card
-                onMouseEnter={() => setHoveredCard(`demo-${level}`)}
+                onMouseEnter={() => setHoveredCard(id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => handleTap(id)}
                 sx={{
                   height: 120,
-                  boxShadow: shadow,
+                  boxShadow: isHovered ? liftedShadows[level] : shadow,
+                  transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.4s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
+                  border: isHovered ? '1px solid' : '1px solid transparent',
+                  borderColor: isHovered ? 'primary.main' : 'transparent',
                 }}
               >
                 <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography variant="body1" color={isHovered ? 'primary.main' : 'text.secondary'} sx={{ fontWeight: isHovered ? 600 : 400 }}>
                     Level {level}
                   </Typography>
                 </CardContent>

@@ -111,7 +111,7 @@ export default function SpacingPage() {
       <Card variant="outlined" sx={{ mb: 4 }}>
         <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } } }}>
           <Box sx={{ overflowX: 'auto' }}>
-            <Stack spacing={1} sx={{ minWidth: { xs: 480, sm: 560 } }}>
+            <Stack spacing={1}>
               {spacingScale.map(({ label, value, px }, i) => {
                 const barWidth = maxPx > 0 ? Math.max((px / maxPx) * 100, 0.5) : 0;
                 const opacity = 0.35 + (i / (spacingScale.length - 1)) * 0.55;
@@ -183,7 +183,7 @@ export default function SpacingPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: `repeat(${GRID_COLUMNS}, 1fr)`,
+              gridTemplateColumns: { xs: `repeat(4, 1fr)`, sm: `repeat(${GRID_COLUMNS}, 1fr)` },
               gap: `${baseUnit}px`,
             }}
           >
@@ -194,8 +194,8 @@ export default function SpacingPage() {
                   bgcolor: 'primary.main',
                   opacity: 0.15,
                   borderRadius: 1,
-                  height: { xs: 48, sm: 64 },
-                  display: 'flex',
+                  height: { xs: 40, sm: 64 },
+                  display: { xs: i < 4 ? 'flex' : 'none', sm: 'flex' },
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}

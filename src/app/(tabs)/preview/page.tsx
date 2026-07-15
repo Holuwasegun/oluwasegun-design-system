@@ -83,7 +83,7 @@ export default function PreviewPage() {
           </Select>
         </FormControl>
 
-        <Divider orientation="vertical" flexItem />
+        <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
 
         <Box sx={{ flex: 1 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>

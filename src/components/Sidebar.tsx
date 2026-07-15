@@ -124,7 +124,7 @@ export default function Sidebar() {
                 onClick={() => isMobile && setSidebarOpen(false)}
                 sx={{
                   borderRadius: 2,
-                  minHeight: 42,
+                  minHeight: 44,
                   justifyContent: sidebarOpen ? 'initial' : 'center',
                   px: sidebarOpen ? 2 : 1.5,
                   position: 'relative',

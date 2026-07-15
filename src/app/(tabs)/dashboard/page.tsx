@@ -85,10 +85,10 @@ export default function DashboardPage() {
           }}
         />
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, letterSpacing: '-0.02em' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, letterSpacing: '-0.02em', fontSize: { xs: '1.375rem', md: '1.5rem' } }}>
             Oluwasegun Design System
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.6 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.6, fontSize: { xs: '0.9375rem', md: '1rem' } }}>
             Material Design 3 tokens, scales, and components — all configurable and exportable
           </Typography>
         </Box>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
               }}
             >
               <CardContent sx={{ p: 2, "&:last-child": { pb: 2 }, textAlign: "center" }}>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.625rem' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: { xs: '0.6875rem', md: '0.75rem' } }}>
                   {stat.label}
                 </Typography>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: stat.color, letterSpacing: '-0.01em' }}>
@@ -204,7 +204,7 @@ export default function DashboardPage() {
               <Box sx={{ display: "flex", gap: 0.5, mb: 1 }}>
                 {["surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"].map((key) => (
                   <Box key={key} sx={{ flex: 1, height: 44, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                    <Typography sx={{ fontSize: { xs: "0.375rem", sm: "0.4375rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap", fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: { xs: "0.5rem", sm: "0.5625rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap", fontWeight: 500 }}>
                       {key.replace("surfaceContainer", "SC")}
                     </Typography>
                   </Box>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
               <Box sx={{ display: "flex", gap: 0.5 }}>
                 {["primary", "secondary", "tertiary", "error"].map((key) => (
                   <Box key={key} sx={{ flex: 1, height: 36, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Typography sx={{ fontSize: "0.5rem", color: scheme[`on${key.charAt(0).toUpperCase() + key.slice(1)}` as keyof ColorScheme] ?? "#fff", fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: "0.625rem", color: scheme[`on${key.charAt(0).toUpperCase() + key.slice(1)}` as keyof ColorScheme] ?? "#fff", fontWeight: 600 }}>
                       {key}
                     </Typography>
                   </Box>

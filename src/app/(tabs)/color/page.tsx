@@ -139,12 +139,13 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
       </Box>
       <Box
         sx={{
-          display: "flex",
+          display: { xs: "grid", sm: "flex" },
+          gridTemplateColumns: { xs: "repeat(auto-fill, minmax(40px, 1fr))", sm: "none" },
           borderRadius: 2,
-          overflow: "auto",
+          overflow: { xs: "visible", sm: "auto" },
           border: "1px solid",
           borderColor: "divider",
-          gap: '1px',
+          gap: { xs: 0, sm: 0 },
           bgcolor: 'divider',
           "&::-webkit-scrollbar": { height: 4 },
           "&::-webkit-scrollbar-thumb": { bgcolor: "action.hover", borderRadius: 2 },
@@ -166,8 +167,8 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
           >
             <Box
               sx={{
-                flex: "0 0 auto",
-                width: { xs: 32, sm: 40 },
+                flex: { xs: "auto", sm: "0 0 auto" },
+                width: { xs: "auto", sm: 40 },
                 height: { xs: 40, sm: 56 },
                 bgcolor: palette[tone],
                 display: "flex",
@@ -183,7 +184,7 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
                 sx={{
                   color: getTextColor(palette[tone]),
                   fontWeight: tone === 40 || tone === 80 ? 700 : 400,
-                  fontSize: { xs: "0.6rem", sm: "0.7rem" },
+                  fontSize: { xs: "0.65rem", sm: "0.7rem" },
                   userSelect: "none",
                 }}
               >
@@ -297,7 +298,7 @@ function ColorRoleCard({ label, hex, onClick }: { label: string; hex: string; on
         <Typography variant="caption" sx={{ fontWeight: 600, display: "block", lineHeight: 1.2 }}>
           {formatName(label)}
         </Typography>
-        <Typography variant="caption" sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.6rem" }}>
+        <Typography variant="caption" sx={{ fontFamily: "monospace", color: "text.secondary", fontSize: "0.6875rem" }}>
           {hex}
         </Typography>
       </Box>

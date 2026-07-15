@@ -18,6 +18,8 @@ import {
   Typography,
   Divider,
   Tooltip,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   Folder as FolderIcon,
@@ -34,6 +36,8 @@ interface ProjectManagerProps {
 }
 
 export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { currentProjectId } = useThemeStore();
   const {
     projects,
@@ -82,17 +86,24 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      fullScreen={isMobile}
+      sx={isMobile ? {} : { '& .MuiDialog-paper': { borderRadius: 3 } }}
+    >
+      <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: isMobile ? 2 : 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
           Projects
         </Typography>
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon fontSize="small" />
+        <IconButton onClick={onClose} sx={{ minWidth: 44, minHeight: 44 }}>
+          <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ px: isMobile ? 2 : 3 }}>
         {/* Create new project */}
         <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
           New Project
@@ -106,7 +117,7 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             fullWidth
           />
-          <Button variant="contained" onClick={handleCreate} disabled={!newName.trim()} sx={{ minWidth: 100 }}>
+          <Button variant="contained" onClick={handleCreate} disabled={!newName.trim()} sx={{ minWidth: { xs: 80, sm: 100 }, textTransform: 'none' }}>
             Create
           </Button>
         </Box>
@@ -116,11 +127,11 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
         {/* Save / Save As */}
         <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
           {currentProjectId ? (
-            <Button variant="outlined" onClick={handleSave} sx={{ flex: 1 }}>
+            <Button variant="outlined" onClick={handleSave} sx={{ flex: 1, textTransform: 'none' }}>
               Save "{currentProject?.name}"
             </Button>
           ) : (
-            <Button variant="outlined" onClick={() => setShowSaveAs(true)} sx={{ flex: 1 }}>
+            <Button variant="outlined" onClick={() => setShowSaveAs(true)} sx={{ flex: 1, textTransform: 'none' }}>
               Save Current as Project
             </Button>
           )}
@@ -137,10 +148,10 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
               fullWidth
               autoFocus
             />
-            <Button variant="contained" onClick={handleSaveAs} disabled={!saveAsName.trim()}>
+            <Button variant="contained" onClick={handleSaveAs} disabled={!saveAsName.trim()} sx={{ textTransform: 'none' }}>
               Save
             </Button>
-            <Button onClick={() => setShowSaveAs(false)}>Cancel</Button>
+            <Button onClick={() => setShowSaveAs(false)} sx={{ textTransform: 'none' }}>Cancel</Button>
           </Box>
         )}
 
@@ -167,29 +178,29 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
                   <Box sx={{ display: "flex", gap: 0.5 }}>
                     {editingId === project.id ? (
                       <>
-                        <IconButton size="small" onClick={() => handleRename(project.id)}>
-                          <CheckIcon fontSize="small" />
+                        <IconButton onClick={() => handleRename(project.id)} sx={{ minWidth: 44, minHeight: 44 }}>
+                          <CheckIcon />
                         </IconButton>
-                        <IconButton size="small" onClick={() => setEditingId(null)}>
-                          <CloseIcon fontSize="small" />
+                        <IconButton onClick={() => setEditingId(null)} sx={{ minWidth: 44, minHeight: 44 }}>
+                          <CloseIcon />
                         </IconButton>
                       </>
                     ) : (
                       <>
                         <Tooltip title="Rename">
                           <IconButton
-                            size="small"
                             onClick={() => {
                               setEditingId(project.id);
                               setEditName(project.name);
                             }}
+                            sx={{ minWidth: 44, minHeight: 44 }}
                           >
-                            <EditIcon fontSize="small" />
+                            <EditIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                          <IconButton size="small" onClick={() => deleteProject(project.id)}>
-                            <DeleteIcon fontSize="small" />
+                          <IconButton onClick={() => deleteProject(project.id)} sx={{ minWidth: 44, minHeight: 44 }}>
+                            <DeleteIcon />
                           </IconButton>
                         </Tooltip>
                       </>
@@ -203,7 +214,7 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
                     loadProject(project.id);
                     onClose();
                   }}
-                  sx={{ borderRadius: 1 }}
+                  sx={{ borderRadius: 1, minHeight: 48 }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
                     <FolderIcon color={project.id === currentProjectId ? "primary" : "inherit"} />
@@ -235,8 +246,8 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
         )}
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+      <DialogActions sx={{ px: isMobile ? 2 : 3 }}>
+        <Button onClick={onClose} sx={{ textTransform: 'none', minWidth: 44, minHeight: 44 }}>Close</Button>
       </DialogActions>
     </Dialog>
   );
