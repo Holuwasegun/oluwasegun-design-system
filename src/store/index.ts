@@ -3,8 +3,9 @@ import { persist } from "zustand/middleware";
 import {
   type ThemeConfig,
   type SchemeMode,
+  type TypographyScale,
+  type SpacingConfig,
   DEFAULT_THEME_CONFIG,
-  DEFAULT_KEY_COLORS,
 } from "@/theme/scheme";
 
 // ---------- Project ----------
@@ -29,6 +30,8 @@ interface ThemeStore {
   removeKeyColor: (key: string) => void;
   setMode: (mode: SchemeMode) => void;
   toggleMode: () => void;
+  setTypography: (typography: Partial<TypographyScale>) => void;
+  setSpacing: (spacing: Partial<SpacingConfig>) => void;
   resetConfig: () => void;
   exportConfig: () => string;
   importConfig: (json: string) => boolean;
@@ -73,6 +76,22 @@ export const useThemeStore = create<ThemeStore>()(
           },
         })),
 
+      setTypography: (typography) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            typography: { ...state.config.typography, ...typography },
+          },
+        })),
+
+      setSpacing: (spacing) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            spacing: { ...state.config.spacing, ...spacing },
+          },
+        })),
+
       resetConfig: () =>
         set({
           config: { ...DEFAULT_THEME_CONFIG },
@@ -85,7 +104,14 @@ export const useThemeStore = create<ThemeStore>()(
         try {
           const parsed = JSON.parse(json) as ThemeConfig;
           if (parsed.keyColors && typeof parsed.mode === "string") {
-            set({ config: parsed, currentProjectId: null });
+            const merged: ThemeConfig = {
+              ...DEFAULT_THEME_CONFIG,
+              ...parsed,
+              keyColors: parsed.keyColors,
+              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography },
+              spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing },
+            };
+            set({ config: merged, currentProjectId: null });
             return true;
           }
           return false;

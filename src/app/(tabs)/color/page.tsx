@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -16,6 +16,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Slider,
+  Chip,
 } from "@mui/material";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -33,6 +35,37 @@ import {
   UI_TONE_LEVELS,
   type TonalPalette,
 } from "@/theme/tonal-palette";
+
+// ---------- HSL Utilities ----------
+function hexToHsl(hex: string): { h: number; s: number; l: number } {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (d !== 0) {
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+    else if (max === g) h = ((b - r) / d + 2) / 6;
+    else h = ((r - g) / d + 4) / 6;
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100; l /= 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; }
+  else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; }
+  else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+  const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, "0").toUpperCase();
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
 
 const SCHEME_GROUPS = [
   {
@@ -156,19 +189,21 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
 }
 
 // ---------- Key Color Picker ----------
-function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault }: {
+function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault, onColorClick }: {
   label: string;
   description: string;
   value: string;
   onChange: (hex: string) => void;
   onRemove?: () => void;
   isDefault: boolean;
+  onColorClick?: () => void;
 }) {
   return (
     <Card variant="outlined" sx={{ height: "100%" }}>
       <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
           <Box
+            onClick={onColorClick}
             sx={{
               width: 40,
               height: 40,
@@ -177,6 +212,9 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               border: "2px solid",
               borderColor: "divider",
               flexShrink: 0,
+              cursor: "pointer",
+              transition: "transform 0.15s, box-shadow 0.15s",
+              "&:hover": { transform: "scale(1.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" },
             }}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -222,18 +260,24 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
 }
 
 // ---------- Color Role Card ----------
-function ColorRoleCard({ label, hex }: { label: string; hex: string }) {
+function ColorRoleCard({ label, hex, onClick }: { label: string; hex: string; onClick?: () => void }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
+    <Box
+      onClick={onClick}
+      sx={{
+        display: "flex", alignItems: "center", gap: 1, mb: 0.5,
+        cursor: onClick ? "pointer" : "default",
+        borderRadius: 1,
+        p: 0.5,
+        mx: -0.5,
+        transition: "background-color 0.15s",
+        "&:hover": onClick ? { bgcolor: "action.hover" } : {},
+      }}
+    >
       <Box
         sx={{
-          width: 32,
-          height: 32,
-          borderRadius: 1,
-          bgcolor: hex,
-          border: "1px solid",
-          borderColor: "divider",
-          flexShrink: 0,
+          width: 32, height: 32, borderRadius: 1, bgcolor: hex,
+          border: "1px solid", borderColor: "divider", flexShrink: 0,
         }}
       />
       <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -245,6 +289,146 @@ function ColorRoleCard({ label, hex }: { label: string; hex: string }) {
         </Typography>
       </Box>
     </Box>
+  );
+}
+
+// ---------- HSL Detail Dialog ----------
+function HslDetailDialog({ open, hex, onClose, onChange }: {
+  open: boolean;
+  hex: string;
+  onClose: () => void;
+  onChange: (hex: string) => void;
+}) {
+  const hsl = hexToHsl(hex);
+  const [localH, setLocalH] = useState(hsl.h);
+  const [localS, setLocalS] = useState(hsl.s);
+  const [localL] = useState(hsl.l);
+  const [hexInput, setHexInput] = useState(hex);
+
+  const updateFromHsl = useCallback((h: number, s: number, l: number) => {
+    const newHex = hslToHex(h, s, l);
+    setHexInput(newHex);
+    onChange(newHex);
+  }, [onChange]);
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, fontWeight: 600 }}>
+        <Box sx={{ width: 28, height: 28, borderRadius: 1, bgcolor: hex, border: "1px solid", borderColor: "divider" }} />
+        Edit Color
+      </DialogTitle>
+      <DialogContent dividers>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {/* Hex Input */}
+          <Box>
+            <Typography variant="caption" sx={{ fontWeight: 600, mb: 1, display: "block" }}>HEX</Typography>
+            <TextField
+              size="small"
+              value={hexInput}
+              onChange={(e) => {
+                let val = e.target.value;
+                if (!val.startsWith("#")) val = "#" + val;
+                setHexInput(val.toUpperCase());
+                if (/^#[0-9A-F]{6}$/i.test(val)) {
+                  const hslNew = hexToHsl(val);
+                  setLocalH(hslNew.h);
+                  setLocalS(hslNew.s);
+                  onChange(val.toUpperCase());
+                }
+              }}
+              fullWidth
+              slotProps={{ input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const } } }}
+            />
+          </Box>
+
+          {/* HSL Sliders */}
+          <Box>
+            <Typography variant="caption" sx={{ fontWeight: 600, mb: 0.5, display: "block" }}>HSL</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+              <Chip label={`hsl(${localH}, ${localS}%, ${localL}%)`} size="small" sx={{ fontFamily: "monospace", fontSize: "0.75rem" }} />
+            </Box>
+
+            {/* Hue */}
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary">Hue</Typography>
+                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localH}°</Typography>
+              </Box>
+              <Slider
+                size="small"
+                value={localH}
+                min={0}
+                max={360}
+                onChange={(_, v) => {
+                  const val = v as number;
+                  setLocalH(val);
+                  updateFromHsl(val, localS, localL);
+                }}
+                sx={{
+                  "& .MuiSlider-track": { background: "transparent" },
+                  "& .MuiSlider-rail": {
+                    opacity: 1,
+                    background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
+                  },
+                }}
+              />
+            </Box>
+
+            {/* Saturation */}
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary">Saturation</Typography>
+                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localS}%</Typography>
+              </Box>
+              <Slider
+                size="small"
+                value={localS}
+                min={0}
+                max={100}
+                onChange={(_, v) => {
+                  const val = v as number;
+                  setLocalS(val);
+                  updateFromHsl(localH, val, localL);
+                }}
+                sx={{
+                  "& .MuiSlider-rail": {
+                    opacity: 1,
+                    background: `linear-gradient(to right, hsl(${localH}, 0%, ${localL}%), hsl(${localH}, 100%, ${localL}%))`,
+                  },
+                }}
+              />
+            </Box>
+
+            {/* Lightness */}
+            <Box>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary">Lightness</Typography>
+                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localL}%</Typography>
+              </Box>
+              <Slider
+                size="small"
+                value={localL}
+                min={0}
+                max={100}
+                disabled
+                sx={{
+                  "& .MuiSlider-rail": {
+                    opacity: 1,
+                    background: `linear-gradient(to right, hsl(${localH}, ${localS}%, 0%), hsl(${localH}, ${localS}%, 50%), hsl(${localH}, ${localS}%, 100%))`,
+                  },
+                }}
+              />
+              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: -0.5 }}>
+                Lightness is determined by the tonal palette
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Close</Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
@@ -318,6 +502,9 @@ function AddKeyColorDialog({ open, onClose, onAdd }: {
 export default function ColorPage() {
   const { config, setKeyColor, addKeyColor, removeKeyColor, resetConfig } = useThemeStore();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [hslDialog, setHslDialog] = useState<{ open: boolean; hex: string; label: string }>({
+    open: false, hex: "#000000", label: "",
+  });
 
   const scheme: ColorScheme = useMemo(() => generateSchemeFromConfig(config), [config]);
 
@@ -444,7 +631,16 @@ export default function ColorPage() {
                   {group.label}
                 </Typography>
                 {group.keys.map((key) => (
-                  <ColorRoleCard key={key} label={key} hex={scheme[key as keyof ColorScheme]} />
+                  <ColorRoleCard
+                    key={key}
+                    label={key}
+                    hex={scheme[key as keyof ColorScheme]}
+                    onClick={() => setHslDialog({
+                      open: true,
+                      hex: scheme[key as keyof ColorScheme],
+                      label: formatName(key),
+                    })}
+                  />
                 ))}
               </CardContent>
             </Card>
@@ -457,6 +653,14 @@ export default function ColorPage() {
         open={addDialogOpen}
         onClose={() => setAddDialogOpen(false)}
         onAdd={(name, color) => addKeyColor(name, color)}
+      />
+
+      {/* HSL Detail Dialog */}
+      <HslDetailDialog
+        open={hslDialog.open}
+        hex={hslDialog.hex}
+        onClose={() => setHslDialog((s) => ({ ...s, open: false }))}
+        onChange={(newHex) => setHslDialog((s) => ({ ...s, hex: newHex }))}
       />
     </Box>
   );

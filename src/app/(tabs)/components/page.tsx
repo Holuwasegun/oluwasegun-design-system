@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Button,
   Card,
@@ -9,122 +9,128 @@ import {
   Typography,
   Box,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Snackbar,
   Alert,
+  Snackbar,
   Chip,
-  Switch,
-  Checkbox,
-  FormControlLabel,
-  Fab,
-  Avatar,
-  Badge,
-  Tooltip,
-  IconButton,
   Grid,
   Divider,
   Paper,
+  Stack,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import MailIcon from '@mui/icons-material/Mail';
-import PersonIcon from '@mui/icons-material/Person';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ErrorIcon from '@mui/icons-material/Error';
 import CloseIcon from '@mui/icons-material/Close';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
-interface ComponentCardProps {
-  title: string;
-  code: string;
-  children: React.ReactNode;
+import { useThemeStore } from '@/store';
+import { generateSchemeFromConfig } from '@/theme/scheme';
+
+function SectionHeading({ title, description }: { title: string; description: string }) {
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        {title}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        {description}
+      </Typography>
+    </Box>
+  );
 }
 
-function ComponentCard({ title, code, children }: ComponentCardProps) {
-  const [copied, setCopied] = useState(false);
+function ColorSwatch({ label, color }: { label: string; color: string }) {
+  return (
+    <Stack sx={{ alignItems: 'center', gap: 0.5 }}>
+      <Box
+        sx={{
+          width: 40,
+          height: 40,
+          borderRadius: 1.5,
+          bgcolor: color,
+          border: '1px solid',
+          borderColor: 'divider',
+        }}
+      />
+      <Typography variant="caption" sx={{ fontWeight: 500 }}>
+        {label}
+      </Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace', fontSize: '0.65rem' }}>
+        {color}
+      </Typography>
+    </Stack>
+  );
+}
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+function GlossyButton({
+  children,
+  variant = 'contained',
+  color = 'primary',
+  disabled = false,
+  startIcon,
+}: {
+  children: React.ReactNode;
+  variant?: 'contained' | 'outlined' | 'text';
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  disabled?: boolean;
+  startIcon?: React.ReactNode;
+}) {
+  const isContained = variant === 'contained';
 
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-          {title}
-        </Typography>
-        <Paper
-          variant="outlined"
-          sx={{
-            p: 3,
-            mb: 2,
-            bgcolor: 'grey.50',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 2,
-            alignItems: 'center',
-            minHeight: 80,
-          }}
-        >
-          {children}
-        </Paper>
-        <Box sx={{ position: 'relative' }}>
-          <Box
-            sx={{
-              bgcolor: 'grey.900',
-              color: 'grey.300',
-              p: 2,
-              borderRadius: 1,
-              overflow: 'auto',
-              maxHeight: 200,
-            }}
-          >
-            <IconButton
-              size="small"
-              onClick={handleCopy}
-              sx={{
-                position: 'absolute',
-                top: 8,
-                right: 8,
-                color: 'grey.400',
-                '&:hover': { color: 'white' },
-              }}
-            >
-              {copied ? (
-                <Typography variant="caption" sx={{ color: 'success.light' }}>
-                  Copied!
-                </Typography>
-              ) : (
-                <ContentCopyIcon fontSize="small" />
-              )}
-            </IconButton>
-            <pre style={{ margin: 0, fontFamily: 'monospace', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>
-              {code}
-            </pre>
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
+    <Button
+      variant={variant}
+      color={color}
+      disabled={disabled}
+      startIcon={startIcon}
+      sx={{
+        position: 'relative',
+        overflow: 'hidden',
+        textTransform: 'none',
+        ...(isContained && {
+          background: `linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%)`,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25)',
+            background: `linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%)`,
+          },
+        }),
+        ...(!isContained && {
+          border: '1px solid',
+          borderColor: 'primary.main',
+        }),
+      }}
+    >
+      {children}
+    </Button>
   );
 }
 
 export default function ComponentsPage() {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [selectValue, setSelectValue] = useState('1');
-  const [switchChecked, setSwitchChecked] = useState(true);
-  const [checkboxChecked, setCheckboxChecked] = useState(true);
+  const config = useThemeStore((s) => s.config);
+  const scheme = useMemo(() => generateSchemeFromConfig(config), [config]);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [errorToastOpen, setErrorToastOpen] = useState(false);
+
+  const colorRoles = [
+    { label: 'Primary', color: scheme.primary },
+    { label: 'On Primary', color: scheme.onPrimary },
+    { label: 'Primary Container', color: scheme.primaryContainer },
+    { label: 'On Primary Container', color: scheme.onPrimaryContainer },
+    { label: 'Secondary', color: scheme.secondary },
+    { label: 'Secondary Container', color: scheme.secondaryContainer },
+    { label: 'Tertiary', color: scheme.tertiary },
+    { label: 'Tertiary Container', color: scheme.tertiaryContainer },
+    { label: 'Error', color: scheme.error },
+    { label: 'Error Container', color: scheme.errorContainer },
+    { label: 'Surface', color: scheme.surface },
+    { label: 'On Surface', color: scheme.onSurface },
+    { label: 'Outline', color: scheme.outline },
+    { label: 'Background', color: scheme.background },
+  ];
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
@@ -133,372 +139,467 @@ export default function ComponentsPage() {
           Components
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          Interactive demonstrations of Material Design 3 components
+          Material Design 3 component showcase with live theme tokens
         </Typography>
       </Box>
 
-      <Grid container spacing={3}>
-        {/* Button */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Button"
-            code={`<Button variant="contained">Contained</Button>\n<Button variant="outlined">Outlined</Button>\n<Button variant="text">Text</Button>`}
-          >
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Button variant="contained">Contained</Button>
-              <Button variant="outlined">Outlined</Button>
-              <Button variant="text">Text</Button>
-            </Box>
-            <Divider sx={{ width: '100%', my: 1 }} />
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Button variant="contained" color="primary">Primary</Button>
-              <Button variant="contained" color="secondary">Secondary</Button>
-              <Button variant="contained" color="error">Error</Button>
-            </Box>
-            <Divider sx={{ width: '100%', my: 1 }} />
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Button variant="contained" startIcon={<SendIcon />}>Send</Button>
-              <Button variant="outlined" startIcon={<DeleteIcon />}>Delete</Button>
-              <Button variant="contained" disabled>Disabled</Button>
-            </Box>
-          </ComponentCard>
-        </Grid>
+      {/* ── 1. Design Tokens Summary ── */}
+      <SectionHeading
+        title="Design Tokens"
+        description="Current theme configuration rendered as live values. These drive every component below."
+      />
 
-        {/* Card */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Card"
-            code={`<Card><CardContent>...</CardContent></Card>`}
-          >
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', width: '100%' }}>
-              {[0, 1, 2, 3].map((elevation) => (
-                <Card key={elevation} elevation={elevation} sx={{ minWidth: 120, flex: '1 1 100px' }}>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      Elevation {elevation}
-                    </Typography>
-                    <Typography variant="body2">Card content</Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-            <Card sx={{ width: '100%', mt: 1 }}>
-              <CardContent>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Card with Media</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  This card demonstrates content, media areas, and actions.
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2, md: 3 },
+          mb: 5,
+          borderRadius: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+          Color Roles
+        </Typography>
+        <Stack
+          direction="row"
+          sx={{ flexWrap: 'wrap', gap: 2, mb: 3 }}
+        >
+          {colorRoles.map((cr) => (
+            <ColorSwatch key={cr.label} label={cr.label} color={cr.color} />
+          ))}
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: { xs: 2, md: 4 } }}>
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+              Typography
+            </Typography>
+            <Chip
+              label={`Base size: ${config.typography.baseSize}px`}
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+            <Chip
+              label={`Scale ratio: ${config.typography.scale}`}
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+            <Chip
+              label="Roboto / System"
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+              Spacing
+            </Typography>
+            <Chip
+              label={`Base unit: ${config.spacing.baseUnit}px`}
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+              Border Radius
+            </Typography>
+            <Chip label="Default: 12px" size="small" sx={{ mr: 1, mb: 1 }} />
+            <Chip label="Small: 8px" size="small" sx={{ mr: 1, mb: 1 }} />
+            <Chip label="Large: 16px" size="small" sx={{ mr: 1, mb: 1 }} />
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+              Scheme Mode
+            </Typography>
+            <Chip
+              label={config.mode === 'light' ? 'Light' : 'Dark'}
+              color={config.mode === 'light' ? 'primary' : 'secondary'}
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+          </Box>
+        </Stack>
+      </Paper>
+
+      {/* ── 2. Glossy Buttons ── */}
+      <SectionHeading
+        title="Glossy Buttons"
+        description="Buttons with a subtle gradient overlay that adds depth and shine. Tap to interact."
+      />
+
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2, md: 3 },
+          mb: 5,
+          borderRadius: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Contained
+        </Typography>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
+          <GlossyButton variant="contained">Primary</GlossyButton>
+          <GlossyButton variant="contained" color="secondary">Secondary</GlossyButton>
+          <GlossyButton variant="contained" color="error">Error</GlossyButton>
+          <GlossyButton variant="contained" color="success">Success</GlossyButton>
+          <GlossyButton variant="contained" color="warning">Warning</GlossyButton>
+          <GlossyButton variant="contained" color="info">Info</GlossyButton>
+          <GlossyButton variant="contained" disabled>Disabled</GlossyButton>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Outlined
+        </Typography>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
+          <GlossyButton variant="outlined">Primary</GlossyButton>
+          <GlossyButton variant="outlined" color="secondary">Secondary</GlossyButton>
+          <GlossyButton variant="outlined" color="error">Error</GlossyButton>
+          <GlossyButton variant="outlined" disabled>Disabled</GlossyButton>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Text
+        </Typography>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
+          <GlossyButton variant="text">Primary</GlossyButton>
+          <GlossyButton variant="text" color="secondary">Secondary</GlossyButton>
+          <GlossyButton variant="text" color="error">Error</GlossyButton>
+          <GlossyButton variant="text" disabled>Disabled</GlossyButton>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          With Icons
+        </Typography>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
+          <GlossyButton variant="contained" startIcon={<SendIcon />}>Send</GlossyButton>
+          <GlossyButton variant="outlined" startIcon={<DeleteIcon />}>Delete</GlossyButton>
+          <GlossyButton variant="contained" color="secondary" startIcon={<NotificationsIcon />}>Notify</GlossyButton>
+        </Stack>
+      </Paper>
+
+      {/* ── 3. Text Fields ── */}
+      <SectionHeading
+        title="Text Fields"
+        description="Input controls with different variants, states, and helper text."
+      />
+
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2, md: 3 },
+          mb: 5,
+          borderRadius: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Variants
+        </Typography>
+        <Stack
+          direction="row"
+          sx={{ flexWrap: 'wrap', gap: 2, mb: 3 }}
+        >
+          <TextField label="Filled" variant="filled" size="small" />
+          <TextField label="Outlined" variant="outlined" size="small" />
+          <TextField label="Standard" variant="standard" size="small" />
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          States
+        </Typography>
+        <Stack
+          direction="row"
+          sx={{ flexWrap: 'wrap', gap: 2 }}
+        >
+          <TextField
+            label="With Helper"
+            helperText="Some helpful guidance"
+            variant="outlined"
+            size="small"
+          />
+          <TextField
+            label="Placeholder"
+            placeholder="Type something..."
+            variant="outlined"
+            size="small"
+          />
+          <TextField
+            label="Error State"
+            helperText="This field is required"
+            variant="outlined"
+            size="small"
+            error
+          />
+          <TextField
+            label="Disabled"
+            variant="outlined"
+            size="small"
+            disabled
+          />
+        </Stack>
+      </Paper>
+
+      {/* ── 4. Cards & Panels ── */}
+      <SectionHeading
+        title="Cards & Panels"
+        description="Content containers with different layouts for media, stats, and info."
+      />
+
+      <Stack sx={{ mb: 5, gap: 3 }}>
+        <Grid container spacing={3}>
+          {/* Image card */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                overflow: 'hidden',
+              }}
+            >
+              <Box
+                sx={{
+                  height: 160,
+                  bgcolor: `linear-gradient(135deg, ${scheme.primary} 0%, ${scheme.tertiary} 100%)`,
+                  background: `linear-gradient(135deg, ${scheme.primary} 0%, ${scheme.tertiary} 100%)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="h4" sx={{ color: '#fff', opacity: 0.6, fontWeight: 300 }}>
+                  Image
+                </Typography>
+              </Box>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Media Card
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  A card with a visual header area, body text, and action buttons. Ideal for articles or product showcases.
                 </Typography>
               </CardContent>
-              <CardActions>
-                <Button size="small">Share</Button>
-                <Button size="small">Learn More</Button>
+              <CardActions sx={{ px: 2, pb: 2 }}>
+                <Button size="small" variant="contained">Learn More</Button>
+                <Button size="small" variant="text">Dismiss</Button>
               </CardActions>
             </Card>
-          </ComponentCard>
-        </Grid>
+          </Grid>
 
-        {/* TextField */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Input (TextField)"
-            code={`<TextField label="Label" variant="outlined" />`}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <TextField label="Filled" variant="filled" size="small" />
-                <TextField label="Outlined" variant="outlined" size="small" />
-                <TextField label="Standard" variant="standard" size="small" />
-              </Box>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <TextField
-                  label="With Helper"
-                  helperText="Some helper text"
-                  variant="outlined"
-                  size="small"
-                />
-                <TextField
-                  label="Error State"
-                  helperText="This field is required"
-                  variant="outlined"
-                  size="small"
-                  error
-                />
-                <TextField
-                  label="Disabled"
-                  variant="outlined"
-                  size="small"
-                  disabled
-                />
-              </Box>
-            </Box>
-          </ComponentCard>
-        </Grid>
-
-        {/* Select */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Select"
-            code={`<Select value="1"><MenuItem value="1">Option 1</MenuItem></Select>`}
-          >
-            <FormControl size="small" sx={{ minWidth: 200 }}>
-              <InputLabel>Select Option</InputLabel>
-              <Select
-                value={selectValue}
-                label="Select Option"
-                onChange={(e) => setSelectValue(e.target.value)}
-              >
-                <MenuItem value="1">Option 1</MenuItem>
-                <MenuItem value="2">Option 2</MenuItem>
-                <MenuItem value="3">Option 3</MenuItem>
-                <MenuItem value="4">Option 4</MenuItem>
-              </Select>
-            </FormControl>
-          </ComponentCard>
-        </Grid>
-
-        {/* Dialog */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Dialog"
-            code={`<Dialog open={open}><DialogTitle>...</DialogTitle><DialogContent>...</DialogContent><DialogActions>...</DialogActions></Dialog>`}
-          >
-            <Button variant="outlined" onClick={() => setDialogOpen(true)}>
-              Open Dialog
-            </Button>
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-              <DialogTitle>
-                Confirm Action
-                <IconButton
-                  size="small"
-                  onClick={() => setDialogOpen(false)}
-                  sx={{ position: 'absolute', right: 8, top: 8 }}
-                >
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              </DialogTitle>
-              <DialogContent>
-                <Typography>
-                  Are you sure you want to proceed? This action can be undone.
+          {/* Stat card */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                bgcolor: scheme.primaryContainer,
+              }}
+            >
+              <CardContent>
+                <Typography variant="overline" sx={{ color: scheme.onPrimaryContainer, opacity: 0.7 }}>
+                  Total Users
                 </Typography>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                <Button variant="contained" onClick={() => setDialogOpen(false)}>
-                  Confirm
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </ComponentCard>
-        </Grid>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontWeight: 700,
+                    color: scheme.onPrimaryContainer,
+                    mt: 1,
+                    mb: 1,
+                  }}
+                >
+                  12,847
+                </Typography>
+                <Chip
+                  label="+12.3% this month"
+                  size="small"
+                  sx={{
+                    bgcolor: scheme.primary,
+                    color: scheme.onPrimary,
+                    fontWeight: 500,
+                  }}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                  Active users across all platforms in the current billing cycle.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* Snackbar */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Snackbar"
-            code={`<Snackbar message="..." />`}
-          >
-            <Button
-              variant="outlined"
-              onClick={() => setSnackbarOpen(true)}
+          {/* Info panel */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                border: '1px solid',
+                borderColor: scheme.outlineVariant,
+                bgcolor: 'background.paper',
+              }}
             >
-              Show Snackbar
-            </Button>
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={3000}
-              onClose={() => setSnackbarOpen(false)}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-              <Alert
-                onClose={() => setSnackbarOpen(false)}
-                severity="success"
-                variant="filled"
-                sx={{ width: '100%' }}
-              >
-                Action completed successfully!
-              </Alert>
-            </Snackbar>
-          </ComponentCard>
+              <CardContent>
+                <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <InfoIcon sx={{ color: scheme.tertiary }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Info Panel
+                  </Typography>
+                </Stack>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  This card uses an outlined variant style. It is useful for secondary information, tips, or callouts that should not dominate the visual hierarchy.
+                </Typography>
+                <Chip
+                  label="Status: Active"
+                  size="small"
+                  variant="outlined"
+                  sx={{ borderColor: scheme.tertiary, color: scheme.tertiary }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
+      </Stack>
 
-        {/* Chip */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Chip"
-            code={`<Chip label="Chip" /><Chip label="Outlined" variant="outlined" />`}
-          >
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Chip label="Default" />
-              <Chip label="Primary" color="primary" />
-              <Chip label="Secondary" color="secondary" />
-              <Chip label="Error" color="error" />
-            </Box>
-            <Divider sx={{ width: '100%', my: 1 }} />
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-              <Chip label="Outlined" variant="outlined" />
-              <Chip label="Primary" variant="outlined" color="primary" />
-              <Chip label="Deletable" onDelete={() => {}} />
-              <Chip label="With Icon" icon={<PersonIcon />} onDelete={() => {}} />
-            </Box>
-          </ComponentCard>
-        </Grid>
+      {/* ── 5. Alerts & Toasts ── */}
+      <SectionHeading
+        title="Alerts & Toasts"
+        description="Feedback components for success, info, warning, and error states."
+      />
 
-        {/* Switch / Checkbox */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Switch / Checkbox"
-            code={`<Switch /><Checkbox />`}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={switchChecked}
-                    onChange={(e) => setSwitchChecked(e.target.checked)}
-                  />
-                }
-                label={`Switch: ${switchChecked ? 'On' : 'Off'}`}
-              />
-              <FormControlLabel
-                control={<Switch disabled />}
-                label="Disabled Switch"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkboxChecked}
-                    onChange={(e) => setCheckboxChecked(e.target.checked)}
-                  />
-                }
-                label={`Checkbox: ${checkboxChecked ? 'Checked' : 'Unchecked'}`}
-              />
-              <FormControlLabel
-                control={<Checkbox disabled />}
-                label="Disabled Checkbox"
-              />
-              <FormControlLabel
-                control={<Checkbox color="primary" defaultChecked />}
-                label="Primary Checkbox"
-              />
-              <FormControlLabel
-                control={<Checkbox color="secondary" defaultChecked />}
-                label="Secondary Checkbox"
-              />
-            </Box>
-          </ComponentCard>
-        </Grid>
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 2, md: 3 },
+          mb: 3,
+          borderRadius: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Filled Alerts
+        </Typography>
+        <Stack sx={{ gap: 1.5, mb: 3 }}>
+          <Alert severity="success" icon={<CheckCircleIcon />} sx={{ borderRadius: 2 }}>
+            Operation completed successfully.
+          </Alert>
+          <Alert severity="info" icon={<InfoIcon />} sx={{ borderRadius: 2 }}>
+            Here is some helpful information you should know.
+          </Alert>
+          <Alert severity="warning" icon={<WarningAmberIcon />} sx={{ borderRadius: 2 }}>
+            Please review before proceeding.
+          </Alert>
+          <Alert severity="error" icon={<ErrorIcon />} sx={{ borderRadius: 2 }}>
+            Something went wrong. Please try again.
+          </Alert>
+        </Stack>
 
-        {/* FAB */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="FAB"
-            code={`<Fab><AddIcon /></Fab>`}
-          >
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Tooltip title="Regular">
-                <Fab color="primary" size="medium">
-                  <AddIcon />
-                </Fab>
-              </Tooltip>
-              <Tooltip title="Small">
-                <Fab color="secondary" size="small">
-                  <EditIcon />
-                </Fab>
-              </Tooltip>
-              <Tooltip title="Extended">
-                <Fab variant="extended" color="primary">
-                  <AddIcon sx={{ mr: 1 }} />
-                  Create
-                </Fab>
-              </Tooltip>
-              <Tooltip title="Disabled">
-                <Fab disabled>
-                  <AddIcon />
-                </Fab>
-              </Tooltip>
-            </Box>
-          </ComponentCard>
-        </Grid>
+        <Divider sx={{ my: 2 }} />
 
-        {/* Avatar */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Avatar"
-            code={`<Avatar>A</Avatar><Avatar><PersonIcon /></Avatar>`}
-          >
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Avatar>A</Avatar>
-              <Avatar sx={{ bgcolor: 'primary.main' }}>B</Avatar>
-              <Avatar sx={{ bgcolor: 'secondary.main' }}>C</Avatar>
-              <Avatar sx={{ bgcolor: 'error.main' }}>
-                <PersonIcon />
-              </Avatar>
-              <Avatar sx={{ bgcolor: 'success.main' }}>
-                <PersonIcon />
-              </Avatar>
-              <Avatar variant="square" sx={{ bgcolor: 'grey.500' }}>
-                S
-              </Avatar>
-            </Box>
-          </ComponentCard>
-        </Grid>
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Outlined Alerts
+        </Typography>
+        <Stack sx={{ gap: 1.5, mb: 3 }}>
+          <Alert severity="success" variant="outlined" icon={<CheckCircleIcon />} sx={{ borderRadius: 2 }}>
+            Your changes have been saved.
+          </Alert>
+          <Alert severity="info" variant="outlined" icon={<InfoIcon />} sx={{ borderRadius: 2 }}>
+            A new version is available for download.
+          </Alert>
+          <Alert severity="warning" variant="outlined" icon={<WarningAmberIcon />} sx={{ borderRadius: 2 }}>
+            Your session will expire in 5 minutes.
+          </Alert>
+          <Alert severity="error" variant="outlined" icon={<ErrorIcon />} sx={{ borderRadius: 2 }}>
+            Access denied. Insufficient permissions.
+          </Alert>
+        </Stack>
 
-        {/* Badge */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Badge"
-            code={`<Badge badgeContent={4}><MailIcon /></Badge>`}
-          >
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Badge badgeContent={4} color="primary">
-                <MailIcon />
-              </Badge>
-              <Badge badgeContent={12} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-              <Badge badgeContent={0} color="error">
-                <MailIcon />
-              </Badge>
-              <Badge variant="dot" color="error">
-                <MailIcon />
-              </Badge>
-              <Badge badgeContent={99} color="primary" max={50}>
-                <MailIcon />
-              </Badge>
-            </Box>
-          </ComponentCard>
-        </Grid>
+        <Divider sx={{ my: 2 }} />
 
-        {/* Tooltip */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ComponentCard
-            title="Tooltip"
-            code={`<Tooltip title="Tip"><Button>Hover</Button></Tooltip>`}
+        <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600 }}>
+          Toast / Snackbar
+        </Typography>
+        <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1.5 }}>
+          <Button variant="outlined" size="small" onClick={() => setToastOpen(true)}>
+            Success Toast
+          </Button>
+          <Button variant="outlined" size="small" onClick={() => setErrorToastOpen(true)}>
+            Error Toast
+          </Button>
+        </Stack>
+
+        {/* Simulated toast cards */}
+        <Stack sx={{ mt: 2, gap: 1.5 }}>
+          <Alert
+            severity="success"
+            icon={<CheckCircleIcon />}
+            action={<CloseIcon sx={{ cursor: 'pointer', opacity: 0.6 }} />}
+            sx={{
+              borderRadius: 2,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+            }}
           >
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-              <Tooltip title="Top Tooltip" placement="top">
-                <Button variant="outlined">Top</Button>
-              </Tooltip>
-              <Tooltip title="Bottom Tooltip" placement="bottom">
-                <Button variant="outlined">Bottom</Button>
-              </Tooltip>
-              <Tooltip title="Left Tooltip" placement="left">
-                <Button variant="outlined">Left</Button>
-              </Tooltip>
-              <Tooltip title="Right Tooltip" placement="right">
-                <Button variant="outlined">Right</Button>
-              </Tooltip>
-              <Tooltip title="With Icon" placement="top">
-                <IconButton>
-                  <FavoriteIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </ComponentCard>
-        </Grid>
-      </Grid>
+            File uploaded successfully!
+          </Alert>
+          <Alert
+            severity="error"
+            icon={<ErrorIcon />}
+            action={<CloseIcon sx={{ cursor: 'pointer', opacity: 0.6 }} />}
+            sx={{
+              borderRadius: 2,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+            }}
+          >
+            Failed to save changes.
+          </Alert>
+        </Stack>
+      </Paper>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={3000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%', borderRadius: 2 }}
+        >
+          Changes saved successfully!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={errorToastOpen}
+        autoHideDuration={4000}
+        onClose={() => setErrorToastOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setErrorToastOpen(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%', borderRadius: 2 }}
+        >
+          Unable to process your request.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
-
-
