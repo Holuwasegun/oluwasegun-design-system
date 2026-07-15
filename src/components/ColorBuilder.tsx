@@ -1,4 +1,8 @@
-import type { KeyColorDefinition, ToneOutput, ThemeMode } from '../types/color.types';
+import type {
+  KeyColorDefinition,
+  ToneOutput,
+  ThemeMode,
+} from '../types/color.types';
 import { KeyColors } from './KeyColors';
 import { TonalPalettes } from './TonalPalettes';
 import { RoleMapping } from './RoleMapping';
@@ -6,7 +10,10 @@ import { RoleMapping } from './RoleMapping';
 interface ColorBuilderProps {
   keyColors: KeyColorDefinition[];
   tonalPalettes: Record<string, ToneOutput[]>;
-  semanticRoles: Record<string, { hex: string; argb: number; contrastRatio: number }>;
+  semanticRoles: Record<
+    string,
+    { hex: string; argb: number; contrastRatio: number }
+  >;
   themeMode: ThemeMode;
   onThemeModeChange: (mode: ThemeMode) => void;
   onUpdate: (id: string, hex: string) => void;

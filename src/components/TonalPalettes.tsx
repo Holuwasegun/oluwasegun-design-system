@@ -7,7 +7,10 @@ interface TonalPalettesProps {
   tonalPalettes: Record<string, ToneOutput[]>;
 }
 
-export function TonalPalettes({ keyColors, tonalPalettes }: TonalPalettesProps) {
+export function TonalPalettes({
+  keyColors,
+  tonalPalettes,
+}: TonalPalettesProps) {
   const [copied, setCopied] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -19,83 +22,103 @@ export function TonalPalettes({ keyColors, tonalPalettes }: TonalPalettesProps) 
   };
 
   return (
-    <div
-      className="rounded-2xl p-5 transition-all"
+    <section
+      className="rounded-xl p-5"
       style={{
-        background: 'var(--matisse-surface)',
-        border: '1px solid var(--matisse-border-light)',
-        boxShadow: 'var(--matisse-shadow-sm)',
+        background: 'var(--ods-surface)',
+        border: '1px solid var(--ods-border-subtle)',
+        boxShadow: 'var(--ods-shadow-sm)',
       }}
     >
-      <div className="mb-4 flex items-center justify-between">
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
         <div>
           <h3
-            className="text-sm font-semibold"
-            style={{ color: 'var(--matisse-text)' }}
+            className="text-[14px] font-semibold"
+            style={{ color: 'var(--ods-text)' }}
           >
             Tonal Palettes
           </h3>
           <p
-            className="mt-0.5 text-xs"
-            style={{ color: 'var(--matisse-text-muted)' }}
+            className="mt-0.5 text-[12px]"
+            style={{ color: 'var(--ods-text-tertiary)' }}
           >
-            Automatically generated using HCT color science. Tone 0 is black, 100 is white.
+            Generated using HCT color science. Tone 0 is black, 100 is white.
           </p>
         </div>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg transition-all hover:opacity-80"
+          className="flex items-center justify-center rounded-lg transition-all duration-150 hover:opacity-60"
           style={{
-            color: 'var(--matisse-text-muted)',
-            background: 'var(--matisse-surface-raised)',
+            width: 32,
+            height: 32,
+            color: 'var(--ods-text-tertiary)',
+            background: 'var(--ods-surface-secondary)',
+            border: '1px solid var(--ods-border-subtle)',
           }}
         >
-          {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+          {collapsed ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
         </button>
       </div>
 
+      {/* Strips */}
       {!collapsed && (
-        <div className="flex flex-col gap-5 animate-fadeIn">
+        <div className="flex flex-col gap-6 animate-fadeIn">
           {keyColors.map((kc) => {
             const tones = tonalPalettes[kc.id];
             if (!tones) return null;
             return (
-              <div key={kc.id} className="flex flex-col gap-1.5">
+              <div key={kc.id} className="flex flex-col gap-2">
                 <span
-                  className="px-1 text-xs font-medium"
-                  style={{ color: 'var(--matisse-text-muted)' }}
+                  className="text-[11px] font-semibold uppercase tracking-wide"
+                  style={{ color: 'var(--ods-text-tertiary)' }}
                 >
                   {kc.label}
                 </span>
-                <div className="flex gap-px overflow-hidden rounded-xl">
+
+                {/* Swatch strip */}
+                <div className="flex gap-px overflow-hidden rounded-lg">
                   {tones.map((t) => {
                     const uid = `${kc.id}-${t.tone}`;
-                    const textColor = t.tone >= 50 ? '#000000' : '#ffffff';
+                    const textLight = t.tone >= 50;
                     return (
                       <button
                         key={uid}
                         onClick={() => handleCopy(t.hex, uid)}
-                        className="group relative flex flex-1 items-center justify-center transition-all hover:flex-[2] hover:z-10 hover:scale-y-110 hover:shadow-lg"
-                        style={{ backgroundColor: t.hex, minHeight: 52 }}
-                        title={`${t.tone} - ${t.hex}`}
+                        className="group relative flex flex-1 items-center justify-center transition-all duration-150 hover:flex-[2.5] hover:z-10 hover:shadow-lg"
+                        style={{
+                          backgroundColor: t.hex,
+                          minHeight: 48,
+                        }}
+                        title={`${t.tone} — ${t.hex}`}
                       >
+                        {/* Tone label (visible on hover) */}
                         <span
-                          className="text-[9px] font-mono font-semibold opacity-0 transition-opacity group-hover:opacity-100"
-                          style={{ color: textColor }}
+                          className="text-[9px] font-bold opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                          style={{
+                            color: textLight ? '#000' : '#fff',
+                            fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+                          }}
                         >
                           {t.tone}
                         </span>
+
+                        {/* Tooltip */}
                         <span
-                          className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg px-2 py-1 text-[10px] font-mono opacity-0 shadow-lg transition-opacity group-hover:opacity-100 z-20"
+                          className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2 py-1 text-[10px] font-medium opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 z-20"
                           style={{
-                            background: 'var(--matisse-black)',
-                            color: '#ffffff',
+                            background: 'var(--ods-text)',
+                            color: 'var(--ods-text-inverse)',
                           }}
                         >
                           {copied === uid ? (
-                            <Check size={10} className="mr-1 inline" style={{ color: 'var(--matisse-success)' }} />
+                            <Check
+                              size={10}
+                              className="mr-1 inline"
+                              style={{ color: 'var(--ods-success)' }}
+                            />
                           ) : (
-                            <Copy size={10} className="mr-1 inline opacity-60" />
+                            <Copy size={10} className="mr-1 inline opacity-50" />
                           )}
                           {t.hex}
                         </span>
@@ -103,12 +126,17 @@ export function TonalPalettes({ keyColors, tonalPalettes }: TonalPalettesProps) 
                     );
                   })}
                 </div>
-                <div className="flex gap-px px-0.5">
+
+                {/* Tone labels row */}
+                <div className="flex gap-px">
                   {tones.map((t) => (
                     <span
                       key={`lbl-${kc.id}-${t.tone}`}
-                      className="flex-1 text-center text-[8px] font-mono"
-                      style={{ color: 'var(--matisse-text-muted)' }}
+                      className="flex-1 text-center text-[8px]"
+                      style={{
+                        color: 'var(--ods-text-tertiary)',
+                        fontFamily: 'ui-monospace, SFMono-Regular, monospace',
+                      }}
                     >
                       {t.tone}
                     </span>
@@ -119,6 +147,6 @@ export function TonalPalettes({ keyColors, tonalPalettes }: TonalPalettesProps) 
           })}
         </div>
       )}
-    </div>
+    </section>
   );
 }

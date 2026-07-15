@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  Save,
-  Upload,
-  Bell,
-  Pencil,
-} from 'lucide-react';
+import { Save, Upload, Bell, Pencil, Check } from 'lucide-react';
 
 interface HeaderProps {
   onExport: () => void;
@@ -16,106 +11,143 @@ export function Header({ onExport }: HeaderProps) {
 
   return (
     <header
-      className="flex h-[60px] shrink-0 items-center justify-between border-b px-5"
+      className="flex items-center justify-between border-b px-6"
       style={{
-        background: 'var(--matisse-surface)',
-        borderColor: 'var(--matisse-border-light)',
+        height: 'var(--ods-header-h)',
+        background: 'var(--ods-surface)',
+        borderColor: 'var(--ods-border-subtle)',
       }}
     >
-      {/* Left */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2.5">
+      {/* Left cluster */}
+      <div className="flex items-center gap-5">
+        {/* Brand */}
+        <div className="flex items-center gap-3">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-xl"
-            style={{ background: 'var(--matisse-purple)' }}
+            className="flex items-center justify-center rounded-lg"
+            style={{
+              width: 32,
+              height: 32,
+              background: 'linear-gradient(135deg, var(--ods-primary) 0%, var(--ods-primary-dark) 100%)',
+            }}
           >
-            <span className="text-sm font-bold text-white">M</span>
+            <span className="text-sm font-extrabold text-white leading-none tracking-tight">
+              O
+            </span>
           </div>
-          <div className="flex flex-col leading-none">
+          <div className="flex flex-col">
             <span
-              className="text-[15px] font-bold tracking-tight"
-              style={{ color: 'var(--matisse-text)' }}
+              className="text-[15px] font-bold leading-tight tracking-[-0.01em]"
+              style={{ color: 'var(--ods-text)' }}
             >
-              Matisse
+              Oluwasegun
             </span>
             <span
-              className="text-[9px] font-semibold uppercase tracking-widest"
-              style={{ color: 'var(--matisse-text-muted)' }}
+              className="text-[10px] font-semibold uppercase tracking-[0.08em] leading-none"
+              style={{ color: 'var(--ods-text-tertiary)' }}
             >
-              Design System Generator
+              Design System
             </span>
           </div>
         </div>
 
-        <div className="h-6 w-px mx-1" style={{ background: 'var(--matisse-border)' }} />
+        {/* Divider */}
+        <div
+          className="h-6 w-px"
+          style={{ background: 'var(--ods-border)' }}
+        />
 
+        {/* Project name */}
         {editing ? (
-          <input
-            type="text"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            onBlur={() => setEditing(false)}
-            onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-            autoFocus
-            className="h-8 w-52 text-sm font-medium"
-            style={{
-              background: 'var(--matisse-surface-raised)',
-              borderColor: 'var(--matisse-purple)',
-            }}
-          />
+          <div className="flex items-center gap-1.5">
+            <input
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              onBlur={() => setEditing(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') setEditing(false);
+              }}
+              autoFocus
+              className="h-8 w-60 text-sm font-medium"
+              style={{ padding: '0 10px' }}
+            />
+            <button
+              onClick={() => setEditing(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-md transition-colors"
+              style={{ color: 'var(--ods-success)' }}
+            >
+              <Check size={14} />
+            </button>
+          </div>
         ) : (
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 transition-colors hover:opacity-80"
-            style={{ color: 'var(--matisse-text-secondary)' }}
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors"
+            style={{ color: 'var(--ods-text-secondary)' }}
           >
             <span className="text-sm font-medium">{projectName}</span>
-            <Pencil size={12} style={{ color: 'var(--matisse-text-muted)' }} />
+            <Pencil
+              size={12}
+              style={{ color: 'var(--ods-text-tertiary)' }}
+            />
           </button>
         )}
       </div>
 
-      {/* Right */}
-      <div className="flex items-center gap-2.5">
+      {/* Right cluster */}
+      <div className="flex items-center gap-3">
+        {/* Save */}
         <button
-          className="flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
-          style={{
-            color: 'var(--matisse-text-secondary)',
-            background: 'transparent',
-          }}
+          className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] font-medium transition-all hover:opacity-70 active:scale-[0.97]"
+          style={{ color: 'var(--ods-text-secondary)' }}
         >
-          <Save size={14} />
+          <Save size={15} strokeWidth={1.8} />
           Save
         </button>
 
+        {/* Export */}
         <button
           onClick={onExport}
-          className="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.97]"
-          style={{ background: 'var(--matisse-purple)' }}
+          className="flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.97]"
+          style={{ background: 'var(--ods-primary)' }}
         >
-          <Upload size={14} />
+          <Upload size={14} strokeWidth={2} />
           Export
         </button>
 
+        {/* Notification bell */}
         <button
-          className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:opacity-80"
+          className="relative flex items-center justify-center rounded-full transition-colors hover:opacity-70"
           style={{
-            border: '1.5px solid var(--matisse-border)',
-            color: 'var(--matisse-text-secondary)',
+            width: 34,
+            height: 34,
+            border: '1px solid var(--ods-border)',
+            color: 'var(--ods-text-tertiary)',
           }}
         >
-          <Bell size={16} />
+          <Bell size={16} strokeWidth={1.8} />
           <span
-            className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white"
-            style={{ background: 'var(--matisse-badge-red)' }}
+            className="absolute flex items-center justify-center rounded-full text-[9px] font-bold text-white"
+            style={{
+              width: 16,
+              height: 16,
+              top: -2,
+              right: -2,
+              background: 'var(--ods-error)',
+            }}
           >
             3
           </span>
         </button>
 
+        {/* Avatar */}
         <div
-          className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white"
-          style={{ background: 'var(--matisse-purple)' }}
+          className="flex items-center justify-center rounded-full text-[13px] font-bold text-white cursor-pointer"
+          style={{
+            width: 34,
+            height: 34,
+            background: 'var(--ods-primary)',
+          }}
         >
           O
         </div>

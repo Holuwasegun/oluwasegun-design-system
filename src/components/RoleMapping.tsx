@@ -4,123 +4,151 @@ import type { ThemeMode } from '../types/color.types';
 import { SEMANTIC_ROLE_NAMES } from '../types/color.types';
 
 interface RoleMappingProps {
-  semanticRoles: Record<string, { hex: string; argb: number; contrastRatio: number }>;
+  semanticRoles: Record<
+    string,
+    { hex: string; argb: number; contrastRatio: number }
+  >;
   themeMode: ThemeMode;
   onThemeModeChange: (mode: ThemeMode) => void;
 }
 
-function getRoleCategory(roleName: string): string {
-  if (roleName.startsWith('primary')) return 'Primary';
-  if (roleName.startsWith('secondary')) return 'Secondary';
-  if (roleName.startsWith('tertiary')) return 'Tertiary';
-  if (roleName.startsWith('error')) return 'Error';
-  if (roleName.startsWith('surface') || roleName === 'background' || roleName === 'onBackground') return 'Surface';
-  if (roleName.startsWith('outline')) return 'Outline';
-  if (roleName.startsWith('inverse')) return 'Inverse';
-  if (roleName === 'shadow' || roleName === 'scrim') return 'Surface';
-  return 'Other';
+const CATEGORY_COLORS: Record<string, string> = {
+  Primary: 'var(--ods-primary)',
+  Secondary: '#8B5CF6',
+  Tertiary: '#C084FC',
+  Error: 'var(--ods-error)',
+  Surface: 'var(--ods-text-tertiary)',
+  Outline: '#94A3B8',
+  Inverse: 'var(--ods-warning)',
+};
+
+function getRoleCategory(name: string): string {
+  if (name.startsWith('primary')) return 'Primary';
+  if (name.startsWith('secondary')) return 'Secondary';
+  if (name.startsWith('tertiary')) return 'Tertiary';
+  if (name.startsWith('error')) return 'Error';
+  if (
+    name.startsWith('surface') ||
+    name === 'background' ||
+    name === 'onBackground'
+  )
+    return 'Surface';
+  if (name.startsWith('outline')) return 'Outline';
+  if (name.startsWith('inverse')) return 'Inverse';
+  return 'Surface';
 }
 
-function getSourceRef(roleName: string): string {
-  if (roleName === 'primary') return `{color.key.primary}`;
-  if (roleName === 'onPrimary') return `{color.palette.primary.100}`;
-  if (roleName === 'primaryContainer') return `{color.palette.primary.80}`;
-  if (roleName === 'onPrimaryContainer') return `{color.palette.primary.30}`;
-  if (roleName === 'secondary') return `{color.key.secondary}`;
-  if (roleName === 'onSecondary') return `{color.palette.secondary.100}`;
-  if (roleName === 'secondaryContainer') return `{color.palette.secondary.80}`;
-  if (roleName === 'onSecondaryContainer') return `{color.palette.secondary.30}`;
-  if (roleName === 'tertiary') return `{color.key.tertiary}`;
-  if (roleName === 'onTertiary') return `{color.palette.tertiary.100}`;
-  if (roleName === 'tertiaryContainer') return `{color.palette.tertiary.80}`;
-  if (roleName === 'onTertiaryContainer') return `{color.palette.tertiary.30}`;
-  if (roleName === 'error') return `{color.error.main}`;
-  if (roleName === 'onError') return `{color.error.on}`;
-  if (roleName === 'errorContainer') return `{color.error.container}`;
-  if (roleName === 'onErrorContainer') return `{color.error.onContainer}`;
-  if (roleName === 'background') return `{color.palette.neutral.98}`;
-  if (roleName === 'onBackground') return `{color.palette.neutral.10}`;
-  if (roleName === 'surface') return `{color.palette.neutral.98}`;
-  if (roleName === 'onSurface') return `{color.palette.neutral.10}`;
-  if (roleName === 'outline') return `{color.palette.neutralVariant.60}`;
-  if (roleName === 'outlineVariant') return `{color.palette.neutralVariant.90}`;
-  return `{color.auto}`;
+function getSourceRef(name: string): string {
+  const map: Record<string, string> = {
+    primary: '{color.key.primary}',
+    onPrimary: '{color.palette.primary.100}',
+    primaryContainer: '{color.palette.primary.80}',
+    onPrimaryContainer: '{color.palette.primary.30}',
+    secondary: '{color.key.secondary}',
+    onSecondary: '{color.palette.secondary.100}',
+    secondaryContainer: '{color.palette.secondary.80}',
+    onSecondaryContainer: '{color.palette.secondary.30}',
+    tertiary: '{color.key.tertiary}',
+    onTertiary: '{color.palette.tertiary.100}',
+    tertiaryContainer: '{color.palette.tertiary.80}',
+    onTertiaryContainer: '{color.palette.tertiary.30}',
+    error: '{color.error.main}',
+    onError: '{color.error.on}',
+    errorContainer: '{color.error.container}',
+    onErrorContainer: '{color.error.onContainer}',
+    background: '{color.palette.neutral.98}',
+    onBackground: '{color.palette.neutral.10}',
+    surface: '{color.palette.neutral.98}',
+    onSurface: '{color.palette.neutral.10}',
+    outline: '{color.palette.neutralVariant.60}',
+    outlineVariant: '{color.palette.neutralVariant.90}',
+    inverseSurface: '{color.palette.neutral.20}',
+    inverseOnSurface: '{color.palette.neutral.95}',
+    inversePrimary: '{color.palette.primary.80}',
+    surfaceDim: '{color.palette.neutral.87}',
+    surfaceBright: '{color.palette.neutral.98}',
+    surfaceContainerLowest: '{color.palette.neutral.100}',
+    surfaceContainerLow: '{color.palette.neutral.96}',
+    surfaceContainer: '{color.palette.neutral.94}',
+    surfaceContainerHigh: '{color.palette.neutral.92}',
+    surfaceContainerHighest: '{color.palette.neutral.90}',
+    surfaceVariant: '{color.palette.neutralVariant.90}',
+    onSurfaceVariant: '{color.palette.neutralVariant.30}',
+    shadow: '{color.palette.neutral.0}',
+    scrim: '{color.palette.neutral.0}',
+    surfaceTint: '{color.key.primary}',
+  };
+  return map[name] || '{color.auto}';
 }
 
-function hasOverride(roleName: string): boolean {
-  return roleName === 'primary';
+function hasOverride(name: string): boolean {
+  return name === 'primary';
 }
 
-function formatRoleName(name: string): string {
+function formatName(name: string): string {
   return name
     .replace(/([A-Z])/g, ' $1')
     .replace(/^./, (s) => s.toUpperCase())
     .trim();
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Primary: '#7C5CFC',
-  Secondary: '#9E8CE8',
-  Tertiary: '#C87EAE',
-  Error: '#EF4444',
-  Surface: '#6B7194',
-  Outline: '#9CA3C0',
-  Inverse: '#F59E0B',
-  Other: '#9CA3C0',
-};
-
-export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: RoleMappingProps) {
+export function RoleMapping({
+  semanticRoles,
+  themeMode,
+  onThemeModeChange,
+}: RoleMappingProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  const handleCopy = (hex: string, roleName: string) => {
+  const handleCopy = (hex: string, role: string) => {
     navigator.clipboard.writeText(hex).then(() => {
-      setCopied(roleName);
+      setCopied(role);
       setTimeout(() => setCopied(null), 1500);
     });
   };
 
   return (
-    <div
-      className="rounded-2xl p-5 transition-all"
+    <section
+      className="rounded-xl p-5"
       style={{
-        background: 'var(--matisse-surface)',
-        border: '1px solid var(--matisse-border-light)',
-        boxShadow: 'var(--matisse-shadow-sm)',
+        background: 'var(--ods-surface)',
+        border: '1px solid var(--ods-border-subtle)',
+        boxShadow: 'var(--ods-shadow-sm)',
       }}
     >
-      <div className="mb-4 flex items-center justify-between">
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
         <div>
           <h3
-            className="text-sm font-semibold"
-            style={{ color: 'var(--matisse-text)' }}
+            className="text-[14px] font-semibold"
+            style={{ color: 'var(--ods-text)' }}
           >
             Role Mapping
           </h3>
           <p
-            className="mt-0.5 text-xs"
-            style={{ color: 'var(--matisse-text-muted)' }}
+            className="mt-0.5 text-[12px]"
+            style={{ color: 'var(--ods-text-tertiary)' }}
           >
             Assign palette tones to semantic roles.
           </p>
         </div>
+
+        {/* Mode toggle */}
         <div
           className="flex overflow-hidden rounded-lg"
-          style={{ border: '1.5px solid var(--matisse-border)' }}
+          style={{ border: '1px solid var(--ods-border)' }}
         >
           {(['light', 'dark'] as ThemeMode[]).map((mode) => (
             <button
               key={mode}
               onClick={() => onThemeModeChange(mode)}
-              className="px-3.5 py-1.5 text-xs font-semibold transition-all"
+              className="px-3 py-1.5 text-[12px] font-semibold transition-all duration-150"
               style={{
                 background:
-                  themeMode === mode
-                    ? 'var(--matisse-tab-active)'
-                    : 'var(--matisse-surface)',
+                  themeMode === mode ? 'var(--ods-text)' : 'var(--ods-surface)',
                 color:
                   themeMode === mode
-                    ? '#ffffff'
-                    : 'var(--matisse-text-muted)',
+                    ? 'var(--ods-text-inverse)'
+                    : 'var(--ods-text-tertiary)',
               }}
             >
               {mode === 'light' ? 'Light' : 'Dark'}
@@ -129,91 +157,114 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Rol
         </div>
       </div>
 
-      {/* Table Header */}
+      {/* Table */}
       <div
-        className="grid grid-cols-[1fr_60px_1fr] gap-4 rounded-t-xl px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest"
-        style={{
-          background: 'var(--matisse-surface-raised)',
-          color: 'var(--matisse-text-muted)',
-          borderBottom: '1px solid var(--matisse-border-light)',
-        }}
+        className="overflow-hidden rounded-lg"
+        style={{ border: '1px solid var(--ods-border-subtle)' }}
       >
-        <span>Role Name</span>
-        <span className="text-center">Swatch</span>
-        <span>Source Reference</span>
-      </div>
+        {/* Table head */}
+        <div
+          className="grid grid-cols-[1fr_52px_1fr] items-center gap-3 px-4 py-2.5"
+          style={{
+            background: 'var(--ods-surface-secondary)',
+            borderBottom: '1px solid var(--ods-border-subtle)',
+          }}
+        >
+          {['Role Name', 'Swatch', 'Source Reference'].map((h) => (
+            <span
+              key={h}
+              className={`text-[10px] font-bold uppercase tracking-[0.1em] ${
+                h === 'Swatch' ? 'text-center' : ''
+              }`}
+              style={{ color: 'var(--ods-text-tertiary)' }}
+            >
+              {h}
+            </span>
+          ))}
+        </div>
 
-      {/* Table Body */}
-      <div className="flex flex-col">
+        {/* Table body */}
         {SEMANTIC_ROLE_NAMES.map((roleName) => {
-          const roleData = semanticRoles[roleName];
-          if (!roleData) return null;
-          const category = getRoleCategory(roleName);
-          const catColor = CATEGORY_COLORS[category] || '#9CA3C0';
-          const sourceRef = getSourceRef(roleName);
-          const override = hasOverride(roleName);
+          const data = semanticRoles[roleName];
+          if (!data) return null;
+          const cat = getRoleCategory(roleName);
+          const catColor = CATEGORY_COLORS[cat] || 'var(--ods-text-tertiary)';
+          const src = getSourceRef(roleName);
+          const over = hasOverride(roleName);
 
           return (
             <div
               key={roleName}
-              className="group grid grid-cols-[1fr_60px_1fr] items-center gap-4 px-4 py-2.5 transition-colors hover:opacity-95"
+              className="group grid grid-cols-[1fr_52px_1fr] items-center gap-3 px-4 py-2 transition-colors duration-100"
               style={{
-                borderBottom: '1px solid var(--matisse-border-light)',
+                borderBottom: '1px solid var(--ods-border-subtle)',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background =
+                  'var(--ods-surface-secondary)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background =
+                  'transparent';
               }}
             >
-              {/* Role Name */}
+              {/* Role name */}
               <div className="flex items-center gap-2.5 min-w-0">
                 <span
-                  className="inline-block h-2 w-2 rounded-full shrink-0"
-                  style={{ backgroundColor: catColor }}
+                  className="h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: catColor }}
                 />
                 <span
                   className="truncate text-[12px] font-medium"
-                  style={{ color: 'var(--matisse-text)' }}
+                  style={{ color: 'var(--ods-text)' }}
                 >
-                  {formatRoleName(roleName)}
+                  {formatName(roleName)}
                 </span>
               </div>
 
               {/* Swatch */}
               <div className="flex justify-center">
                 <button
-                  onClick={() => handleCopy(roleData.hex, roleName)}
-                  className="group/swatch relative flex h-8 w-8 items-center justify-center rounded-lg transition-all hover:scale-110"
+                  onClick={() => handleCopy(data.hex, roleName)}
+                  className="relative flex items-center justify-center rounded-md transition-all duration-150 hover:scale-110"
                   style={{
-                    backgroundColor: roleData.hex,
-                    border: '2px solid var(--matisse-border-light)',
+                    width: 32,
+                    height: 32,
+                    backgroundColor: data.hex,
+                    border: '2px solid var(--ods-border-subtle)',
                   }}
                 >
                   {copied === roleName ? (
-                    <Check size={10} className="text-white" />
+                    <Check size={10} color="#fff" />
                   ) : (
                     <Copy
                       size={10}
-                      className="text-white opacity-0 transition-opacity group-hover/swatch:opacity-80"
+                      color="#fff"
+                      className="opacity-0 group-hover:opacity-70 transition-opacity duration-150"
                     />
                   )}
                 </button>
               </div>
 
-              {/* Source Reference */}
-              <div className="flex items-center gap-2">
+              {/* Source ref */}
+              <div className="flex items-center gap-2 min-w-0">
                 <span
-                  className="rounded-md px-2 py-1 font-mono text-[10px]"
+                  className="truncate rounded px-2 py-1 text-[10px]"
                   style={{
-                    background: 'var(--matisse-surface-raised)',
-                    color: 'var(--matisse-text-secondary)',
-                    border: '1px solid var(--matisse-border-light)',
+                    background: 'var(--ods-surface-secondary)',
+                    color: 'var(--ods-text-secondary)',
+                    border: '1px solid var(--ods-border-subtle)',
+                    fontFamily: 'ui-monospace, SFMono-Regular, monospace',
                   }}
                 >
-                  {sourceRef}
+                  {src}
                 </span>
-                {override && (
+                {over && (
                   <span
-                    className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold"
+                    className="flex shrink-0 items-center gap-1 rounded px-2 py-1 text-[10px] font-semibold"
                     style={{
-                      background: '#FEF3C7',
-                      color: '#92400E',
+                      background: 'var(--ods-warning-bg)',
+                      color: 'var(--ods-warning)',
                     }}
                   >
                     <AlertTriangle size={10} />
@@ -225,6 +276,6 @@ export function RoleMapping({ semanticRoles, themeMode, onThemeModeChange }: Rol
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

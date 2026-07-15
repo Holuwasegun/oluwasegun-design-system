@@ -7,6 +7,11 @@ import { Preview } from './components/Preview';
 
 type MainTab = 'color-builder' | 'preview';
 
+const TABS: { id: MainTab; label: string }[] = [
+  { id: 'color-builder', label: 'Color Builder' },
+  { id: 'preview', label: 'Preview' },
+];
+
 export default function App() {
   const {
     keyColors,
@@ -22,59 +27,54 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState<MainTab>('color-builder');
 
-  const tabs: { id: MainTab; label: string }[] = [
-    { id: 'color-builder', label: 'Color Builder' },
-    { id: 'preview', label: 'Preview' },
-  ];
-
   return (
-    <div className="flex h-screen flex-col" style={{ background: 'var(--matisse-bg)' }}>
+    <div
+      className="flex h-screen flex-col"
+      style={{ background: 'var(--ods-bg)' }}
+    >
       <Header onExport={exportSchema} />
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} onTabChange={(t) => setActiveTab(t as MainTab)} />
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={(t) => setActiveTab(t as MainTab)}
+        />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-[960px] px-8 py-6">
-            {/* Tab Switcher */}
+          <div className="mx-auto max-w-[920px] px-8 py-6">
+            {/* Tab bar */}
             <div className="mb-6 flex items-center">
               <div
-                className="flex overflow-hidden rounded-xl p-1"
-                style={{ background: 'var(--matisse-tab-active)' }}
+                className="flex overflow-hidden rounded-lg p-0.5"
+                style={{ background: 'var(--ods-text)' }}
               >
-                {tabs.map((tab) => (
+                {TABS.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className="flex items-center gap-2 rounded-lg px-5 py-2 text-xs font-semibold transition-all"
+                    className="flex items-center gap-2 rounded-md px-4 py-2 text-[13px] font-semibold transition-all duration-150"
                     style={{
                       background:
                         activeTab === tab.id
-                          ? '#ffffff'
+                          ? 'var(--ods-surface)'
                           : 'transparent',
                       color:
                         activeTab === tab.id
-                          ? 'var(--matisse-tab-active)'
-                          : 'rgba(255,255,255,0.55)',
+                          ? 'var(--ods-text)'
+                          : 'rgba(255,255,255,0.45)',
                       boxShadow:
                         activeTab === tab.id
-                          ? '0 1px 4px rgba(0,0,0,0.15)'
+                          ? 'var(--ods-shadow-xs)'
                           : 'none',
                     }}
                   >
-                    {activeTab === tab.id && (
-                      <span
-                        className="inline-block h-1.5 w-1.5 rounded-full"
-                        style={{ background: 'var(--matisse-purple)' }}
-                      />
-                    )}
                     {tab.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Tab Content */}
+            {/* Content */}
             {activeTab === 'color-builder' ? (
               <ColorBuilder
                 keyColors={keyColors}
