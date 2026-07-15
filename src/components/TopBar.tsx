@@ -36,6 +36,7 @@ const pageTitles: Record<string, string> = {
   "/radius": "Border Radius",
   "/motion": "Motion",
   "/components": "Components",
+  "/preview": "Preview",
 };
 
 export default function TopBar() {

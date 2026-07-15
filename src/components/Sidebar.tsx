@@ -25,6 +25,7 @@ import {
   CropSquare as CropSquareIcon,
   Animation as AnimationIcon,
   Widgets as WidgetsIcon,
+  Visibility as PreviewIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
@@ -44,6 +45,7 @@ const navItems = [
   { label: 'Border Radius', icon: <CropSquareIcon />, href: '/radius' },
   { label: 'Motion', icon: <AnimationIcon />, href: '/motion' },
   { label: 'Components', icon: <WidgetsIcon />, href: '/components' },
+  { label: 'Preview', icon: <PreviewIcon />, href: '/preview' },
 ];
 
 export default function Sidebar() {
