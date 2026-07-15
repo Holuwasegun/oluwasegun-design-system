@@ -32,6 +32,134 @@ import {
   type TypeStyle,
 } from '@/theme/scheme';
 
+const LETTER_SPACING_DEFAULTS: Record<string, number> = {
+  'Display Large': -0.25,
+  'Display Medium': 0,
+  'Display Small': 0,
+  'Headline Large': 0,
+  'Headline Medium': 0,
+  'Headline Small': 0,
+  'Title Large': 0,
+  'Title Medium': 0.15,
+  'Title Small': 0.1,
+  'Body Large': 0.5,
+  'Body Medium': 0.25,
+  'Body Small': 0.4,
+  'Label Large': 0.1,
+  'Label Medium': 0.5,
+  'Label Small': 0.5,
+};
+
+function TrackingControls({ styles }: { styles: TypeStyle[] }) {
+  const { config, setTypography } = useThemeStore();
+  const overrides = config.typography.letterSpacingOverrides ?? {};
+
+  const handleChange = (styleName: string, value: number) => {
+    setTypography({
+      letterSpacingOverrides: { ...overrides, [styleName]: value },
+    });
+  };
+
+  const handleReset = (styleName: string) => {
+    const next = { ...overrides };
+    delete next[styleName];
+    setTypography({ letterSpacingOverrides: next });
+  };
+
+  const handleResetAll = () => {
+    setTypography({ letterSpacingOverrides: {} });
+  };
+
+  const hasAnyOverride = Object.keys(overrides).length > 0;
+
+  return (
+    <Card sx={{ mb: 4 }}>
+      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Letter Spacing (Tracking)
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Override per-style letter spacing values in em units
+            </Typography>
+          </Box>
+          {hasAnyOverride && (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<RestartAltIcon />}
+              onClick={handleResetAll}
+              sx={{ textTransform: 'none' }}
+            >
+              Reset All
+            </Button>
+          )}
+        </Box>
+
+        <Stack spacing={2.5}>
+          {styles.map((style) => {
+            const defaultVal = LETTER_SPACING_DEFAULTS[style.name] ?? 0;
+            const currentVal = overrides[style.name] ?? defaultVal;
+            const isOverridden = style.name in overrides;
+
+            return (
+              <Box key={style.name}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Chip
+                      label={FAMILY_LABELS[style.family]}
+                      size="small"
+                      color={FAMILY_COLORS[style.family] as 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
+                      variant="outlined"
+                      sx={{ minWidth: 72, fontWeight: 500 }}
+                    />
+                    <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+                      {style.size}
+                    </Typography>
+                    {isOverridden && (
+                      <Chip label="custom" size="small" color="warning" variant="filled" sx={{ height: 20, fontSize: 10 }} />
+                    )}
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="caption" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums', minWidth: 60, textAlign: 'right' }}>
+                      {currentVal.toFixed(2)}em
+                    </Typography>
+                    {isOverridden && (
+                      <Button
+                        size="small"
+                        onClick={() => handleReset(style.name)}
+                        sx={{ minWidth: 0, px: 1, textTransform: 'none' }}
+                      >
+                        Reset
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+                <Slider
+                  value={currentVal}
+                  min={-0.5}
+                  max={1.5}
+                  step={0.01}
+                  onChange={(_e, val) => handleChange(style.name, val as number)}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(v) => `${v.toFixed(2)}em`}
+                  size="small"
+                  sx={{ py: 0.5 }}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="caption" color="text.secondary">-0.5em</Typography>
+                  <Typography variant="caption" color="text.secondary">1.5em</Typography>
+                </Box>
+              </Box>
+            );
+          })}
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+
 const PREVIEW_TEXT = 'The quick brown fox jumps over the lazy dog';
 
 const SCALE_PRESETS = Object.entries(TYPOGRAPHY_SCALES).map(([key, v]) => ({
@@ -457,7 +585,7 @@ export default function TypographyPage() {
 
   const styles = useMemo(
     () => generateTypeScale(config.typography),
-    [config.typography.baseSize, config.typography.scale]
+    [config.typography.baseSize, config.typography.scale, config.typography.letterSpacingOverrides]
   );
 
   return (
@@ -470,6 +598,11 @@ export default function TypographyPage() {
       </Typography>
 
       <ScaleControls />
+
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+        Letter Spacing Overrides
+      </Typography>
+      <TrackingControls styles={styles} />
 
       <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
         Type Scale Preview

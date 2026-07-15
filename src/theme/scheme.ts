@@ -167,6 +167,7 @@ export function generateColorScheme(
 export interface TypographyScale {
   baseSize: number;
   scale: number;
+  letterSpacingOverrides?: Record<string, number>;
 }
 
 export interface SpacingConfig {
@@ -217,7 +218,7 @@ export interface TypeStyle {
 }
 
 export function generateTypeScale(config: TypographyScale): TypeStyle[] {
-  const { baseSize, scale } = config;
+  const { baseSize, scale, letterSpacingOverrides } = config;
   const styles: [string, TypeStyle["family"], TypeStyle["size"], number, number, number, number][] = [
     ["Display Large",   "display",  "large",  5, 64, 400, -0.25],
     ["Display Medium",  "display",  "medium", 4, 52, 400, 0],
@@ -243,7 +244,7 @@ export function generateTypeScale(config: TypographyScale): TypeStyle[] {
     fontSize: Math.round(baseSize * Math.pow(scale, step) * 100) / 100,
     lineHeight: lh,
     fontWeight: fw,
-    letterSpacing: ls,
+    letterSpacing: letterSpacingOverrides?.[name] ?? ls,
   }));
 }
 

@@ -48,7 +48,7 @@ function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
       ...c,
       ...(persistedConfig ?? {}),
       keyColors: { ...c.keyColors, ...(persistedConfig?.keyColors ?? {}) },
-      typography: { ...c.typography, ...(persistedConfig?.typography ?? {}) },
+      typography: { ...c.typography, ...(persistedConfig?.typography ?? {}), letterSpacingOverrides: { ...c.typography.letterSpacingOverrides, ...(persistedConfig?.typography?.letterSpacingOverrides ?? {}) } },
       spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}) },
       mode: persistedConfig?.mode ?? c.mode,
     },
@@ -127,7 +127,7 @@ export const useThemeStore = create<ThemeStore>()(
               ...DEFAULT_THEME_CONFIG,
               ...parsed,
               keyColors: parsed.keyColors,
-              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography },
+              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) } },
               spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing },
             };
             set({ config: merged, currentProjectId: null });
