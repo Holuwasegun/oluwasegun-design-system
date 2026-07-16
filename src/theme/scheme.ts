@@ -168,10 +168,22 @@ export interface TypographyScale {
   baseSize: number;
   scale: number;
   letterSpacingOverrides?: Record<string, number>;
+  fontFamily?: string;
 }
 
 export interface SpacingConfig {
   baseUnit: number;
+}
+
+export interface DurationOverride {
+  name: string;
+  ms: number;
+}
+
+export interface MotionConfig {
+  durationScale: number;
+  durationOverrides?: Record<string, number>;
+  easingOverrides?: Record<string, string>;
 }
 
 export interface ThemeConfig {
@@ -179,6 +191,7 @@ export interface ThemeConfig {
   mode: SchemeMode;
   typography: TypographyScale;
   spacing: SpacingConfig;
+  motion?: MotionConfig;
 }
 
 export const TYPOGRAPHY_SCALES: Record<string, { label: string; value: number }> = {
@@ -205,6 +218,7 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   mode: "light",
   typography: { baseSize: 14, scale: 1.25 },
   spacing: { baseUnit: 4 },
+  motion: { durationScale: 1 },
 };
 
 export interface TypeStyle {

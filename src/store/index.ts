@@ -5,6 +5,7 @@ import {
   type SchemeMode,
   type TypographyScale,
   type SpacingConfig,
+  type MotionConfig,
   DEFAULT_THEME_CONFIG,
 } from "@/theme/scheme";
 
@@ -32,6 +33,7 @@ interface ThemeStore {
   toggleMode: () => void;
   setTypography: (typography: Partial<TypographyScale>) => void;
   setSpacing: (spacing: Partial<SpacingConfig>) => void;
+  setMotion: (motion: Partial<MotionConfig>) => void;
   resetConfig: () => void;
   exportConfig: () => string;
   importConfig: (json: string) => boolean;
@@ -48,8 +50,9 @@ function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
       ...c,
       ...(persistedConfig ?? {}),
       keyColors: { ...c.keyColors, ...(persistedConfig?.keyColors ?? {}) },
-      typography: { ...c.typography, ...(persistedConfig?.typography ?? {}), letterSpacingOverrides: { ...c.typography.letterSpacingOverrides, ...(persistedConfig?.typography?.letterSpacingOverrides ?? {}) } },
+      typography: { ...c.typography, ...(persistedConfig?.typography ?? {}), letterSpacingOverrides: { ...c.typography.letterSpacingOverrides, ...(persistedConfig?.typography?.letterSpacingOverrides ?? {}) }, fontFamily: persistedConfig?.typography?.fontFamily ?? c.typography.fontFamily },
       spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}) },
+      motion: { durationScale: 1, ...c.motion, ...(persistedConfig?.motion ?? {}), durationOverrides: { ...c.motion?.durationOverrides, ...(persistedConfig?.motion?.durationOverrides ?? {}) }, easingOverrides: { ...c.motion?.easingOverrides, ...(persistedConfig?.motion?.easingOverrides ?? {}) } },
       mode: persistedConfig?.mode ?? c.mode,
     },
     currentProjectId: p?.currentProjectId ?? null,
@@ -111,6 +114,14 @@ export const useThemeStore = create<ThemeStore>()(
           },
         })),
 
+      setMotion: (motion) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            motion: { ...(state.config.motion ?? DEFAULT_THEME_CONFIG.motion!), ...motion },
+          },
+        })),
+
       resetConfig: () =>
         set({
           config: { ...DEFAULT_THEME_CONFIG },
@@ -127,8 +138,9 @@ export const useThemeStore = create<ThemeStore>()(
               ...DEFAULT_THEME_CONFIG,
               ...parsed,
               keyColors: parsed.keyColors,
-              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) } },
+              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) }, fontFamily: parsed.typography?.fontFamily ?? DEFAULT_THEME_CONFIG.typography.fontFamily },
               spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing },
+              motion: { durationScale: 1, ...DEFAULT_THEME_CONFIG.motion, ...(parsed.motion ?? {}), durationOverrides: { ...DEFAULT_THEME_CONFIG.motion?.durationOverrides, ...(parsed.motion?.durationOverrides ?? {}) }, easingOverrides: { ...DEFAULT_THEME_CONFIG.motion?.easingOverrides, ...(parsed.motion?.easingOverrides ?? {}) } },
             };
             set({ config: merged, currentProjectId: null });
             return true;
