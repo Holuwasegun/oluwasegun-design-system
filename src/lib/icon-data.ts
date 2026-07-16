@@ -530,7 +530,7 @@ const FA_ICONS: IconEntry[] = [
 
 // ── Flaticon SVG Icons (curated set) ──
 function createFlaticonIcon(pathD: string, viewBox = '0 0 512 512'): ElementType {
-  const FlaticonComponent = ({ sx }: { sx?: any }) =>
+  const FlaticonComponent = ({ sx }: { sx?: React.CSSProperties }) =>
     React.createElement(
       'svg',
       { viewBox, fill: 'currentColor', style: { width: '1em', height: '1em', ...sx } },

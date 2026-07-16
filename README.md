@@ -411,7 +411,9 @@ A curated showcase at `/brand-gallery` with 5 sections, left sidebar navigation,
 #### 5. Layout Lab (Beta)
 - Image upload (JPG, PNG, SVG — max 5MB)
 - Headline and subtitle text inputs
+- Content/Message textarea (max 300 chars) for body copy
 - Format selector: Flyer (A5), Social Post (Square), Banner (16:9)
+- All formats render at 3000px minimum width for high-resolution output
 - Generates 5 layout suggestions using active design tokens
 - Token swap panel: swap background/text/accent/card colors
 - Like/Dislike feedback buttons
@@ -424,7 +426,7 @@ A curated showcase at `/brand-gallery` with 5 sections, left sidebar navigation,
 An isolated iframe preview system at `/screen-preview`.
 
 **Architecture:**
-- Parent page sends tokens via `postMessage` protocol
+- Parent page sends tokens via `postMessage` protocol (uses `window.origin` — no wildcard `*`)
 - Iframe receives tokens and renders templates in isolation
 - Each template has its own MUI ThemeProvider using received tokens
 
@@ -461,6 +463,7 @@ Request body:
 {
   "primaryText": "Summer Collection 2026",
   "secondaryText": "Up to 50% off",
+  "content": "Shop now and discover our latest arrivals with free shipping on all orders over ₦50.",
   "format": "social-square",
   "heroImage": "data:image/...",
   "tokens": {
@@ -488,7 +491,7 @@ Response:
       }
     }
   ],
-  "dimensions": { "width": 400, "height": 400, "label": "Social Post (Square)" }
+  "dimensions": { "width": 3000, "height": 3000, "label": "Social Post (Square)" }
 }
 ```
 
@@ -605,6 +608,7 @@ vercel --prod --yes
 4. **Accessible** — WCAG contrast information provided for color choices
 5. **Responsive** — all pages work on mobile, tablet, and desktop
 6. **Isolated previews** — screen templates run in iframes to prevent style bleed
+7. **Consistent branding** — all currency uses ₦ (Naira), all avatar initials use OA (Oluwasegun Awodeyi)
 
 ---
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import Sidebar from '@/components/Sidebar';
 import TopBar from '@/components/TopBar';
 
