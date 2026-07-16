@@ -31,12 +31,12 @@ const STORAGE_KEY = 'screen-preview-preferences';
 
 function loadPreferences(): { screenType: ScreenType; viewport: ViewportKey } {
   if (typeof window === 'undefined') return { screenType: 'finance', viewport: 'desktop' };
-  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch { /* */ }
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch { /* graceful fallback */ }
   return { screenType: 'finance', viewport: 'desktop' };
 }
 
 function savePreferences(s: ScreenType, v: ViewportKey) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ screenType: s, viewport: v })); } catch { /* */ }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ screenType: s, viewport: v })); } catch { /* graceful fallback */ }
 }
 
 function SidebarContent({

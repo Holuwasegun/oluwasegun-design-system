@@ -23,7 +23,7 @@ export default function ScreenPreviewFrame() {
   useEffect(() => {
     window.addEventListener('message', handleMessage);
     // Signal ready to parent
-    window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+    window.parent.postMessage({ type: 'IFRAME_READY' }, window.location.origin);
     return () => window.removeEventListener('message', handleMessage);
   }, [handleMessage]);
 

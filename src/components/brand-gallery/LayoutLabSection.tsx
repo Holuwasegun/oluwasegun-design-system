@@ -295,10 +295,15 @@ export default function LayoutLabSection() {
   }, [tokenSwaps]);
 
   const handleFeedback = useCallback((layoutId: string, type: 'like' | 'dislike') => {
-    setFeedback((prev) => ({
-      ...prev,
-      [layoutId]: prev[layoutId] === type ? undefined as any : type,
-    }));
+    setFeedback((prev) => {
+      const next = { ...prev };
+      if (next[layoutId] === type) {
+        delete next[layoutId];
+      } else {
+        next[layoutId] = type;
+      }
+      return next;
+    });
   }, []);
 
   const handleDownload = useCallback(async (suggestion: LayoutSuggestion) => {
@@ -307,7 +312,7 @@ export default function LayoutLabSection() {
 
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true } as any);
+      const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true } as Parameters<typeof html2canvas>[1] & Record<string, unknown>);
       canvas.toBlob((blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
@@ -424,7 +429,7 @@ export default function LayoutLabSection() {
             <TextField
               label="Format"
               value={format}
-              onChange={(e) => setFormat(e.target.value as any)}
+              onChange={(e) => setFormat(e.target.value as 'flyer-a5' | 'social-square' | 'banner-16x9')}
               select
               fullWidth
               size="small"
