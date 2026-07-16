@@ -26,6 +26,7 @@ import {
   Animation as AnimationIcon,
   Widgets as WidgetsIcon,
   Visibility as PreviewIcon,
+  DesktopWindows as ScreenPreviewIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
@@ -46,6 +47,7 @@ const navItems = [
   { label: 'Motion', icon: <AnimationIcon />, href: '/motion' },
   { label: 'Components', icon: <WidgetsIcon />, href: '/components' },
   { label: 'Preview', icon: <PreviewIcon />, href: '/preview' },
+  { label: 'Screen Preview', icon: <ScreenPreviewIcon />, href: '/screen-preview' },
 ];
 
 export default function Sidebar() {
