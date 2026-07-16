@@ -4,6 +4,7 @@ export interface LayoutInput {
   heroImage?: string;
   primaryText: string;
   secondaryText: string;
+  content: string;
   format: 'flyer-a5' | 'social-square' | 'banner-16x9';
   tokens: {
     colors: Record<string, string>;
@@ -31,9 +32,9 @@ export interface LayoutSuggestion {
 }
 
 const FORMAT_DIMENSIONS: Record<string, { width: number; height: number; label: string }> = {
-  'flyer-a5': { width: 420, height: 595, label: 'Flyer (A5)' },
-  'social-square': { width: 400, height: 400, label: 'Social Post (Square)' },
-  'banner-16x9': { width: 640, height: 360, label: 'Banner (16:9)' },
+  'flyer-a5': { width: 3000, height: 4250, label: 'Flyer (A5)' },
+  'social-square': { width: 3000, height: 3000, label: 'Social Post (Square)' },
+  'banner-16x9': { width: 3000, height: 1688, label: 'Banner (16:9)' },
 };
 
 function generateLayouts(input: LayoutInput): LayoutSuggestion[] {
@@ -156,6 +157,7 @@ export async function POST(request: NextRequest) {
       input: {
         primaryText: body.primaryText,
         secondaryText: body.secondaryText,
+        content: body.content,
         format: body.format,
         hasImage: !!body.heroImage,
       },

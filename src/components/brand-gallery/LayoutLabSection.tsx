@@ -23,6 +23,7 @@ interface LayoutInput {
   heroImage?: string;
   primaryText: string;
   secondaryText: string;
+  content: string;
   format: 'flyer-a5' | 'social-square' | 'banner-16x9';
   tokens: {
     colors: Record<string, string>;
@@ -54,13 +55,13 @@ interface LayoutSuggestion {
 interface GenerationResult {
   suggestions: LayoutSuggestion[];
   dimensions: { width: number; height: number; label: string };
-  input: { primaryText: string; secondaryText: string; format: string; hasImage: boolean };
+  input: { primaryText: string; secondaryText: string; content: string; format: string; hasImage: boolean };
 }
 
 const FORMAT_OPTIONS = [
-  { value: 'flyer-a5', label: 'Flyer (A5)', desc: '420 × 595px' },
-  { value: 'social-square', label: 'Social Post (Square)', desc: '400 × 400px' },
-  { value: 'banner-16x9', label: 'Banner (16:9)', desc: '640 × 360px' },
+  { value: 'flyer-a5', label: 'Flyer (A5)', desc: '3000 × 4250px' },
+  { value: 'social-square', label: 'Social Post (Square)', desc: '3000 × 3000px' },
+  { value: 'banner-16x9', label: 'Banner (16:9)', desc: '3000 × 1688px' },
 ] as const;
 
 const COLOR_KEYS = [
@@ -82,13 +83,14 @@ const SCHEME_COLOR_OPTIONS = [
   'surfaceContainerLow', 'surfaceContainer', 'surfaceContainerHigh', 'surfaceContainerHighest',
 ];
 
-function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensions }: {
+function LayoutPreview({ suggestion, image, primaryText, secondaryText, content, dimensions }: {
   suggestion: LayoutSuggestion; image?: string; primaryText: string;
-  secondaryText: string; dimensions: { width: number; height: number };
+  secondaryText: string; content: string; dimensions: { width: number; height: number };
 }) {
   const { layout } = suggestion;
   const { colorUsage, spacing } = layout;
-  const scale = Math.min(1, 320 / dimensions.width);
+  const maxPreviewWidth = 320;
+  const scale = Math.min(1, maxPreviewWidth / dimensions.width);
   const w = dimensions.width * scale;
   const h = dimensions.height * scale;
 
@@ -100,13 +102,18 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensio
         {image && layout.heroPosition === 'top' && (
           <Box sx={{ flex: 1, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '40%' }} />
         )}
-        <Box sx={{ p: spacing.padding * scale, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.gap * scale * 0.5, flex: 1, justifyContent: 'center' }}>
-          <Typography sx={{ fontWeight: 700, fontSize: Math.max(10, 16 * scale), color: colorUsage.text, textAlign: 'center', fontFamily, lineHeight: 1.2, px: 1 }}>
+        <Box sx={{ p: spacing.padding * scale, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.gap * scale * 0.3, flex: 1, justifyContent: 'center' }}>
+          <Typography sx={{ fontWeight: 700, fontSize: Math.max(8, 16 * scale), color: colorUsage.text, textAlign: 'center', fontFamily, lineHeight: 1.2, px: 1 }}>
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(8, 11 * scale), color: colorUsage.accent, textAlign: 'center', fontFamily, opacity: 0.8 }}>
+            <Typography sx={{ fontSize: Math.max(6, 11 * scale), color: colorUsage.accent, textAlign: 'center', fontFamily, opacity: 0.8 }}>
               {secondaryText}
+            </Typography>
+          )}
+          {content && (
+            <Typography sx={{ fontSize: Math.max(5, 9 * scale), color: colorUsage.text, textAlign: 'center', fontFamily, opacity: 0.65, lineHeight: 1.4, px: 2, mt: 0.5 }}>
+              {content}
             </Typography>
           )}
         </Box>
@@ -120,13 +127,18 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensio
         {image && layout.heroPosition === 'left' && (
           <Box sx={{ width: '45%', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
-        <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: spacing.gap * scale * 0.5, pl: image ? 2 : spacing.padding * scale }}>
-          <Typography sx={{ fontWeight: 700, fontSize: Math.max(10, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
+        <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: spacing.gap * scale * 0.3, pl: image ? 2 : spacing.padding * scale }}>
+          <Typography sx={{ fontWeight: 700, fontSize: Math.max(7, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(8, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
               {secondaryText}
+            </Typography>
+          )}
+          {content && (
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.5 }}>
+              {content}
             </Typography>
           )}
         </Box>
@@ -136,17 +148,22 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensio
 
   if (layout.type === 'split-vertical') {
     return (
-      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ width: w, height: h, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' }}>
         {image && layout.heroPosition === 'top' && (
-          <Box sx={{ height: '45%', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+          <Box sx={{ flex: 1, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
-        <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: spacing.gap * scale * 0.5, bgcolor: colorUsage.card }}>
-          <Typography sx={{ fontWeight: 700, fontSize: Math.max(10, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
+        <Box sx={{ bgcolor: colorUsage.card, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', gap: spacing.gap * scale * 0.3, justifyContent: 'center', flex: image ? 1 : 1 }}>
+          <Typography sx={{ fontWeight: 700, fontSize: Math.max(7, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(8, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
               {secondaryText}
+            </Typography>
+          )}
+          {content && (
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.5 }}>
+              {content}
             </Typography>
           )}
         </Box>
@@ -160,13 +177,18 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensio
         {image && (
           <Box sx={{ position: 'absolute', inset: 0, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
-        <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: colorUsage.card, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', gap: spacing.gap * scale * 0.3, backdropFilter: 'blur(8px)' }}>
-          <Typography sx={{ fontWeight: 700, fontSize: Math.max(10, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
+        <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: colorUsage.card, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', gap: spacing.gap * scale * 0.2, backdropFilter: 'blur(8px)' }}>
+          <Typography sx={{ fontWeight: 700, fontSize: Math.max(7, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2 }}>
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(8, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.8 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.8 }}>
               {secondaryText}
+            </Typography>
+          )}
+          {content && (
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.3 }}>
+              {content}
             </Typography>
           )}
         </Box>
@@ -180,14 +202,19 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, dimensio
       {image && layout.heroPosition === 'top' && (
         <Box sx={{ height: '35%', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
       )}
-      <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', gap: spacing.gap * scale * 0.5 }}>
+      <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', gap: spacing.gap * scale * 0.3 }}>
         <Divider sx={{ width: 40 * scale, mb: spacing.gap * scale * 0.3, borderColor: colorUsage.accent }} />
-        <Typography sx={{ fontWeight: 700, fontSize: Math.max(10, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2, textAlign: 'right' }}>
+        <Typography sx={{ fontWeight: 700, fontSize: Math.max(7, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2, textAlign: 'right' }}>
           {primaryText}
         </Typography>
         {secondaryText && (
-          <Typography sx={{ fontSize: Math.max(8, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7, textAlign: 'right' }}>
+          <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7, textAlign: 'right' }}>
             {secondaryText}
+          </Typography>
+        )}
+        {content && (
+          <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, textAlign: 'right', mt: 0.5 }}>
+            {content}
           </Typography>
         )}
       </Box>
@@ -201,6 +228,7 @@ export default function LayoutLabSection() {
 
   const [primaryText, setPrimaryText] = useState('');
   const [secondaryText, setSecondaryText] = useState('');
+  const [content, setContent] = useState('');
   const [format, setFormat] = useState<'flyer-a5' | 'social-square' | 'banner-16x9'>('social-square');
   const [heroImage, setHeroImage] = useState<string | undefined>();
   const [heroImageName, setHeroImageName] = useState<string>('');
@@ -248,6 +276,7 @@ export default function LayoutLabSection() {
       const payload: LayoutInput = {
         primaryText: primaryText.trim(),
         secondaryText: secondaryText.trim(),
+        content: content.trim(),
         format,
         heroImage,
         tokens: {
@@ -424,6 +453,22 @@ export default function LayoutLabSection() {
             />
           </Stack>
 
+          {/* Content */}
+          <TextField
+            label="Content / Message"
+            placeholder="e.g. Shop now and discover our latest arrivals with free shipping on all orders over $50."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            fullWidth
+            size="small"
+            multiline
+            minRows={2}
+            maxRows={5}
+            slotProps={{ htmlInput: { maxLength: 300 } }}
+            helperText={`${content.length}/300 — body copy, call-to-action, or details`}
+            sx={{ '& .MuiInputBase-root': { fontSize: 13 } }}
+          />
+
           {/* Format & Generate */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'flex-end' } }}>
             <TextField
@@ -504,6 +549,7 @@ export default function LayoutLabSection() {
                         image={heroImage}
                         primaryText={primaryText}
                         secondaryText={secondaryText}
+                        content={content}
                         dimensions={result.dimensions}
                       />
                     </Box>
