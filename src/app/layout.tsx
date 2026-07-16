@@ -11,6 +11,21 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.svg',
   },
+  openGraph: {
+    title: 'Oluwasegun Design System',
+    description: 'Material Design 3 tokens, scales, and components — all configurable and exportable.',
+    url: 'https://oluwasegun-design-system.vercel.app/',
+    images: [
+      {
+        url: 'https://oluwasegun-design-system.vercel.app/favicon.svg',
+        width: 512,
+        height: 512,
+        alt: 'Oluwasegun Design System',
+      },
+    ],
+    siteName: 'Oluwasegun Design System',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
