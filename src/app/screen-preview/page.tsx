@@ -2,49 +2,45 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
-  Box, Typography, Card, CardContent, CardActionArea, Stack, IconButton,
-  Chip, Divider, Tooltip, CircularProgress,
+  Box, Typography, Stack, IconButton, Tooltip, Chip, CircularProgress,
 } from '@mui/material';
 import {
+  ArrowBack as BackIcon,
   DesktopWindows as DesktopIcon,
   Tablet as TabletIcon,
   PhoneIphone as MobileIcon,
   OpenInNew as OpenIcon,
   DarkMode, LightMode,
 } from '@mui/icons-material';
+import Link from 'next/link';
 import { useThemeStore } from '@/store';
 import { generateSchemeFromConfig } from '@/theme/scheme';
 import { generatePreviewTokens } from '@/lib/token-utils';
 import { SCREENS, type ScreenType } from '@/lib/screen-templates';
 
 const VIEWPORTS = [
-  { key: 'desktop', label: 'Desktop', icon: <DesktopIcon />, width: '100%' },
-  { key: 'tablet', label: 'Tablet', icon: <TabletIcon />, width: 768 },
-  { key: 'mobile', label: 'Mobile', icon: <MobileIcon />, width: 375 },
+  { key: 'desktop', label: 'Desktop', icon: <DesktopIcon sx={{ fontSize: 18 }} />, width: '100%' },
+  { key: 'tablet', label: 'Tablet', icon: <TabletIcon sx={{ fontSize: 18 }} />, width: 768 },
+  { key: 'mobile', label: 'Mobile', icon: <MobileIcon sx={{ fontSize: 18 }} />, width: 375 },
 ] as const;
 
 type ViewportKey = typeof VIEWPORTS[number]['key'];
-
 const STORAGE_KEY = 'screen-preview-preferences';
 
 function loadPreferences(): { screenType: ScreenType; viewport: ViewportKey } {
   if (typeof window === 'undefined') return { screenType: 'finance', viewport: 'desktop' };
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch { /* */ }
   return { screenType: 'finance', viewport: 'desktop' };
 }
 
-function savePreferences(screenType: ScreenType, viewport: ViewportKey) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ screenType, viewport })); } catch { /* ignore */ }
+function savePreferences(s: ScreenType, v: ViewportKey) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ screenType: s, viewport: v })); } catch { /* */ }
 }
 
 export default function ScreenPreviewPage() {
   const config = useThemeStore((s) => s.config);
   const toggleMode = useThemeStore((s) => s.toggleMode);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
   const [prefs, setPrefs] = useState(loadPreferences);
   const activeScreen = prefs.screenType;
   const activeViewport = prefs.viewport;
@@ -52,236 +48,291 @@ export default function ScreenPreviewPage() {
 
   const [debouncedTokens, setDebouncedTokens] = useState(() => generatePreviewTokens(config));
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedTokens(generatePreviewTokens(config));
-    }, 300);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setDebouncedTokens(generatePreviewTokens(config)), 300);
+    return () => clearTimeout(t);
   }, [config]);
 
-  const sendToIframe = useCallback((screenType: ScreenType, tokens: ReturnType<typeof generatePreviewTokens>) => {
-    if (!iframeRef.current?.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      { type: 'UPDATE_PREVIEW', payload: { screenType, tokens } },
-      '*'
-    );
+  const sendToIframe = useCallback((st: ScreenType, tk: ReturnType<typeof generatePreviewTokens>) => {
+    iframeRef.current?.contentWindow?.postMessage({ type: 'UPDATE_PREVIEW', payload: { screenType: st, tokens: tk } }, '*');
   }, []);
 
-  useEffect(() => {
-    if (iframeReady) sendToIframe(activeScreen, debouncedTokens);
-  }, [debouncedTokens, activeScreen, iframeReady, sendToIframe]);
+  useEffect(() => { if (iframeReady) sendToIframe(activeScreen, debouncedTokens); }, [debouncedTokens, activeScreen, iframeReady, sendToIframe]);
 
   useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'IFRAME_READY') setIframeReady(true);
-    };
-    window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    const h = (e: MessageEvent) => { if (e.data?.type === 'IFRAME_READY') setIframeReady(true); };
+    window.addEventListener('message', h);
+    return () => window.removeEventListener('message', h);
   }, []);
 
   const handleSelectScreen = useCallback((type: ScreenType) => {
-    setPrefs((p) => {
-      const next = { ...p, screenType: type };
-      savePreferences(next.screenType, next.viewport);
-      return next;
-    });
+    setPrefs((p) => { const n = { ...p, screenType: type }; savePreferences(n.screenType, n.viewport); return n; });
   }, []);
 
   const handleSelectViewport = useCallback((vp: ViewportKey) => {
-    setPrefs((p) => {
-      const next = { ...p, viewport: vp };
-      savePreferences(next.screenType, next.viewport);
-      return next;
-    });
+    setPrefs((p) => { const n = { ...p, viewport: vp }; savePreferences(n.screenType, n.viewport); return n; });
   }, []);
 
   const activeVp = VIEWPORTS.find((v) => v.key === activeViewport)!;
   const iframeWidth = typeof activeVp.width === 'number' ? activeVp.width : '100%';
   const scheme = useMemo(() => generateSchemeFromConfig(config), [config]);
+  const activeMeta = useMemo(() => SCREENS.find((s) => s.type === activeScreen), [activeScreen]);
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: '#0f0f13' }}>
-      {/* Sidebar */}
+    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: '#0c0c10' }}>
+      {/* ── Sidebar ── */}
       <Box sx={{
-        width: 300, flexShrink: 0, bgcolor: '#1a1a24', borderRight: '1px solid #2a2a3a',
-        display: 'flex', flexDirection: 'column', overflow: 'auto',
+        width: 280, flexShrink: 0, bgcolor: '#14141c', borderRight: '1px solid #1e1e2e',
+        display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0,
       }}>
-        {/* Logo */}
-        <Box sx={{ p: 2.5, borderBottom: '1px solid #2a2a3a' }}>
+        {/* Back + Brand */}
+        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid #1e1e2e' }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+            <Tooltip title="Back to dashboard">
+              <IconButton
+                component={Link}
+                href="/dashboard"
+                size="small"
+                sx={{ color: '#666', '&:hover': { color: '#fff', bgcolor: '#ffffff0a' } }}
+              >
+                <BackIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Typography variant="caption" sx={{ color: '#555', fontSize: 11 }}>Back to Dashboard</Typography>
+          </Stack>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Box sx={{
-              width: 32, height: 32, borderRadius: 1.5,
+              width: 36, height: 36, borderRadius: 2,
               background: `linear-gradient(135deg, ${scheme.primary}, ${scheme.tertiary})`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 2px 8px ${scheme.primary}33`,
             }}>
-              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 12 }}>O</Typography>
+              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>O</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle2" sx={{ color: '#fff', fontWeight: 600, lineHeight: 1.2 }}>Screen Preview</Typography>
-              <Typography variant="caption" sx={{ color: '#888', fontSize: 11 }}>Design System Preview</Typography>
+              <Typography variant="subtitle2" sx={{ color: '#eee', fontWeight: 600, lineHeight: 1.2, fontSize: 13 }}>Screen Preview</Typography>
+              <Typography variant="caption" sx={{ color: '#555', fontSize: 10 }}>Live design system preview</Typography>
             </Box>
           </Stack>
         </Box>
 
-        {/* Theme toggle */}
-        <Box sx={{ px: 2.5, py: 1.5, borderBottom: '1px solid #2a2a3a' }}>
+        {/* Theme Toggle */}
+        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #1e1e2e' }}>
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="caption" sx={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>Theme</Typography>
+            <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
             <Tooltip title={`Switch to ${config.mode === 'light' ? 'dark' : 'light'} mode`}>
-              <IconButton size="small" onClick={toggleMode} sx={{ color: '#aaa' }}>
-                {config.mode === 'light' ? <DarkMode fontSize="small" /> : <LightMode fontSize="small" />}
+              <IconButton
+                size="small"
+                onClick={toggleMode}
+                sx={{
+                  color: '#666', width: 28, height: 28,
+                  '&:hover': { color: '#fff', bgcolor: '#ffffff0a' },
+                }}
+              >
+                {config.mode === 'light' ? <DarkMode sx={{ fontSize: 15 }} /> : <LightMode sx={{ fontSize: 15 }} />}
               </IconButton>
             </Tooltip>
           </Stack>
-          <Chip
-            label={config.mode === 'light' ? 'Light Mode' : 'Dark Mode'}
-            size="small"
-            sx={{
-              mt: 0.5, bgcolor: config.mode === 'light' ? '#2a2a3a' : '#333355',
-              color: '#ddd', fontWeight: 500, fontSize: 11,
-            }}
-          />
         </Box>
 
         {/* Viewport Controls */}
-        <Box sx={{ px: 2.5, py: 2, borderBottom: '1px solid #2a2a3a' }}>
-          <Typography variant="caption" sx={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, display: 'block', mb: 1.5 }}>
+        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid #1e1e2e' }}>
+          <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25 }}>
             Viewport
           </Typography>
-          <Stack direction="row" spacing={0.75}>
-            {VIEWPORTS.map((vp) => (
-              <Tooltip key={vp.key} title={vp.label}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0.5 }}>
+            {VIEWPORTS.map((vp) => {
+              const isActive = activeViewport === vp.key;
+              return (
                 <Box
+                  key={vp.key}
                   onClick={() => handleSelectViewport(vp.key)}
                   sx={{
-                    flex: 1, py: 1.25, display: 'flex', flexDirection: 'column', gap: 0.5,
-                    borderRadius: 1.5, cursor: 'pointer', transition: 'all 0.15s',
-                    alignItems: 'center',
-                    bgcolor: activeViewport === vp.key ? `${scheme.primary}30` : '#2a2a3a',
-                    border: `1.5px solid ${activeViewport === vp.key ? scheme.primary : 'transparent'}`,
-                    '&:hover': { bgcolor: activeViewport === vp.key ? `${scheme.primary}40` : '#333344' },
+                    py: 1.25, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
+                    borderRadius: 1.5, cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                    bgcolor: isActive ? `${scheme.primary}18` : 'transparent',
+                    border: `1px solid ${isActive ? `${scheme.primary}50` : '#1e1e2e'}`,
+                    '&:hover': { bgcolor: isActive ? `${scheme.primary}22` : '#ffffff06' },
                   }}
                 >
-                  <Box sx={{ color: activeViewport === vp.key ? scheme.primary : '#888', display: 'flex' }}>
+                  <Box sx={{ color: isActive ? scheme.primary : '#555', transition: 'color 0.2s' }}>
                     {vp.icon}
                   </Box>
                   <Typography variant="caption" sx={{
-                    color: activeViewport === vp.key ? scheme.primary : '#888',
-                    fontWeight: activeViewport === vp.key ? 600 : 400, fontSize: 10,
+                    color: isActive ? scheme.primary : '#555', fontWeight: isActive ? 600 : 400,
+                    fontSize: 10, transition: 'color 0.2s',
                   }}>
                     {vp.label}
                   </Typography>
                 </Box>
-              </Tooltip>
-            ))}
-          </Stack>
+              );
+            })}
+          </Box>
           {activeViewport !== 'desktop' && (
-            <Typography variant="caption" sx={{ color: '#666', display: 'block', mt: 1, textAlign: 'center' }}>
-              {activeVp.width}px wide
+            <Typography variant="caption" sx={{ color: '#444', display: 'block', mt: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: 10 }}>
+              {activeVp.width}px
             </Typography>
           )}
         </Box>
 
-        {/* Screen Categories */}
-        <Box sx={{ px: 2.5, py: 2, flex: 1, overflow: 'auto' }}>
-          <Typography variant="caption" sx={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, display: 'block', mb: 1.5 }}>
-            Screen Type
+        {/* Screen Type List */}
+        <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 2 }}>
+          <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1, px: 0.5 }}>
+            Screens
           </Typography>
-          <Stack spacing={1}>
+          <Stack spacing={0.5}>
             {SCREENS.map((screen) => {
               const isActive = activeScreen === screen.type;
               return (
-                <Card
+                <Box
                   key={screen.type}
+                  onClick={() => handleSelectScreen(screen.type)}
                   sx={{
-                    bgcolor: isActive ? `${scheme.primary}20` : '#1e1e2e',
-                    border: `1.5px solid ${isActive ? scheme.primary : '#2a2a3a'}`,
-                    borderRadius: 2,
-                    transition: 'all 0.15s',
-                    '&:hover': { borderColor: isActive ? scheme.primary : '#444' },
+                    px: 1.5, py: 1.25, borderRadius: 1.5, cursor: 'pointer',
+                    transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                    bgcolor: isActive ? `${scheme.primary}14` : 'transparent',
+                    border: `1px solid ${isActive ? `${scheme.primary}40` : 'transparent'}`,
+                    '&:hover': { bgcolor: isActive ? `${scheme.primary}1a` : '#ffffff06' },
+                    position: 'relative',
                   }}
                 >
-                  <CardActionArea onClick={() => handleSelectScreen(screen.type)} sx={{ p: 1.5 }}>
-                    <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-                      <Box sx={{ fontSize: 24 }}>{screen.icon}</Box>
-                      <Box sx={{ minWidth: 0 }}>
-                        <Typography variant="body2" sx={{ color: isActive ? '#fff' : '#ccc', fontWeight: isActive ? 600 : 400, fontSize: 13 }}>
-                          {screen.label}
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#777', fontSize: 11, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {screen.description}
-                        </Typography>
-                      </Box>
-                      {isActive && (
-                        <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: scheme.primary, flexShrink: 0 }} />
-                      )}
-                    </Stack>
-                  </CardActionArea>
-                </Card>
+                  {isActive && (
+                    <Box sx={{
+                      position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+                      width: 3, height: 20, borderRadius: '0 3px 3px 0', bgcolor: scheme.primary,
+                    }} />
+                  )}
+                  <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+                    <Typography sx={{ fontSize: 18, lineHeight: 1 }}>{screen.icon}</Typography>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Typography variant="body2" sx={{
+                        color: isActive ? '#eee' : '#999', fontWeight: isActive ? 600 : 400,
+                        fontSize: 12.5, lineHeight: 1.3, transition: 'color 0.15s',
+                      }}>
+                        {screen.label}
+                      </Typography>
+                      <Typography variant="caption" sx={{
+                        color: '#444', fontSize: 10.5, display: 'block',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        lineHeight: 1.4,
+                      }}>
+                        {screen.description}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
               );
             })}
           </Stack>
         </Box>
 
-        {/* Footer */}
-        <Box sx={{ px: 2.5, py: 1.5, borderTop: '1px solid #2a2a3a' }}>
-          <Typography variant="caption" sx={{ color: '#555', fontSize: 10 }}>
-            Tokens update live as you edit in the design system
+        {/* Sidebar Footer */}
+        <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid #1e1e2e' }}>
+          <Typography variant="caption" sx={{ color: '#333', fontSize: 10, lineHeight: 1.4 }}>
+            Tokens sync live from the design system
           </Typography>
         </Box>
       </Box>
 
-      {/* Preview Area */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Top bar */}
-        <Box sx={{ px: 3, py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #2a2a3a', bgcolor: '#1a1a24' }}>
+      {/* ── Main Content ── */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        {/* Top Bar */}
+        <Box sx={{
+          px: 3, py: 1.25, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          borderBottom: '1px solid #1e1e2e', bgcolor: '#14141c',
+          position: 'sticky', top: 0, zIndex: 10,
+        }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>
-              {SCREENS.find((s) => s.type === activeScreen)?.label}
+            <Box sx={{
+              width: 8, height: 8, borderRadius: '50%',
+              bgcolor: iframeReady ? '#22c55e' : '#eab308',
+              boxShadow: `0 0 6px ${iframeReady ? '#22c55e44' : '#eab30844'}`,
+              transition: 'all 0.3s',
+            }} />
+            <Typography variant="body2" sx={{ color: '#ccc', fontWeight: 500, fontSize: 13 }}>
+              {activeMeta?.label}
             </Typography>
-            <Chip label={activeVp.label} size="small" sx={{ bgcolor: '#2a2a3a', color: '#aaa', fontSize: 10, height: 20 }} />
+            <Chip
+              label={activeVp.label}
+              size="small"
+              sx={{
+                bgcolor: '#1e1e2e', color: '#777', fontSize: 10, height: 20,
+                fontWeight: 500, border: '1px solid #2a2a3a',
+              }}
+            />
             {activeViewport !== 'desktop' && (
-              <Chip label={`${activeVp.width}px`} size="small" sx={{ bgcolor: '#2a2a3a', color: '#888', fontSize: 10, height: 20, fontFamily: 'monospace' }} />
+              <Chip
+                label={`${activeVp.width}px`}
+                size="small"
+                sx={{
+                  bgcolor: '#1e1e2e', color: '#555', fontSize: 10, height: 20,
+                  fontFamily: 'monospace', border: '1px solid #2a2a3a',
+                }}
+              />
             )}
           </Stack>
-          <Stack direction="row" spacing={0.5}>
-            <Tooltip title="Open in new tab">
-              <IconButton
-                size="small"
-                component="a"
-                href="/screen-preview/preview"
-                target="_blank"
-                sx={{ color: '#888' }}
-              >
-                <OpenIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+          <Tooltip title="Open in new tab">
+            <IconButton
+              size="small"
+              component="a"
+              href="/screen-preview/preview"
+              target="_blank"
+              sx={{
+                color: '#555', width: 32, height: 32, borderRadius: 1.5,
+                '&:hover': { color: '#aaa', bgcolor: '#ffffff08' },
+              }}
+            >
+              <OpenIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
         </Box>
 
-        {/* Iframe container */}
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', p: 2, overflow: 'auto', bgcolor: '#0f0f13' }}>
+        {/* Preview Canvas */}
+        <Box sx={{
+          flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start',
+          p: 3, overflow: 'auto', bgcolor: '#0c0c10',
+        }}>
           <Box sx={{
-            width: iframeWidth,
-            maxWidth: '100%',
-            height: 'calc(100vh - 100px)',
-            border: '1px solid #2a2a3a',
-            borderRadius: 2,
-            overflow: 'hidden',
-            bgcolor: '#fff',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
-            transition: 'width 0.3s ease',
+            width: iframeWidth, maxWidth: '100%',
+            height: 'calc(100vh - 96px)',
+            borderRadius: 2.5, overflow: 'hidden',
+            bgcolor: '#000',
+            border: '1px solid #1e1e2e',
+            boxShadow: '0 0 0 1px #1e1e2e, 0 8px 32px rgba(0,0,0,0.4)',
+            transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
             position: 'relative',
           }}>
+            {/* Device Frame Chrome */}
+            <Box sx={{
+              height: 32, bgcolor: '#14141c', borderBottom: '1px solid #1e1e2e',
+              display: 'flex', alignItems: 'center', px: 1.5, gap: 0.75,
+            }}>
+              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ff5f57' }} />
+              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#febc2e' }} />
+              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#28c840' }} />
+              <Box sx={{ flex: 1, mx: 2, py: 0.25, borderRadius: 1, bgcolor: '#1e1e2e', display: 'flex', justifyContent: 'center' }}>
+                <Typography sx={{ color: '#444', fontSize: 9, fontFamily: 'monospace' }}>
+                  {activeScreen}.preview
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Loading State */}
             {!iframeReady && (
-              <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fafafa', zIndex: 10 }}>
-                <CircularProgress size={28} />
+              <Box sx={{
+                position: 'absolute', inset: 0, top: 32,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                bgcolor: '#0c0c10', zIndex: 10, gap: 1.5,
+              }}>
+                <CircularProgress size={24} sx={{ color: scheme.primary }} />
+                <Typography sx={{ color: '#444', fontSize: 11 }}>Loading preview...</Typography>
               </Box>
             )}
+
             <iframe
               ref={iframeRef}
               src="/screen-preview/preview"
               title="Screen Preview"
-              style={{ width: '100%', height: '100%', border: 'none' }}
+              style={{ width: '100%', height: 'calc(100% - 32px)', border: 'none' }}
             />
           </Box>
         </Box>
