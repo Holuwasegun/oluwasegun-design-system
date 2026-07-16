@@ -2,40 +2,22 @@
 
 import React, { useState, useCallback } from 'react';
 import {
-  Box, Typography, Stack, Chip, Snackbar, Alert, Tooltip, Divider,
+  Box, Typography, Stack, Chip, Snackbar, Alert, Tooltip, Divider, IconButton,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useThemeStore } from '@/store';
 import { generateTypeScale, type TypeStyle } from '@/theme/scheme';
 import { copyToClipboard } from '@/lib/brand-gallery-utils';
 
-const BRAND_COPY: Record<string, string> = {
-  'Display Large': 'Design the Future',
-  'Display Medium': 'Design the Future',
-  'Display Small': 'Design the Future',
-  'Headline Large': 'Built for creators who move fast',
-  'Headline Medium': 'Built for creators',
-  'Headline Small': 'Built for creators',
-  'Title Large': 'A system that scales with you',
-  'Title Medium': 'A system that scales',
-  'Title Small': 'A system that scales',
-  'Body Large': 'Every component is crafted with intention, tested in real products, and documented for seamless adoption.',
-  'Body Medium': 'Every component is crafted with intention and tested in real products.',
-  'Body Small': 'Crafted with intention.',
-  'Label Large': 'Get Started',
-  'Label Medium': 'Learn More',
-  'Label Small': 'View',
-};
-
 const TYPE_GROUPS = [
   {
     label: 'Titles',
-    description: 'Large, expressive text for hero moments and headings',
+    description: 'Display & Headline — large, expressive text for hero moments',
     families: ['display', 'headline'],
   },
   {
     label: 'Text',
-    description: 'Readable content for paragraphs, captions, and UI labels',
+    description: 'Body, Title & Label — readable content for paragraphs and UI',
     families: ['title', 'body', 'label'],
   },
 ] as const;
@@ -43,220 +25,137 @@ const TYPE_GROUPS = [
 const PAIRINGS = [
   {
     title: 'Hero Section',
-    description: 'Bold impact with readable body',
-    headline: 'Display Large',
-    body: 'Body Large',
+    description: 'Bold impact + readable body',
+    styles: ['Display Large', 'Body Large'],
   },
   {
     title: 'Content Block',
-    description: 'Section header with supporting text',
-    headline: 'Headline Medium',
-    body: 'Body Medium',
+    description: 'Section header + supporting text',
+    styles: ['Headline Medium', 'Body Medium'],
   },
   {
     title: 'Compact Card',
-    description: 'Dense layout with clear labels',
-    headline: 'Title Medium',
-    body: 'Label Large',
+    description: 'Dense layout + clear labels',
+    styles: ['Title Medium', 'Label Large'],
+  },
+  {
+    title: 'Navigation',
+    description: 'UI labels + small text',
+    styles: ['Label Medium', 'Label Small'],
   },
 ] as const;
 
-function getRelativeSize(fontSize: number, allSizes: number[]): number {
-  const max = Math.max(...allSizes);
-  const min = Math.min(...allSizes);
-  if (max === min) return 50;
-  return ((fontSize - min) / (max - min)) * 100;
+function buildCss(style: TypeStyle, fontFamily: string): string {
+  return [
+    `font-family: ${fontFamily};`,
+    `font-size: ${style.fontSize}px;`,
+    `font-weight: ${style.fontWeight};`,
+    `line-height: ${style.lineHeight};`,
+    `letter-spacing: ${style.letterSpacing}px;`,
+  ].join(' ');
 }
 
-function TypeCard({
-  style, fontFamily, allSizes,
+function buildPairingCss(styles: TypeStyle[], fontFamily: string): string {
+  return styles.map((s) => `/* ${s.name} */\n${buildCss(s, fontFamily)}`).join('\n\n');
+}
+
+function TypeRow({
+  style, fontFamily, onCopy,
 }: {
-  style: TypeStyle; fontFamily: string; allSizes: number[];
+  style: TypeStyle; fontFamily: string; onCopy: (text: string, label: string) => void;
 }) {
-  const [copied, setCopied] = useState(false);
-  const [snack, setSnack] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const handleCopy = useCallback(async () => {
-    const css = `font-size: ${style.fontSize}px; font-weight: ${style.fontWeight}; line-height: ${style.lineHeight}; letter-spacing: ${style.letterSpacing}px; font-family: ${fontFamily};`;
-    const ok = await copyToClipboard(css);
-    if (ok) {
-      setCopied(true);
-      setSnack(true);
-      setTimeout(() => setCopied(false), 1500);
-    }
-  }, [style, fontFamily]);
-
-  const relativeSize = getRelativeSize(style.fontSize, allSizes);
-  const sampleText = BRAND_COPY[style.name] || 'Design the Future';
+  const css = buildCss(style, fontFamily);
 
   return (
-    <>
-      <Box
-        sx={{
-          px: { xs: 1.5, sm: 2.5 },
-          py: { xs: 1.5, sm: 2 },
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'divider',
-          cursor: 'pointer',
-          transition: 'all 0.2s',
-          position: 'relative',
-          '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
-          '&:hover .copy-icon': { opacity: 1 },
-        }}
-        onClick={handleCopy}
-      >
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', mb: 0.75 }}>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}>
-                {style.name}
-              </Typography>
-              <Tooltip
-                title={
-                  <Box sx={{ p: 0.5 }}>
-                    <Typography sx={{ fontSize: 11, fontFamily: 'monospace' }}>
-                      {`font-size: ${style.fontSize}px`}
-                    </Typography>
-                    <Typography sx={{ fontSize: 11, fontFamily: 'monospace' }}>
-                      {`font-weight: ${style.fontWeight}`}
-                    </Typography>
-                    <Typography sx={{ fontSize: 11, fontFamily: 'monospace' }}>
-                      {`line-height: ${style.lineHeight}`}
-                    </Typography>
-                    <Typography sx={{ fontSize: 11, fontFamily: 'monospace' }}>
-                      {`letter-spacing: ${style.letterSpacing}px`}
-                    </Typography>
-                  </Box>
-                }
-                arrow
-                placement="top"
-              >
-                <Chip
-                  label={`${style.fontSize}px`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ fontFamily: 'monospace', fontSize: '0.6rem', height: 18, cursor: 'help' }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </Tooltip>
-              <ContentCopyIcon className="copy-icon" sx={{ fontSize: 13, color: 'text.secondary', opacity: 0, transition: 'opacity 0.2s' }} />
-            </Stack>
+    <Stack
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        px: { xs: 1.5, sm: 2 },
+        py: 1,
+        borderRadius: 1.5,
+        border: '1px solid',
+        borderColor: 'divider',
+        transition: 'all 0.15s',
+        '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+      }}
+    >
+      {/* Name */}
+      <Typography variant="body2" sx={{ fontWeight: 600, fontSize: 12.5, minWidth: { xs: 100, sm: 130 }, flexShrink: 0 }}>
+        {style.name}
+      </Typography>
 
-            {/* Sample text */}
-            <Typography
-              sx={{
-                fontSize: { xs: Math.min(style.fontSize, 28), sm: style.fontSize },
-                fontWeight: style.fontWeight,
-                lineHeight: style.lineHeight,
-                letterSpacing: `${style.letterSpacing}px`,
-                fontFamily,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: style.fontSize > 24 ? 'normal' : 'nowrap',
-                color: 'text.primary',
-              }}
-            >
-              {sampleText}
-            </Typography>
-          </Box>
+      {/* Specs */}
+      <Stack direction="row" spacing={0.5} sx={{ flex: 1, minWidth: 0, flexWrap: 'wrap', gap: 0.5 }}>
+        <Chip label={`${style.fontSize}px`} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace' }} />
+        <Chip label={`w${style.fontWeight}`} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace' }} />
+        <Chip label={`lh ${style.lineHeight}`} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace', display: { xs: 'none', sm: 'inline-flex' } }} />
+        <Chip label={`${style.letterSpacing}px`} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace', display: { xs: 'none', sm: 'inline-flex' } }} />
+      </Stack>
 
-          {/* Visual scale indicator */}
-          <Box sx={{ width: 48, flexShrink: 0, display: { xs: 'none', sm: 'flex' }, flexDirection: 'column', alignItems: 'flex-end', pt: 0.25 }}>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: 9, fontFamily: 'monospace', mb: 0.25 }}>
-              {style.fontSize}px
-            </Typography>
-            <Box sx={{ width: '100%', height: 6, borderRadius: 3, bgcolor: 'action.hover', overflow: 'hidden' }}>
-              <Box sx={{ width: `${relativeSize}%`, height: '100%', borderRadius: 3, bgcolor: 'primary.main', transition: 'width 0.3s' }} />
-            </Box>
-          </Box>
-        </Stack>
-
-        {/* Technical details - click to reveal */}
-        {expanded && (
-          <Stack direction="row" spacing={1.5} sx={{ mt: 1, pt: 1, borderTop: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', fontFamily: 'monospace' }}>
-              weight: {style.fontWeight}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', fontFamily: 'monospace' }}>
-              line-height: {style.lineHeight}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', fontFamily: 'monospace' }}>
-              tracking: {style.letterSpacing}px
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', fontFamily: 'monospace' }}>
-              {`--font-${style.name.toLowerCase().replace(/\s+/g, '-')}`}
-            </Typography>
-          </Stack>
-        )}
-      </Box>
-      <Snackbar open={snack} autoHideDuration={1500} onClose={() => setSnack(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="success" variant="filled" sx={{ borderRadius: 2 }}>CSS token copied</Alert>
-      </Snackbar>
-    </>
+      {/* Copy button */}
+      <Tooltip title="Copy CSS">
+        <IconButton
+          size="small"
+          onClick={(e) => { e.stopPropagation(); onCopy(css, `${style.name} CSS`); }}
+          sx={{ ml: 1, width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+        >
+          <ContentCopyIcon sx={{ fontSize: 14 }} />
+        </IconButton>
+      </Tooltip>
+    </Stack>
   );
 }
 
-const MemoizedTypeCard = React.memo(TypeCard);
+const MemoizedTypeRow = React.memo(TypeRow);
 
-function PairingCard({ pairing, typeScale, fontFamily }: {
+function PairingCard({
+  pairing, typeScale, fontFamily, onCopy,
+}: {
   pairing: typeof PAIRINGS[number]; typeScale: TypeStyle[]; fontFamily: string;
+  onCopy: (text: string, label: string) => void;
 }) {
-  const headlineStyle = typeScale.find((s) => s.name === pairing.headline);
-  const bodyStyle = typeScale.find((s) => s.name === pairing.body);
-  if (!headlineStyle || !bodyStyle) return null;
+  const pairedStyles = pairing.styles
+    .map((name) => typeScale.find((s) => s.name === name))
+    .filter(Boolean) as TypeStyle[];
+
+  if (pairedStyles.length === 0) return null;
+
+  const css = buildPairingCss(pairedStyles, fontFamily);
 
   return (
     <Box sx={{
-      p: { xs: 2, sm: 2.5 },
+      p: { xs: 1.5, sm: 2 },
       borderRadius: 2,
       border: '1px solid',
       borderColor: 'divider',
-      bgcolor: 'background.paper',
-      transition: 'all 0.2s',
-      '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' },
+      transition: 'all 0.15s',
+      '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
     }}>
-      <Stack spacing={1.5}>
-        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        <Box>
           <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: 13 }}>{pairing.title}</Typography>
-          <Chip label={pairing.description} size="small" sx={{ fontSize: 9, height: 18, bgcolor: 'action.hover' }} />
-        </Stack>
-        <Divider />
-        <Box sx={{
-          p: 2, borderRadius: 1.5, bgcolor: 'grey.50',
-          border: '1px solid', borderColor: 'divider',
-        }}>
-          <Typography
-            sx={{
-              fontSize: { xs: Math.min(headlineStyle.fontSize, 22), sm: Math.min(headlineStyle.fontSize, 28) },
-              fontWeight: headlineStyle.fontWeight,
-              lineHeight: headlineStyle.lineHeight,
-              fontFamily,
-              mb: 0.75,
-              color: 'text.primary',
-            }}
-          >
-            {BRAND_COPY[headlineStyle.name] || 'Design the Future'}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: Math.min(bodyStyle.fontSize, 13), sm: bodyStyle.fontSize },
-              fontWeight: bodyStyle.fontWeight,
-              lineHeight: bodyStyle.lineHeight,
-              letterSpacing: `${bodyStyle.letterSpacing}px`,
-              fontFamily,
-              color: 'text.secondary',
-            }}
-          >
-            {BRAND_COPY[bodyStyle.name] || 'Crafted with intention.'}
-          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 11 }}>{pairing.description}</Typography>
         </Box>
-        <Stack direction="row" spacing={0.5}>
-          <Chip label={pairing.headline} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace' }} />
-          <Chip label="+" size="small" variant="outlined" sx={{ fontSize: 9, height: 18, minWidth: 20 }} />
-          <Chip label={pairing.body} size="small" variant="outlined" sx={{ fontSize: 9, height: 18, fontFamily: 'monospace' }} />
-        </Stack>
+        <Tooltip title="Copy all CSS">
+          <IconButton
+            size="small"
+            onClick={() => onCopy(css, `${pairing.title} CSS`)}
+            sx={{ width: 28, height: 28, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+          >
+            <ContentCopyIcon sx={{ fontSize: 14 }} />
+          </IconButton>
+        </Tooltip>
+      </Stack>
+      <Stack spacing={0.5}>
+        {pairedStyles.map((s) => (
+          <Stack key={s.name} direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
+            <Chip label={s.name} size="small" sx={{ fontSize: 9, height: 18, bgcolor: 'action.hover', fontWeight: 500 }} />
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontFamily: 'monospace', fontSize: 9 }}>
+              {s.fontSize}px / w{s.fontWeight}
+            </Typography>
+          </Stack>
+        ))}
       </Stack>
     </Box>
   );
@@ -271,39 +170,62 @@ export default function TypographySection() {
     ? `'${config.typography.fontFamily.trim()}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
     : "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
-  const allSizes = typeScale.map((s) => s.fontSize);
+  const [snack, setSnack] = useState<{ open: boolean; msg: string }>({ open: false, msg: '' });
+
+  const handleCopy = useCallback(async (text: string, label: string) => {
+    const ok = await copyToClipboard(text);
+    if (ok) setSnack({ open: true, msg: `${label} copied` });
+  }, []);
+
+  const handleCopyAll = useCallback(() => {
+    const all = typeScale.map((s) => `/* ${s.name} */\n${buildCss(s, fontFamily)}`).join('\n\n');
+    handleCopy(all, 'All typography CSS');
+  }, [typeScale, fontFamily, handleCopy]);
 
   return (
     <Box>
       {/* Header */}
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-        Typography Scale
-      </Typography>
-      <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3, fontSize: { xs: '0.8125rem', md: '0.875rem' } }}>
-        Using <Box component="span" sx={{ fontFamily, fontWeight: 500 }}>{config.typography.fontFamily || 'Inter'}</Box> · Click any style to copy CSS · Hover chips for specs
-      </Typography>
+      <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 700, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
+            Typography Scale
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: { xs: '0.8125rem', md: '0.875rem' }, mt: 0.25 }}>
+            Using <Box component="span" sx={{ fontFamily, fontWeight: 500 }}>{config.typography.fontFamily || 'Inter'}</Box> · Click copy to grab CSS
+          </Typography>
+        </Box>
+        <Tooltip title="Copy all CSS">
+          <IconButton
+            size="small"
+            onClick={handleCopyAll}
+            sx={{ width: 32, height: 32, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+          >
+            <ContentCopyIcon sx={{ fontSize: 16 }} />
+          </IconButton>
+        </Tooltip>
+      </Stack>
 
       {/* Type groups */}
       {TYPE_GROUPS.map(({ label, description, families }) => {
         const styles = typeScale.filter((s) => (families as readonly string[]).includes(s.family));
         if (styles.length === 0) return null;
         return (
-          <Box key={label} sx={{ mb: { xs: 4, sm: 5 } }}>
-            <Stack sx={{ mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.125rem' } }}>
+          <Box key={label} sx={{ mb: { xs: 3, md: 4 } }}>
+            <Stack sx={{ mb: 1.5 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, fontSize: { xs: '0.9375rem', sm: '1.0625rem' } }}>
                 {label}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: { xs: '0.8125rem', md: '0.875rem' } }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 11 }}>
                 {description}
               </Typography>
             </Stack>
-            <Stack spacing={{ xs: 0.75, sm: 1 }}>
+            <Stack spacing={0.5}>
               {styles.map((style) => (
-                <MemoizedTypeCard
+                <MemoizedTypeRow
                   key={style.name}
                   style={style}
                   fontFamily={fontFamily}
-                  allSizes={allSizes}
+                  onCopy={handleCopy}
                 />
               ))}
             </Stack>
@@ -312,27 +234,38 @@ export default function TypographySection() {
       })}
 
       {/* Divider */}
-      <Divider sx={{ my: { xs: 4, md: 5 } }} />
+      <Divider sx={{ my: { xs: 3, md: 4 } }} />
 
       {/* Recommended Pairings */}
       <Box>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: { xs: '1rem', sm: '1.125rem' } }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.25, fontSize: { xs: '0.9375rem', sm: '1.0625rem' } }}>
           Recommended Pairings
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, fontSize: { xs: '0.8125rem', md: '0.875rem' } }}>
-          Curated combinations for common layout patterns
+        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2, fontSize: 11 }}>
+          Suggested font combinations for common layouts — click copy to grab the CSS
         </Typography>
-        <Stack spacing={2}>
+        <Stack spacing={1.5}>
           {PAIRINGS.map((pairing) => (
             <MemoizedPairingCard
               key={pairing.title}
               pairing={pairing}
               typeScale={typeScale}
               fontFamily={fontFamily}
+              onCopy={handleCopy}
             />
           ))}
         </Stack>
       </Box>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={1500}
+        onClose={() => setSnack({ open: false, msg: '' })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="success" variant="filled" sx={{ borderRadius: 2 }}>{snack.msg}</Alert>
+      </Snackbar>
     </Box>
   );
 }
