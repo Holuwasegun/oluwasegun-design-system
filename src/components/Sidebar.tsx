@@ -27,6 +27,7 @@ import {
   Widgets as WidgetsIcon,
   Visibility as PreviewIcon,
   DesktopWindows as ScreenPreviewIcon,
+  Collections as BrandGalleryIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
@@ -48,6 +49,7 @@ const navItems = [
   { label: 'Components', icon: <WidgetsIcon />, href: '/components' },
   { label: 'Preview', icon: <PreviewIcon />, href: '/preview' },
   { label: 'Screen Preview', icon: <ScreenPreviewIcon />, href: '/screen-preview' },
+  { label: 'Brand Gallery', icon: <BrandGalleryIcon />, href: '/brand-gallery' },
 ];
 
 export default function Sidebar() {
