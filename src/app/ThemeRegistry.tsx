@@ -13,6 +13,11 @@ interface ThemeRegistryProps {
   children: ReactNode;
 }
 
+function buildFontFamily(stored: string | undefined) {
+  const family = stored?.trim() || 'Inter';
+  return `'${family}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+}
+
 function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) {
   const scheme = generateSchemeFromConfig(config);
   return createTheme({
@@ -53,7 +58,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) 
       },
     },
     typography: {
-      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontFamily: buildFontFamily(config.typography.fontFamily),
       h1: { fontSize: "2.5rem", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.025rem" },
       h2: { fontSize: "2rem", fontWeight: 700, lineHeight: 1.275, letterSpacing: "-0.02rem" },
       h3: { fontSize: "1.75rem", fontWeight: 600, lineHeight: 1.2857, letterSpacing: "-0.015rem" },

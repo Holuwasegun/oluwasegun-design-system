@@ -5,9 +5,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { ColorScheme } from '@/theme/scheme';
+import { useThemeStore } from '@/store';
 
 export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const fontFamily = useThemeStore((s) => s.config.typography.fontFamily);
+  const ff = fontFamily?.trim() ? `'${fontFamily.trim()}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif` : undefined;
 
   const theme = createTheme({
     palette: {
@@ -16,6 +19,7 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
       background: { default: scheme.surface, paper: scheme.surfaceContainerLowest },
       text: { primary: scheme.onSurface, secondary: scheme.onSurfaceVariant },
     },
+    ...(ff ? { typography: { fontFamily: ff } } : {}),
   });
 
   return (

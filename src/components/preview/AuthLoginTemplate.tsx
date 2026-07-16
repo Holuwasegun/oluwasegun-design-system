@@ -5,6 +5,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { ColorScheme } from '@/theme/scheme';
+import { useThemeStore } from '@/store';
 
 const features = [
   'Access your design tokens anywhere',
@@ -14,6 +15,9 @@ const features = [
 ];
 
 export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
+  const fontFamily = useThemeStore((s) => s.config.typography.fontFamily);
+  const ff = fontFamily?.trim() ? `'${fontFamily.trim()}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif` : undefined;
+
   const theme = createTheme({
     palette: {
       primary: { main: scheme.primary },
@@ -21,9 +25,7 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
       background: { default: scheme.surface, paper: scheme.surfaceContainerLowest },
       text: { primary: scheme.onSurface, secondary: scheme.onSurfaceVariant },
     },
-    typography: {
-      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    },
+    ...(ff ? { typography: { fontFamily: ff } } : {}),
   });
 
   return (
