@@ -38,19 +38,6 @@ const pageTitles: Record<string, string> = {
   "/preview": "Preview",
 };
 
-const pageDescriptions: Record<string, string> = {
-  "/dashboard": "Overview of your design system",
-  "/color": "Key colors, tonal palettes, and color roles",
-  "/typography": "Type scale generator with letter spacing control",
-  "/spacing": "Base unit, spacing scale, and grid system",
-  "/shadows": "Shadow tokens and custom builder",
-  "/elevation": "Surface elevation levels and hover demos",
-  "/radius": "Shape scale and corner radius builder",
-  "/motion": "Duration, easing, and interactive demos",
-  "/components": "Live, theme-aware component demos",
-  "/preview": "Real-world UI patterns with your tokens",
-};
-
 export default function TopBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -61,7 +48,6 @@ export default function TopBar() {
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
 
   const title = pageTitles[pathname] || "Design System";
-  const description = pageDescriptions[pathname] || "";
   const currentProject = projects.find((p) => p.id === currentProjectId);
 
   const handleExport = () => {
@@ -113,11 +99,6 @@ export default function TopBar() {
             <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', fontSize: { xs: '0.95rem', md: '1rem' } }}>
               {title}
             </Typography>
-            {!isMobile && (
-              <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
-                {description}
-              </Typography>
-            )}
           </Box>
 
           <Box sx={{ flexGrow: 1 }} />

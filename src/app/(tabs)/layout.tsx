@@ -3,15 +3,11 @@
 import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from '@/components/Sidebar';
 import TopBar from '@/components/TopBar';
-import { useAppStore } from '@/store';
 
 const TOPBAR_HEIGHT = 64;
 
 export default function TabsLayout({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const sidebarOpen = useAppStore((s) => s.sidebarOpen);
-  const sidebarWidth = isMobile ? 0 : sidebarOpen ? 240 : 64;
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -22,7 +18,6 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
         sx={{
           flexGrow: 1,
           pt: `${TOPBAR_HEIGHT}px`,
-          ml: `${sidebarWidth}px`,
           transition: theme.transitions.create('margin-left', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.standard,
