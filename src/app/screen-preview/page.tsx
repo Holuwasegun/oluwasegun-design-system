@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
-  Box, Typography, Stack, IconButton, Tooltip, Chip, CircularProgress,
+  Box, Typography, Stack, IconButton, Tooltip, Chip, CircularProgress, Card, CardContent,
 } from '@mui/material';
 import {
   ArrowBack as BackIcon,
@@ -11,6 +11,7 @@ import {
   PhoneIphone as MobileIcon,
   OpenInNew as OpenIcon,
   DarkMode, LightMode,
+  Palette as PaletteIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useThemeStore } from '@/store';
@@ -78,26 +79,28 @@ export default function ScreenPreviewPage() {
   const activeMeta = useMemo(() => SCREENS.find((s) => s.type === activeScreen), [activeScreen]);
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: '#0c0c10' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: 'background.default' }}>
       {/* ── Sidebar ── */}
       <Box sx={{
-        width: 280, flexShrink: 0, bgcolor: '#14141c', borderRight: '1px solid #1e1e2e',
-        display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0,
+        width: 280, flexShrink: 0, position: 'sticky', top: 0,
+        height: '100vh', display: 'flex', flexDirection: 'column',
+        borderRight: '1px solid', borderColor: 'divider',
+        bgcolor: 'background.paper',
       }}>
         {/* Back + Brand */}
-        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid #1e1e2e' }}>
+        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
             <Tooltip title="Back to dashboard">
               <IconButton
                 component={Link}
                 href="/dashboard"
                 size="small"
-                sx={{ color: '#666', '&:hover': { color: '#fff', bgcolor: '#ffffff0a' } }}
+                sx={{ '&:hover': { bgcolor: 'action.hover' } }}
               >
                 <BackIcon sx={{ fontSize: 18 }} />
               </IconButton>
             </Tooltip>
-            <Typography variant="caption" sx={{ color: '#555', fontSize: 11 }}>Back to Dashboard</Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 11 }}>Back to Dashboard</Typography>
           </Stack>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Box sx={{
@@ -109,34 +112,34 @@ export default function ScreenPreviewPage() {
               <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>O</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle2" sx={{ color: '#eee', fontWeight: 600, lineHeight: 1.2, fontSize: 13 }}>Screen Preview</Typography>
-              <Typography variant="caption" sx={{ color: '#555', fontSize: 10 }}>Live design system preview</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, lineHeight: 1.2, fontSize: 13 }}>Screen Preview</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 10 }}>Live design system preview</Typography>
             </Box>
           </Stack>
         </Box>
 
         {/* Theme Toggle */}
-        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #1e1e2e' }}>
+        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
             <Tooltip title={`Switch to ${config.mode === 'light' ? 'dark' : 'light'} mode`}>
               <IconButton
                 size="small"
                 onClick={toggleMode}
-                sx={{
-                  color: '#666', width: 28, height: 28,
-                  '&:hover': { color: '#fff', bgcolor: '#ffffff0a' },
-                }}
+                sx={{ width: 28, height: 28, '&:hover': { bgcolor: 'action.hover' } }}
               >
-                {config.mode === 'light' ? <DarkMode sx={{ fontSize: 15 }} /> : <LightMode sx={{ fontSize: 15 }} />}
+                {config.mode === 'light' ? <DarkMode sx={{ fontSize: 15, color: 'text.secondary' }} /> : <LightMode sx={{ fontSize: 15, color: 'text.secondary' }} />}
               </IconButton>
             </Tooltip>
           </Stack>
         </Box>
 
         {/* Viewport Controls */}
-        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid #1e1e2e' }}>
-          <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25 }}>
+        <Box sx={{ px: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+          <Typography variant="caption" sx={{
+            color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25,
+          }}>
             Viewport
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0.5 }}>
@@ -149,16 +152,16 @@ export default function ScreenPreviewPage() {
                   sx={{
                     py: 1.25, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
                     borderRadius: 1.5, cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
-                    bgcolor: isActive ? `${scheme.primary}18` : 'transparent',
-                    border: `1px solid ${isActive ? `${scheme.primary}50` : '#1e1e2e'}`,
-                    '&:hover': { bgcolor: isActive ? `${scheme.primary}22` : '#ffffff06' },
+                    bgcolor: isActive ? `${scheme.primary}0D` : 'transparent',
+                    border: `1px solid ${isActive ? `${scheme.primary}30` : 'divider'}`,
+                    '&:hover': { bgcolor: isActive ? `${scheme.primary}14` : 'action.hover' },
                   }}
                 >
-                  <Box sx={{ color: isActive ? scheme.primary : '#555', transition: 'color 0.2s' }}>
+                  <Box sx={{ color: isActive ? scheme.primary : 'text.secondary', transition: 'color 0.2s' }}>
                     {vp.icon}
                   </Box>
                   <Typography variant="caption" sx={{
-                    color: isActive ? scheme.primary : '#555', fontWeight: isActive ? 600 : 400,
+                    color: isActive ? scheme.primary : 'text.secondary', fontWeight: isActive ? 600 : 400,
                     fontSize: 10, transition: 'color 0.2s',
                   }}>
                     {vp.label}
@@ -168,7 +171,7 @@ export default function ScreenPreviewPage() {
             })}
           </Box>
           {activeViewport !== 'desktop' && (
-            <Typography variant="caption" sx={{ color: '#444', display: 'block', mt: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: 10 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: 10 }}>
               {activeVp.width}px
             </Typography>
           )}
@@ -176,7 +179,10 @@ export default function ScreenPreviewPage() {
 
         {/* Screen Type List */}
         <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 2 }}>
-          <Typography variant="caption" sx={{ color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1, px: 0.5 }}>
+          <Typography variant="caption" sx={{
+            color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em',
+            fontWeight: 600, fontSize: 10, display: 'block', mb: 1, px: 0.5,
+          }}>
             Screens
           </Typography>
           <Stack spacing={0.5}>
@@ -189,9 +195,9 @@ export default function ScreenPreviewPage() {
                   sx={{
                     px: 1.5, py: 1.25, borderRadius: 1.5, cursor: 'pointer',
                     transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
-                    bgcolor: isActive ? `${scheme.primary}14` : 'transparent',
-                    border: `1px solid ${isActive ? `${scheme.primary}40` : 'transparent'}`,
-                    '&:hover': { bgcolor: isActive ? `${scheme.primary}1a` : '#ffffff06' },
+                    bgcolor: isActive ? `${scheme.primary}0D` : 'transparent',
+                    border: `1px solid ${isActive ? `${scheme.primary}30` : 'transparent'}`,
+                    '&:hover': { bgcolor: isActive ? `${scheme.primary}14` : 'action.hover' },
                     position: 'relative',
                   }}
                 >
@@ -205,15 +211,14 @@ export default function ScreenPreviewPage() {
                     <Typography sx={{ fontSize: 18, lineHeight: 1 }}>{screen.icon}</Typography>
                     <Box sx={{ minWidth: 0, flex: 1 }}>
                       <Typography variant="body2" sx={{
-                        color: isActive ? '#eee' : '#999', fontWeight: isActive ? 600 : 400,
+                        color: isActive ? 'text.primary' : 'text.secondary', fontWeight: isActive ? 600 : 400,
                         fontSize: 12.5, lineHeight: 1.3, transition: 'color 0.15s',
                       }}>
                         {screen.label}
                       </Typography>
                       <Typography variant="caption" sx={{
-                        color: '#444', fontSize: 10.5, display: 'block',
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        lineHeight: 1.4,
+                        color: 'text.disabled', fontSize: 10.5, display: 'block',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.4,
                       }}>
                         {screen.description}
                       </Typography>
@@ -226,8 +231,8 @@ export default function ScreenPreviewPage() {
         </Box>
 
         {/* Sidebar Footer */}
-        <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid #1e1e2e' }}>
-          <Typography variant="caption" sx={{ color: '#333', fontSize: 10, lineHeight: 1.4 }}>
+        <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+          <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: 10, lineHeight: 1.4 }}>
             Tokens sync live from the design system
           </Typography>
         </Box>
@@ -238,7 +243,7 @@ export default function ScreenPreviewPage() {
         {/* Top Bar */}
         <Box sx={{
           px: 3, py: 1.25, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          borderBottom: '1px solid #1e1e2e', bgcolor: '#14141c',
+          borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper',
           position: 'sticky', top: 0, zIndex: 10,
         }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
@@ -248,25 +253,21 @@ export default function ScreenPreviewPage() {
               boxShadow: `0 0 6px ${iframeReady ? '#22c55e44' : '#eab30844'}`,
               transition: 'all 0.3s',
             }} />
-            <Typography variant="body2" sx={{ color: '#ccc', fontWeight: 500, fontSize: 13 }}>
+            <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 13 }}>
               {activeMeta?.label}
             </Typography>
             <Chip
               label={activeVp.label}
               size="small"
-              sx={{
-                bgcolor: '#1e1e2e', color: '#777', fontSize: 10, height: 20,
-                fontWeight: 500, border: '1px solid #2a2a3a',
-              }}
+              variant="outlined"
+              sx={{ fontSize: 10, height: 20, fontWeight: 500 }}
             />
             {activeViewport !== 'desktop' && (
               <Chip
                 label={`${activeVp.width}px`}
                 size="small"
-                sx={{
-                  bgcolor: '#1e1e2e', color: '#555', fontSize: 10, height: 20,
-                  fontFamily: 'monospace', border: '1px solid #2a2a3a',
-                }}
+                variant="outlined"
+                sx={{ fontSize: 10, height: 20, fontFamily: 'monospace' }}
               />
             )}
           </Stack>
@@ -276,12 +277,9 @@ export default function ScreenPreviewPage() {
               component="a"
               href="/screen-preview/preview"
               target="_blank"
-              sx={{
-                color: '#555', width: 32, height: 32, borderRadius: 1.5,
-                '&:hover': { color: '#aaa', bgcolor: '#ffffff08' },
-              }}
+              sx={{ width: 32, height: 32, borderRadius: 1.5, '&:hover': { bgcolor: 'action.hover' } }}
             >
-              <OpenIcon sx={{ fontSize: 16 }} />
+              <OpenIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -289,28 +287,31 @@ export default function ScreenPreviewPage() {
         {/* Preview Canvas */}
         <Box sx={{
           flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start',
-          p: 3, overflow: 'auto', bgcolor: '#0c0c10',
+          p: 3, overflow: 'auto', bgcolor: 'background.default',
         }}>
           <Box sx={{
             width: iframeWidth, maxWidth: '100%',
             height: 'calc(100vh - 96px)',
             borderRadius: 2.5, overflow: 'hidden',
-            bgcolor: '#000',
-            border: '1px solid #1e1e2e',
-            boxShadow: '0 0 0 1px #1e1e2e, 0 8px 32px rgba(0,0,0,0.4)',
+            bgcolor: 'background.paper',
+            border: '1px solid', borderColor: 'divider',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
             transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
             position: 'relative',
           }}>
             {/* Device Frame Chrome */}
             <Box sx={{
-              height: 32, bgcolor: '#14141c', borderBottom: '1px solid #1e1e2e',
+              height: 32, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider',
               display: 'flex', alignItems: 'center', px: 1.5, gap: 0.75,
             }}>
               <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#ff5f57' }} />
               <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#febc2e' }} />
               <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#28c840' }} />
-              <Box sx={{ flex: 1, mx: 2, py: 0.25, borderRadius: 1, bgcolor: '#1e1e2e', display: 'flex', justifyContent: 'center' }}>
-                <Typography sx={{ color: '#444', fontSize: 9, fontFamily: 'monospace' }}>
+              <Box sx={{
+                flex: 1, mx: 2, py: 0.25, borderRadius: 1, bgcolor: 'action.hover',
+                display: 'flex', justifyContent: 'center',
+              }}>
+                <Typography sx={{ color: 'text.disabled', fontSize: 9, fontFamily: 'monospace' }}>
                   {activeScreen}.preview
                 </Typography>
               </Box>
@@ -321,10 +322,10 @@ export default function ScreenPreviewPage() {
               <Box sx={{
                 position: 'absolute', inset: 0, top: 32,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                bgcolor: '#0c0c10', zIndex: 10, gap: 1.5,
+                bgcolor: 'background.default', zIndex: 10, gap: 1.5,
               }}>
                 <CircularProgress size={24} sx={{ color: scheme.primary }} />
-                <Typography sx={{ color: '#444', fontSize: 11 }}>Loading preview...</Typography>
+                <Typography sx={{ color: 'text.disabled', fontSize: 11 }}>Loading preview...</Typography>
               </Box>
             )}
 
