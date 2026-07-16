@@ -17,7 +17,7 @@ import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useThemeStore } from '@/store';
 import { generateSpacingScale } from '@/theme/scheme';
 
-const DEFAULT_BASE_UNIT = 4;
+const DEFAULT_BASE_UNIT = 2;
 const GRID_COLUMNS = 8;
 
 export default function SpacingPage() {

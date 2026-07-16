@@ -217,7 +217,7 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   keyColors: { ...DEFAULT_KEY_COLORS },
   mode: "light",
   typography: { baseSize: 14, scale: 1.25 },
-  spacing: { baseUnit: 4 },
+  spacing: { baseUnit: 2 },
   motion: { durationScale: 1 },
 };
 
