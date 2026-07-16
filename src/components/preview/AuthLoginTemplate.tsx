@@ -28,14 +28,14 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', minHeight: '70vh', bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: 580, bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden' }}>
         <CssBaseline />
 
         {/* Hero Panel */}
         <Box
           sx={{
-            flex: { xs: '0 0 0%', sm: '0 0 48%' },
-            display: { xs: 'none', sm: 'flex' },
+            flex: '0 0 48%',
+            display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             position: 'relative',
@@ -76,7 +76,7 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
           />
 
           {/* Content */}
-          <Box sx={{ position: 'relative', zIndex: 1, p: { sm: 4, md: 5 } }}>
+          <Box sx={{ position: 'relative', zIndex: 1, p: 5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
               <Box
                 sx={{
@@ -146,13 +146,13 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            p: { xs: 3, sm: 4 },
+            p: 4,
             minWidth: 0,
           }}
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: 360, width: '100%' }}>
             {/* Mobile-only brand */}
-            <Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center', gap: 1, mb: 3 }}>
+            <Box sx={{ display: 'none', alignItems: 'center', gap: 1, mb: 3 }}>
               <Box
                 sx={{
                   width: 32,

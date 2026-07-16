@@ -22,19 +22,18 @@ export default function EcommerceProductCard({ scheme }: { scheme: ColorScheme }
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ minHeight: '70vh', bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden' }}>
+      <Box sx={{ height: 640, bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden' }}>
         <CssBaseline />
-        <Container maxWidth="lg" sx={{ py: 8 }}>
-          <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 900, color: 'text.primary', mb: 6, fontSize: { xs: '1.8rem', md: '3rem' } }}>
+        <Container maxWidth="lg" sx={{ py: 6 }}>
+          <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 900, color: 'text.primary', mb: 5, fontSize: '2rem' }}>
             Our Products
           </Typography>
-          <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center' }}>
             {products.map((product) => (
               <Card
                 key={product.id}
                 sx={{
-                  width: { xs: '100%', sm: 'calc(50% - 16px)', md: 'calc(33.33% - 16px)' },
-                  minWidth: 280,
+                  width: 'calc(33.33% - 16px)',
                   display: 'flex',
                   flexDirection: 'column',
                   borderRadius: 6,

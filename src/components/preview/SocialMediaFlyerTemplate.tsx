@@ -18,13 +18,13 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ minHeight: '70vh', bgcolor: scheme.surface, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 4, borderRadius: 4, overflow: 'hidden' }}>
-        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <Box sx={{ height: 640, bgcolor: scheme.surface, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 4, borderRadius: 4, overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', gap: 4 }}>
 
           {/* Flyer 1 — Gradient Hero Post */}
           <Box
             sx={{
-              width: { xs: '100%', sm: 340 },
+              width: 340,
               borderRadius: 6,
               overflow: 'hidden',
               boxShadow: 8,
@@ -46,7 +46,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               <Typography variant="overline" sx={{ color: scheme.onPrimary, letterSpacing: 4, fontWeight: 600, opacity: 0.8 }}>
                 Limited Offer
               </Typography>
-              <Typography variant="h2" sx={{ color: scheme.onPrimary, fontWeight: 900, lineHeight: 1.1, my: 2, fontSize: { xs: '2rem', sm: '2.5rem' } }}>
+              <Typography variant="h2" sx={{ color: scheme.onPrimary, fontWeight: 900, lineHeight: 1.1, my: 2, fontSize: '2.25rem' }}>
                 50% Off Everything
               </Typography>
               <Typography variant="body1" sx={{ color: scheme.onPrimary, opacity: 0.85, mb: 3 }}>
@@ -82,7 +82,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
           {/* Flyer 2 — Quote / Testimonial Post */}
           <Box
             sx={{
-              width: { xs: '100%', sm: 340 },
+              width: 340,
               borderRadius: 6,
               overflow: 'hidden',
               boxShadow: 8,
@@ -139,7 +139,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
           {/* Flyer 3 — Feature Announcement */}
           <Box
             sx={{
-              width: { xs: '100%', sm: 340 },
+              width: 340,
               borderRadius: 6,
               overflow: 'hidden',
               boxShadow: 8,
@@ -176,7 +176,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               <Typography variant="overline" sx={{ color: scheme.onTertiaryContainer, letterSpacing: 3, fontWeight: 600 }}>
                 New Feature
               </Typography>
-              <Typography variant="h4" sx={{ color: scheme.onTertiaryContainer, fontWeight: 800, my: 1.5, fontSize: { xs: '1.5rem', sm: '1.75rem' } }}>
+              <Typography variant="h4" sx={{ color: scheme.onTertiaryContainer, fontWeight: 800, my: 1.5, fontSize: '1.5rem' }}>
                 Dark Mode Support
               </Typography>
               <Typography variant="body2" sx={{ color: scheme.onTertiaryContainer, opacity: 0.75, maxWidth: 260 }}>
