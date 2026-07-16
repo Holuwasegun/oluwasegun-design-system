@@ -9,6 +9,7 @@ import {
   TextFields as TypographyIcon,
   Category as IconLibraryIcon,
   SpaceBar as SpacingIcon,
+  AutoAwesome as LayoutLabIcon,
   Fullscreen as PresentIcon,
   FullscreenExit as ExitPresentIcon,
   ArrowBack as BackIcon,
@@ -21,13 +22,21 @@ import ColorPaletteSection from '@/components/brand-gallery/ColorPaletteSection'
 import TypographySection from '@/components/brand-gallery/TypographySection';
 import IconLibrarySection from '@/components/brand-gallery/IconLibrarySection';
 import SpacingElevationSection from '@/components/brand-gallery/SpacingElevationSection';
+import LayoutLabSection from '@/components/brand-gallery/LayoutLabSection';
 
-const SECTIONS = [
+const ENABLE_SMART_LAYOUTS = process.env.NEXT_PUBLIC_ENABLE_SMART_LAYOUTS !== 'false';
+
+const BASE_SECTIONS = [
   { id: 'colors', label: 'Colors', icon: <PaletteIcon sx={{ fontSize: 16 }} />, description: 'Color palette & swatches' },
   { id: 'typography', label: 'Typography', icon: <TypographyIcon sx={{ fontSize: 16 }} />, description: 'Type scale & families' },
   { id: 'icons', label: 'Icon Library', icon: <IconLibraryIcon sx={{ fontSize: 16 }} />, description: 'Searchable icon grid' },
   { id: 'spacing', label: 'Spacing & Elevation', icon: <SpacingIcon sx={{ fontSize: 16 }} />, description: 'Scale, shadows & radius' },
+  ...(ENABLE_SMART_LAYOUTS
+    ? [{ id: 'layout-lab', label: 'Layout Lab', icon: <LayoutLabIcon sx={{ fontSize: 16 }} />, description: 'AI-powered layout generation' }]
+    : []),
 ] as const;
+
+const SECTIONS = BASE_SECTIONS;
 
 type SectionId = typeof SECTIONS[number]['id'];
 
@@ -224,6 +233,14 @@ export default function BrandGalleryPage() {
             <Box id="spacing" ref={(el: HTMLElement | null) => { sectionRefs.current['spacing'] = el; }} sx={{ mb: { xs: 5, md: 8 }, scrollMarginTop: 80 }}>
               <SpacingElevationSection />
             </Box>
+            {ENABLE_SMART_LAYOUTS && (
+              <>
+                <Divider sx={{ mb: { xs: 5, md: 8 } }} />
+                <Box id="layout-lab" ref={(el: HTMLElement | null) => { sectionRefs.current['layout-lab'] = el; }} sx={{ mb: { xs: 5, md: 8 }, scrollMarginTop: 80 }}>
+                  <LayoutLabSection />
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
       </Box>
