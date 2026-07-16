@@ -456,7 +456,7 @@ export default function LayoutLabSection() {
           {/* Content */}
           <TextField
             label="Content / Message"
-            placeholder="e.g. Shop now and discover our latest arrivals with free shipping on all orders over $50."
+            placeholder="e.g. Shop now and discover our latest arrivals with free shipping on all orders over ₦50."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             fullWidth

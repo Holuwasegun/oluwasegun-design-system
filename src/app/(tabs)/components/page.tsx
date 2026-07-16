@@ -321,7 +321,7 @@ function CardsPanel() {
               position: 'relative',
             }}
           >
-            <Typography variant="h3" sx={{ color: '#fff', opacity: 0.4, fontWeight: 300 }}>DS</Typography>
+            <Typography variant="h3" sx={{ color: '#fff', opacity: 0.4, fontWeight: 300 }}>OA</Typography>
             <Chip
               label="New"
               size="small"
@@ -364,7 +364,7 @@ function CardsPanel() {
         <SectionLabel>Stat Card</SectionLabel>
         <Grid container spacing={2} sx={{ maxWidth: 600 }}>
           {[
-            { label: 'Total Revenue', value: '$48,290', change: '+12.5%', up: true, color: scheme.primary },
+            { label: 'Total Revenue', value: '₦48,290', change: '+12.5%', up: true, color: scheme.primary },
             { label: 'Active Users', value: '2,847', change: '+8.2%', up: true, color: scheme.secondary },
             { label: 'Bounce Rate', value: '24.3%', change: '-3.1%', up: false, color: scheme.tertiary },
           ].map((stat) => (
@@ -422,9 +422,9 @@ function CardsPanel() {
                 fontWeight: 600,
               }}
             >
-              OC
+              OA
             </Avatar>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Olumide Chen</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Oluwasegun Awodeyi</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Product Designer
             </Typography>

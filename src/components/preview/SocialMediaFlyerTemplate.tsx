@@ -73,7 +73,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
             </Box>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.primary, color: scheme.onPrimary, fontSize: '0.8rem' }}>DS</Avatar>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.primary, color: scheme.onPrimary, fontSize: '0.8rem' }}>OA</Avatar>
                 <Typography variant="caption" sx={{ fontWeight: 600 }}>designsystem.co</Typography>
               </Stack>
               <Stack direction="row" spacing={0}>
@@ -130,7 +130,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
             </Box>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.secondary, color: scheme.onSecondary, fontSize: '0.8rem' }}>DS</Avatar>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.secondary, color: scheme.onSecondary, fontSize: '0.8rem' }}>OA</Avatar>
                 <Typography variant="caption" sx={{ fontWeight: 600 }}>designsystem.co</Typography>
               </Stack>
               <Stack direction="row" spacing={0}>
@@ -190,7 +190,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
             </Box>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.tertiary, color: scheme.onTertiary, fontSize: '0.8rem' }}>DS</Avatar>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: scheme.tertiary, color: scheme.onTertiary, fontSize: '0.8rem' }}>OA</Avatar>
                 <Typography variant="caption" sx={{ fontWeight: 600 }}>designsystem.co</Typography>
               </Stack>
               <Stack direction="row" spacing={0}>

@@ -69,7 +69,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
           <Badge badgeContent={3} color="error">
             <Notifications sx={{ color: s.onSurfaceVariant, fontSize: 20 }} />
           </Badge>
-          <Avatar sx={{ width: 32, height: 32, bgcolor: s.primary, color: s.onPrimary, fontSize: 12 }}>JD</Avatar>
+          <Avatar sx={{ width: 32, height: 32, bgcolor: s.primary, color: s.onPrimary, fontSize: 12 }}>OA</Avatar>
         </Stack>
       </Box>
 
@@ -80,9 +80,9 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
         {/* Stats Cards */}
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={sp * 1.5} sx={{ mb: sp * 2 }}>
           {[
-            { label: 'Total Balance', value: '$48,352', change: '+12.5%', up: true, icon: <AttachMoney /> },
-            { label: 'Monthly Income', value: '$8,420', change: '+8.2%', up: true, icon: <TrendingUp /> },
-            { label: 'Expenses', value: '$3,240', change: '-3.1%', up: false, icon: <TrendingDown /> },
+            { label: 'Total Balance', value: '₦48,352', change: '+12.5%', up: true, icon: <AttachMoney /> },
+            { label: 'Monthly Income', value: '₦8,420', change: '+8.2%', up: true, icon: <TrendingUp /> },
+            { label: 'Expenses', value: '₦3,240', change: '-3.1%', up: false, icon: <TrendingDown /> },
           ].map((stat) => (
             <Card key={stat.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
               <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
@@ -124,10 +124,10 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
                 </TableHead>
                 <TableBody>
                   {[
-                    { desc: 'Grocery Store', cat: 'Food', amt: '-$84.20', date: 'Jul 15' },
-                    { desc: 'Salary Deposit', cat: 'Income', amt: '+$4,200', date: 'Jul 14' },
-                    { desc: 'Electric Bill', cat: 'Utilities', amt: '-$142.50', date: 'Jul 13' },
-                    { desc: 'Freelance Payment', cat: 'Income', amt: '+$1,200', date: 'Jul 12' },
+                    { desc: 'Grocery Store', cat: 'Food', amt: '-₦84.20', date: 'Jul 15' },
+                    { desc: 'Salary Deposit', cat: 'Income', amt: '+₦4,200', date: 'Jul 14' },
+                    { desc: 'Electric Bill', cat: 'Utilities', amt: '-₦142.50', date: 'Jul 13' },
+                    { desc: 'Freelance Payment', cat: 'Income', amt: '+₦1,200', date: 'Jul 12' },
                   ].map((row, i) => (
                     <TableRow key={i}>
                       <TableCell sx={{ borderBottomColor: s.outlineVariant, fontSize: 12, py: 0.75 }}>{row.desc}</TableCell>
@@ -180,7 +180,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
           <Typography variant="h6" sx={{ fontWeight: 600, fontSize: 18 }}>Dashboard</Typography>
           <Stack direction="row" spacing={sp * 1} sx={{ alignItems: 'center' }}>
             <Button variant="contained" sx={{ textTransform: 'none', borderRadius: 1.5, fontSize: 12, py: 0.5, px: 1.5 }}>Generate Report</Button>
-            <Avatar sx={{ width: 32, height: 32, bgcolor: s.tertiary, color: s.onTertiary, fontSize: 12 }}>SK</Avatar>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: s.tertiary, color: s.onTertiary, fontSize: 12 }}>OA</Avatar>
           </Stack>
         </Box>
 
@@ -188,10 +188,10 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
           {/* KPI Cards */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={sp * 1.5} sx={{ mb: sp * 2 }}>
             {[
-              { label: 'Revenue', value: '$124,500', sub: '+18% vs last month' },
+              { label: 'Revenue', value: '₦124,500', sub: '+18% vs last month' },
               { label: 'Customers', value: '2,840', sub: '+120 new' },
               { label: 'Conversion', value: '3.24%', sub: '+0.4% improvement' },
-              { label: 'Avg Order', value: '$86.50', sub: '+$4.20 vs avg' },
+              { label: 'Avg Order', value: '₦86.50', sub: '+₦4.20 vs avg' },
             ].map((kpi) => (
               <Card key={kpi.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
                 <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
@@ -267,7 +267,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
             ))}
           </Stack>
         </Stack>
-        <Avatar sx={{ width: 32, height: 32, bgcolor: s.tertiary, color: s.onTertiary, fontSize: 12 }}>EM</Avatar>
+        <Avatar sx={{ width: 32, height: 32, bgcolor: s.tertiary, color: s.onTertiary, fontSize: 12 }}>OA</Avatar>
       </Box>
 
       <Box sx={{ p: sp * 2, maxWidth: 1200, mx: 'auto' }}>
