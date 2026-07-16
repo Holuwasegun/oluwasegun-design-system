@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, CssBaseline, Drawer, AppBar, Toolbar, Typography, List, ListItemIcon, ListItemText, IconButton, Badge, Avatar, useMediaQuery, useTheme } from '@mui/material';
+import { Box, CssBaseline, Drawer, AppBar, Toolbar, Typography, List, ListItemIcon, ListItemText, IconButton, Badge, Avatar } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -12,8 +12,6 @@ import type { ColorScheme } from '@/theme/scheme';
 const DRAWER_WIDTH = 240;
 
 export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme }) {
-  const outerTheme = useTheme();
-  const isMobile = useMediaQuery(outerTheme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const theme = createTheme({
@@ -39,7 +37,7 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
         {navItems.map((item) => (
           <Box
             key={item.label}
-            onClick={() => isMobile && setDrawerOpen(false)}
+            onClick={() => setDrawerOpen(false)}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -64,7 +62,7 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', height: '70vh', bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
+      <Box sx={{ display: 'flex', height: 640, bgcolor: 'background.default', borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
         <CssBaseline />
         <AppBar position="absolute" sx={{ bgcolor: scheme.primary, boxShadow: 'none' }}>
           <Toolbar sx={{ pr: '24px' }}>
@@ -90,37 +88,23 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
           </Toolbar>
         </AppBar>
 
-        {isMobile ? (
-          <Drawer
-            variant="temporary"
-            open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
-            ModalProps={{ keepMounted: true }}
-            sx={{
-              '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', bgcolor: scheme.surfaceContainerLowest },
-            }}
-          >
-            {drawerContent}
-          </Drawer>
-        ) : (
-          <Drawer
-            variant="permanent"
-            sx={{
-              width: DRAWER_WIDTH,
-              flexShrink: 0,
-              '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', bgcolor: scheme.surfaceContainerLowest },
-            }}
-          >
-            {drawerContent}
-          </Drawer>
-        )}
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: DRAWER_WIDTH,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', bgcolor: scheme.surfaceContainerLowest },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
 
-        <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3 }, overflow: 'auto' }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, overflow: 'hidden' }}>
           <Toolbar />
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'text.primary' }}>
             Overview
           </Typography>
-          <Box sx={{ display: 'flex', gap: { xs: 2, md: 3 }, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 3 }}>
             {[
               { label: 'Total Sales', value: '$34,245', bg: scheme.primaryContainer, color: scheme.onPrimaryContainer },
               { label: 'New Users', value: '+2,450', bg: scheme.secondaryContainer, color: scheme.onSecondaryContainer },
@@ -129,19 +113,19 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
               <Box
                 key={card.label}
                 sx={{
-                  p: { xs: 2, md: 2.5 },
+                  p: 2.5,
                   display: 'flex',
                   flexDirection: 'column',
-                  width: { xs: '100%', sm: 'calc(50% - 8px)', md: 'calc(33.33% - 16px)' },
-                  minHeight: { xs: 120, md: 140 },
+                  flex: 1,
+                  minHeight: 140,
                   borderRadius: 4,
                   boxShadow: 3,
                   bgcolor: card.bg,
                   color: card.color,
                 }}
               >
-                <Typography sx={{ fontWeight: 600, fontSize: { xs: '0.8125rem', md: '0.875rem' } }}>{card.label}</Typography>
-                <Typography variant="h3" sx={{ mt: 'auto', fontWeight: 800, fontSize: { xs: '1.75rem', md: '2.5rem' } }}>{card.value}</Typography>
+                <Typography sx={{ fontWeight: 600, fontSize: '0.875rem' }}>{card.label}</Typography>
+                <Typography variant="h3" sx={{ mt: 'auto', fontWeight: 800, fontSize: '2.5rem' }}>{card.value}</Typography>
               </Box>
             ))}
           </Box>
