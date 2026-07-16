@@ -121,9 +121,9 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
                 This design system saved us hundreds of hours. The tokens make theming effortless.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <Avatar sx={{ width: 40, height: 40, bgcolor: scheme.secondary, color: scheme.onSecondary }}>JM</Avatar>
+                <Avatar sx={{ width: 40, height: 40, bgcolor: scheme.secondary, color: scheme.onSecondary }}>OA</Avatar>
                 <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 700, color: scheme.onSecondaryContainer }}>Jane Mitchell</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: scheme.onSecondaryContainer }}>Oluwasegun Awodeyi</Typography>
                   <Typography variant="caption" sx={{ color: scheme.onSecondaryContainer, opacity: 0.7 }}>Head of Design, Acme Inc</Typography>
                 </Box>
               </Stack>

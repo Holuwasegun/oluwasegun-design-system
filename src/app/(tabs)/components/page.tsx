@@ -229,8 +229,8 @@ function FormsPanel() {
               <Typography variant="body2" color="text.secondary">Start your free trial today</Typography>
             </Box>
 
-            <TextField label="Full Name" variant="outlined" size="small" placeholder="Jane Cooper" fullWidth />
-            <TextField label="Email" variant="outlined" size="small" placeholder="jane@example.com" fullWidth />
+            <TextField label="Full Name" variant="outlined" size="small" placeholder="Oluwasegun" fullWidth />
+            <TextField label="Email" variant="outlined" size="small" placeholder="oluwasegun@example.com" fullWidth />
             <TextField
               label="Password"
               variant="outlined"

@@ -20,9 +20,9 @@ export default function EcommerceProductCard({ scheme }: { scheme: ColorScheme }
   });
 
   const products = [
-    { id: 1, name: 'Premium Headphones', price: '$199.99', rating: 4.8, description: 'High-fidelity wireless headphones with noise cancellation.', color: scheme.primaryContainer },
-    { id: 2, name: 'Smart Watch Pro', price: '$299.99', rating: 4.9, description: 'Next-gen wearable with health tracking and seamless connectivity.', color: scheme.secondaryContainer },
-    { id: 3, name: 'Vintage Camera', price: '$450.00', rating: 4.7, description: 'Classic film camera restored for modern photography enthusiasts.', color: scheme.tertiaryContainer },
+    { id: 1, name: 'Premium Headphones', price: '₦199.99', rating: 4.8, description: 'High-fidelity wireless headphones with noise cancellation.', color: scheme.primaryContainer },
+    { id: 2, name: 'Smart Watch Pro', price: '₦299.99', rating: 4.9, description: 'Next-gen wearable with health tracking and seamless connectivity.', color: scheme.secondaryContainer },
+    { id: 3, name: 'Vintage Camera', price: '₦450.00', rating: 4.7, description: 'Classic film camera restored for modern photography enthusiasts.', color: scheme.tertiaryContainer },
   ];
 
   return (

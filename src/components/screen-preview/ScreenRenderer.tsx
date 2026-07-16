@@ -74,7 +74,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
       </Box>
 
       <Box sx={{ p: sp * 2, maxWidth: 1200, mx: 'auto' }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: 22 }}>Welcome back, John</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: 22 }}>Welcome back, Oluwasegun</Typography>
         <Typography variant="body2" sx={{ color: s.onSurfaceVariant, mb: sp * 2, fontSize: 13 }}>Here&apos;s your financial overview</Typography>
 
         {/* Stats Cards */}

@@ -110,7 +110,7 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
           </Typography>
           <Box sx={{ display: 'flex', gap: 3 }}>
             {[
-              { label: 'Total Sales', value: '$34,245', bg: scheme.primaryContainer, color: scheme.onPrimaryContainer },
+              { label: 'Total Sales', value: '₦34,245', bg: scheme.primaryContainer, color: scheme.onPrimaryContainer },
               { label: 'New Users', value: '+2,450', bg: scheme.secondaryContainer, color: scheme.onSecondaryContainer },
               { label: 'Active Sessions', value: '890', bg: scheme.tertiaryContainer, color: scheme.onTertiaryContainer },
             ].map((card) => (
