@@ -1,4 +1,4 @@
-import type { ElementType } from 'react';
+import React, { type ElementType } from 'react';
 import {
   Dashboard, Palette, TextFields, SpaceBar, Gradient, Layers,
   CropSquare, Animation, Widgets, Visibility, DesktopWindows,
@@ -103,7 +103,7 @@ export interface IconEntry {
   library: IconLibraryId;
 }
 
-export type IconLibraryId = 'mui' | 'lucide' | 'fontawesome';
+export type IconLibraryId = 'mui' | 'lucide' | 'fontawesome' | 'flaticon';
 
 export interface IconLibraryMeta {
   id: IconLibraryId;
@@ -116,6 +116,7 @@ export const ICON_LIBRARIES: IconLibraryMeta[] = [
   { id: 'mui', label: 'Material Design', count: 0, description: 'Google Material Icons' },
   { id: 'lucide', label: 'Lucide', count: 0, description: 'Feather-inspired, MIT' },
   { id: 'fontawesome', label: 'Font Awesome', count: 0, description: 'Most popular icon set' },
+  { id: 'flaticon', label: 'Flaticon', count: 0, description: 'Curated SVG icon set' },
 ];
 
 export const ICON_CATEGORIES = [
@@ -527,10 +528,193 @@ const FA_ICONS: IconEntry[] = [
   { name: 'FaMedium', component: FaMedium, category: 'Social', keywords: ['blog', 'writing'], library: 'fontawesome' },
 ];
 
+// ── Flaticon SVG Icons (curated set) ──
+function createFlaticonIcon(pathD: string, viewBox = '0 0 512 512'): ElementType {
+  const FlaticonComponent = ({ sx }: { sx?: any }) =>
+    React.createElement(
+      'svg',
+      { viewBox, fill: 'currentColor', style: { width: '1em', height: '1em', ...sx } },
+      React.createElement('path', { d: pathD })
+    );
+  FlaticonComponent.displayName = 'FlaticonIcon';
+  return FlaticonComponent;
+}
+
+const FLATICON_PATHS = {
+  megaphone: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm96 310.2c0 8.8-7.2 16-16 16H240v96c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96h-96c-8.8 0-16-7.2-16-16s7.2-16 16-16h96v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96h96c8.8 0 16 7.2 16 16zM352 224c0-8.8-7.2-16-16-16H240v-96c0-8.8-7.2-16-16-16s-16 7.2-16 16v96h-96c-8.8 0-16 7.2-16 16s7.2 16 16 16h96v96c0 8.8 7.2 16 16 16s16-7.2 16-16v-96h96c8.8 0 16-7.2 16-16z',
+  rocket: 'M482.2 97.2c25-25 25-65.4 0-90.4s-65.4-25-90.4 0L245.5 143.1c-12.3-5.6-25.3-9.1-38.8-10.1L160 48 96 112l85 65-39 39-56.5-22.6L48 232l63.4 63.4L144 329l22.6-56.5 39-39 65 85L296 368l-17.6-46.7c-1-13.5-4.5-26.5-10.1-38.8L404.7 122.2c25-25 25-65.4 0-90.4s-65.4-25-90.4 0L178.5 167.6c-6.5 6.5-10.8 14.6-13 23.3L96 259.4 46.6 210l78.5-69.5c8.7-2.2 16.8-6.5 23.3-13L245.5 41.6c14.4-14.4 33.6-22.4 54-22.4s39.6 8 54 22.4c14.4 14.4 22.4 33.6 22.4 54s-8 39.6-22.4 54L192.2 279.3c6.5-6.5 14.6-10.8 23.3-13L341 96.6 404.7 160l-69.5 78.5c-2.2 8.7-6.5 16.8-13 23.3L204.7 379.3c-14.4 14.4-33.6 22.4-54 22.4s-39.6-8-54-22.4c-14.4-14.4-22.4-33.6-22.4-54',
+  headphones2: 'M256 0C114.6 0 0 114.6 0 256v128c0 17.7 14.3 32 32 32h64v-96H32V256c0-106 86-192 192-192s192 86 192 192v64h-64v96h64c17.7 0 32-14.3 32-32V256C512 114.6 397.4 0 256 0z',
+  headphones3: 'M496 256c0 137-111 248-248 248h-8V136c0-9.5-3.1-18.7-8.8-26.1l-14-18.7C221.8 81.6 202 72 180.7 72H131.3C109.9 72 90.1 81.6 82.8 97.2L68.8 115.9C63.1 123.3 60 132.5 60 142V448h-8C14.7 448 0 336.5 0 256S14.7 64 60 64h392c45.3 0 60 111 60 111s14.7 81-16 181z',
+  pizza: 'M128 0C57.3 0 0 57.3 0 128s57.3 128 128 128 128-57.3 128-128S198.7 0 128 0zm0 208c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80zm0-128c-26.5 0-48 21.5-48 48s21.5 48 48 48 48-21.5 48-48-21.5-48-48-48zm0 80c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z',
+  cloud2: 'M400 480H112C50.1 480 0 429.9 0 368V208c0-53 43-96 96-96h16c17.7 0 32-14.3 32-32s-14.3-32-32-32H96C43 48 0 91 0 144v224c0 88.4 71.6 160 160 160h240c70.7 0 128-57.3 128-128 0-63.1-46.5-115.1-107.2-124.4C406.8 245.8 416 224.8 416 202c0-44.2-35.8-80-80-80h-16c-17.7 0-32-14.3-32-32s14.3-32 32-32h16c79.5 0 144 64.5 144 144 0 88.4-71.6 160-160 160z',
+  globe2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm-40 480V352h-32c-26.5 0-48-21.5-48-48v-32h128v32c0 26.5-21.5 48-48 48h-32v88h-16zm176 0V336h-32c-26.5 0-48-21.5-48-48V208h128v80c0 26.5-21.5 48-48 48h-32v128h-16zM128 320V208H96v112c0 26.5 21.5 48 48 48h-16zm304 0c26.5 0 48-21.5 48-48V208h-32v112c0 26.5-21.5 48-48 48h32zM128 128H96v64h32v-64zm304 0v64h32v-64h-32zM256 48c17.7 0 32 14.3 32 32v32h32c17.7 0 32 14.3 32 32v32H160V112c0-17.7 14.3-32 32-32h32V80c0-17.7 14.3-32 32-32z',
+  puzzle: 'M400 0H240v80h-80V0H0v160h80v80H0v160h160v-80h80v80h160v-80h80V240h-80v-80h80V0zm-160 240h-80v-80h80v80z',
+  gem: 'M256 0L0 192l256 320 256-320L256 0zm0 69.3L405.3 192 256 352 106.7 192 256 69.3z',
+  crown: 'M500.7 93.7L402 2.3C394.7-2.5 385.3-0.2 380.3 6.7L256 176 131.7 6.7c-5-6.9-14.4-9.2-21.7-4.4L8.9 93.7c-9.4 6.3-11.6 19.2-4.7 28l85.3 109.3L48 352h416l-41.5-121 85.3-109.3c6.9-8.8 4.7-21.7-4.7-28zM48 368v32c0 17.7 14.3 32 32 32h352c17.7 0 32-14.3 32-32v-32H48zm32 48v32c0 17.7 14.3 32 32 32h288c17.7 0 32-14.3 32-32v-32H80z',
+  diamond: 'M256 0L0 256 256 512 512 256 256 0zm0 62.5L413.5 256 256 449.5 98.5 256 256 62.5z',
+  star2: 'M316.7 17.8L371.2 128h112c13.3 0 24 10.7 24 24s-10.7 24-24 24h-118l-48.6 104.8L358.8 408c5.7 12.3 1 27-11.3 32.7s-27 1-32.7-11.3L216 313.6l-98.8 115.8c-5.7 12.3-20.4 17.8-32.7 12.1-12.3-5.7-17.8-20.4-12.1-32.7L163.2 256 33.9 176c-10.4-8-12.4-23.2-4.4-33.6s23.2-12.4 33.6-4.4L168 208l92.6-121.5c5.6-7.3 15.8-9.1 23.4-4.1 7.6 5 10.7 14 6.7 22.3L264 208l48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24l-48-8-24.3 82.3c-2.3 7.7 0 15.9 6.3 21.5 6.3 5.6 14.6 5.8 20.9.4L432 176 316.7 17.8z',
+  crown2: 'M32 16l96 128h32L32 16zm128 0l96 128h32L160 16zm128 0l96 128h32L288 16zm128 0l96 128h32L416 16zM16 160h480v32c0 17.7-14.3 32-32 32H48c-17.7 0-32-14.3-32-32v-32zm32 64h416v32c0 17.7-14.3 32-32 32H80c-17.7 0-32-14.3-32-32v-32zm32 64h352v32c0 17.7-14.3 32-32 32H112c-17.7 0-32-14.3-32-32v-32z',
+  gem2: 'M448 0H64L0 192l256 320 256-320L448 0zm0 69.3L357.3 192 256 352 154.7 192 64 69.3v-.4L256 279.3 448 69.3 448 68.9z',
+  crown3: 'M496 96l-88-64-56 128H160L104 32 16 96l88 64-24 128L16 416h480l-64-128-24-128 88-64zM160 416V352h192v64H160z',
+  trophy2: 'M400 0H112C50.1 0 0 50.1 0 112v128c0 70.6 51 129.2 118.5 140.1C112 401.5 96 438.1 96 480h64c0-44.2 35.8-80 80-80h32c44.2 0 80 35.8 80 80h64c0-41.9-16-78.5-22.5-99.9C461 369.2 512 310.6 512 240V112C512 50.1 461.9 0 400 0zM256 240H128V112h128v128zm128 0H288V112h96v128z',
+  medal: 'M256 0C165.3 0 96 69.3 96 160v96c0 44.2 35.8 80 80 80h16v80H96v32h192v-80h-16c44.2 0 80-35.8 80-80v-96c0-90.7-69.3-160-160-160zm0 48c61.9 0 112 50.1 112 112v96c0 26.5-21.5 48-48 48h-128c-26.5 0-48-21.5-48-48v-96c0-61.9 50.1-112 112-112z',
+  medal2: 'M412.3 11.7c-15.6-15.6-40.9-15.6-56.6 0L256 111.4 156.3 11.7c-15.6-15.6-40.9-15.6-56.6 0S-4 40.9 11.7 56.6L111.4 156.3 11.7 256c-15.6 15.6-15.6 40.9 0 56.6s40.9 15.6 56.6 0L256 256.6 355.7 312.3c15.6 15.6 40.9 15.6 56.6 0s15.6-40.9 0-56.6L312.6 200 412.3 100.3c15.6-15.6 15.6-40.9 0-56.6s-40.9-15.6-56.6 0L256 143.4 168.3 55.7c-15.6-15.6-40.9-15.6-56.6 0L56.6 110.8 167.4 221.6l-55.2 55.2-55.1-55.2-42.4 42.4 69.1 69.1-69.1 69.1 42.4 42.4 55.1-55.2 55.2 55.2-55.2 55.1 42.4 42.4 69.1-69.1 69.1 69.1 42.4-42.4-55.2-55.2 55.2-55.1-55.1-55.2 55.2-55.1 42.4 42.4 55.2-55.2 55.1 55.2 42.4-42.4-69.1-69.1 69.1-69.1-42.4-42.4-55.2 55.2-55.1-55.2 55.1-55.2-42.4-42.4-69.1 69.1-69.1-69.1 42.4-42.4 55.2 55.1-55.2-55.2L110.8 56.6l-55.1 55.2 55.2 55.1-55.2 55.2 42.4 42.4 55.1-55.2 55.2 55.2L156.3 355.7c15.6 15.6 40.9 15.6 56.6 0s15.6-40.9 0-56.6L143.4 256 256 143.4z',
+  palette2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256c13.3 0 24-10.7 24-24 0-6.2-2.4-12.1-6.9-16.5-4.2-4.1-6.9-9.8-6.9-16.5 0-13.3 10.7-24 24-24h30.9c79.8 0 145.1-65.3 145.1-145.1C480 119.4 376.6 16 256 16c-75.4 0-139.1 48.5-163 116-7.1 20.2-2.4 42.4 12.1 58.2 14.5 15.8 36.4 21.2 57.4 14.1 14.3-5 30.3-1.3 41.1 9.5 10.8 10.8 14.5 26.8 9.5 41.1-7.1 21 1.3 42.9 17.1 57.4 15.8 14.5 38 19.2 58.2 12.1C215 262 234.9 256 256 256s41 6 58.2 12.1c20.2 7.1 42.4 2.4 58.2-12.1 14.5-15.8 19.2-38 12.1-57.4-5-14.3-1.3-30.3 9.5-41.1 10.8-10.8 26.8-14.5 41.1-9.5 21 7.1 42.9-1.3 57.4-17.1 15.8-14.5 20.5-36.4 13.4-57.4C497.6 81.6 512 50.8 512 16 512 7.2 504.8 0 496 0H256zM72 280c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm136-48c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm136 48c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z',
+  diamond2: 'M492.7 26.3c-12.5-12.5-32.7-12.5-45.3 0L256 217.7 64.6 26.3c-12.5-12.5-32.7-12.5-45.3 0s-12.5 32.7 0 45.3L210.7 282.6c12.5 12.5 32.7 12.5 45.3 0L492.7 71.6c12.5-12.5 12.5-32.7 0-45.3zM256 382.6L44.3 170.9c-12.5-12.5-32.7-12.5-45.3 0s-12.5 32.7 0 45.3L234 392.3c12.5 12.5 32.7 12.5 45.3 0l234-176.1c12.5-12.5 12.5-32.7 0-45.3s-32.7-12.5-45.3 0L256 337.3z',
+  crown4: 'M480 32H32C14.3 32 0 46.3 0 64v32c0 17.7 14.3 32 32 32h16l32 320h256l32-320h16c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32zM176 384h-32L128 160h32l16 224zm128 0h-32L256 160h32l16 224zm128 0h-32L384 160h32l16 224z',
+  scissors: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-123.7 0-224-100.3-224-224S132.3 32 256 32s224 100.3 224 224-100.3 224-224 224zm-80-224c0-44.2 35.8-80 80-80s80 35.8 80 80-35.8 80-80 80-80-35.8-80-80z',
+  magic: 'M495.6 177.4l-95.4-36.5-36.5-95.4c-2.8-7.4-9.8-12.2-17.8-12.2h-38.8c-8 0-15 4.8-17.8 12.2l-36.5 95.4-95.4 36.5c-7.4 2.8-12.2 9.8-12.2 17.8v38.8c0 8 4.8 15 12.2 17.8l95.4 36.5 36.5 95.4c2.8 7.4 9.8 12.2 17.8 12.2h38.8c8 0 15-4.8 17.8-12.2l36.5-95.4 95.4-36.5c7.4-2.8 12.2-9.8 12.2-17.8v-38.8c0-8-4.8-15-12.2-17.8zM256 368c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z',
+  lightning: 'M384 0H224l-32 192H64l96 160H32l-32 160h480l-64-160h-160l96-160h-128L384 0zm-160 160h128l-80 128h-64l16-128z',
+  fire: 'M256 0C178.3 0 116.2 47.6 96 112c0 0 55.4 45.4 64 96 8.8-32 16-80 16-80s48 32 64 80c16-48 32-80 32-80s48 32 64 80c8-32 16-80 16-80s48 32 64 80c16-48 32-80 32-80s48 32 64 80C480 48 408 0 320 0h-64zM128 256c-35.3 0-64 28.7-64 64 0 88.4 71.6 160 160 160s160-71.6 160-160c0-35.3-28.7-64-64-64-8 32-24 64-48 80-16-32-32-48-48-80z',
+  moon: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-32.4 0-62.8-8.4-89.4-23.1 4.4-32.3 22.7-59.9 49.1-74.1C173.8 377.4 160 352.8 160 328c0-53 43-96 96-96 24.8 0 49.4 13.8 70.8 35.7 14.2 26.4 41.8 44.7 74.1 49.1C391.6 417.2 384 447.6 384 480z',
+  sun: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480z',
+  camera2: 'M496 96h-62.5L387.2 36.8C382.8 29.2 374.4 24 365.3 24H146.7c-9.1 0-17.5 5.2-21.9 12.8L78.5 96H16C7.2 96 0 103.2 0 112v32c0 8.8 7.2 16 16 16h19.4l22.4 288c1.7 22.2 20.2 39 42.5 39h329.4c22.3 0 40.8-16.8 42.5-39l22.4-288H496c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM256 416c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z',
+  music2: 'M256 0C114.6 0 0 114.6 0 256v200c0 26.5 21.5 48 48 48h32v-248H64V256c0-106 86-192 192-192s192 86 192 192v56h-32v248h32c26.5 0 48-21.5 48-48V256C512 114.6 397.4 0 256 0z',
+  paintbrush: 'M469.7 26.3c-12.5-12.5-32.7-12.5-45.3 0l-80 80-85.3-85.3c-12.5-12.5-32.7-12.5-45.3 0L117 96.7c-12.5 12.5-12.5 32.7 0 45.3l234.7 234.7c12.5 12.5 32.7 12.5 45.3 0l80-80c12.5-12.5 12.5-32.7 0-45.3L393 124.7l42.7-42.7c12.5-12.5 12.5-32.7 0-45.3zM0 488c0 13.3 10.7 24 24 24h464c13.3 0 24-10.7 24-24v-24H0v24z',
+  pen: 'M432 0l-80 80 96 96 80-80c26.2-26.2 26.2-68.6 0-94.8L526.8 1.2C514.3-11.3 496.1-11.3 483.6 1.2L432 0zm0 0L96 336V480h144L480 144 432 0zM0 456v24c0 13.3 10.7 24 24 24h376L0 88 0 456z',
+  type2: 'M32 0h448v64H320v384h80v64H112v-64h80V64H32V0zm256 64v384h-64V64h64z',
+  align: 'M0 0h512v64H0V0zm0 128h320v64H0v-64zm0 128h512v64H0v-64zm0 128h320v64H0v-64z',
+  align2: 'M0 0h512v64H0V0zm96 128h320v64H96v-64zm-96 128h512v64H0v-64zm96 128h320v64H96v-64z',
+  list2: 'M0 0h512v64H0V0zm0 128h512v64H0v-64zm0 128h512v64H0v-64zm0 128h512v64H0v-64z',
+  table: 'M0 0h512v128H0V0zm0 192h256v128H0V192zm0 192h512v128H0V384zM256 192h256v128H256V192zM384 0h128v128H384V0zM0 128h512v64H0v-64zm0 192h256v64H0v-64z',
+  bold: 'M320 0H96C43 0 0 43 0 96v320c0 53 43 96 96 96h192c70.7 0 128-57.3 128-128 0-42.5-21-79.8-53.2-103C357 169.6 368 142.2 368 112c0-53-43-96-96-96H96v320h192c35.3 0 64-28.7 64-64s-28.7-64-64-64H128V128h160c17.7 0 32 14.3 32 32s-14.3 32-32 32H192v64h160c35.3 0 64 28.7 64 64s-28.7 64-64 64H128v64h192c70.7 0 128-57.3 128-128 0-70.7-57.3-128-128-128H128V32h192z',
+  italic: 'M320 0H96C43 0 0 43 0 96v320c0 53 43 96 96 96h256c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16H128V336h89.6l-96 144H64v32h224v-32l96-144H384V32h-64V0h-32V0zm0 176H128V128h192v48z',
+  underline: 'M256 0C114.6 0 0 114.6 0 256v128c0 70.7 57.3 128 128 128h128v64H224c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H128c-53 0-96-43-96-96V256C32 114.6 146.6 0 256 0zm0 480c-88.4 0-160-71.6-160-160V256c0-88.4 71.6-160 160-160s160 71.6 160 160v64h-64v-64c0-53-43-96-96-96s-96 43-96 96v128c0 53 43 96 96 96s96-43 96-96v-64h64v64c0 88.4-71.6 160-160 160z',
+  link2: 'M408 0H256c-26.5 0-48 21.5-48 48v64c0 26.5 21.5 48 48 48h96l-48 48H256c-53 0-96 43-96 96v32c0 53 43 96 96 96h152c88.4 0 160-71.6 160-160V48c0-26.5-21.5-48-48-48zm-16 288H256c-35.3 0-64-28.7-64-64v-32c0-35.3 28.7-64 64-64h152c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64z',
+  code2: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm128 320l-48-48 96-96-96-96 48-48 144 144-144 144z',
+  terminal2: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm128 320l-48-48 96-96-96-96 48-48 144 144-144 144z',
+  server2: 'M0 0h512v128H0V0zm0 192h512v128H0V192zM0 384h512v128H0V384zM48 48h416v32H48V48zm0 192h416v32H48v-32zm0 192h416v32H48v-32z',
+  database2: 'M256 0C114.6 0 0 51.2 0 114.2v283.6C0 460.8 114.6 512 256 512s256-51.2 256-114.2V114.2C512 51.2 397.4 0 256 0zm0 480c-115.3 0-208-45.5-208-101.8V114.2C48 57.9 140.7 12 256 12s208 45.9 208 102.4v262c0 56.3-92.7 101.8-208 101.8z',
+  wifi2: 'M256 0C114.6 0 0 114.6 0 256v128c0 17.7 14.3 32 32 32h64v-96H32V256c0-106 86-192 192-192s192 86 192 192v64h-64v96h64c17.7 0 32-14.3 32-32V256C512 114.6 397.4 0 256 0zm0 416c-53 0-96-43-96-96s43-96 96-96 96 43 96 96-43 96-96 96z',
+  signal: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm64 368V128h32v288H112zm80 0V208h32v208H192zm80 0V160h32v256H272zm80 0V240h32v176H352z',
+  cloud3: 'M401.6 166.4C391.8 85.8 322.2 24 240 24c-93.2 0-171.2 65.8-189.6 153.6C23.2 184 0 213.6 0 248.8 0 290.4 33.6 324 75.2 324h304c64.8 0 117.6-52.8 117.6-117.6 0-56-39.2-102.4-91.2-114.4-1.6 8.8-2.4 17.6-4 24z',
+  folder2: 'M448 128H272l-32-32H64C28.7 96 0 124.7 0 160v256c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V192c0-35.3-28.7-64-64-64z',
+  file2: 'M256 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V128L256 0zm224 448H64V64h192v128h128v256z',
+  trash2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-123.7 0-224-100.3-224-224S132.3 32 256 32s224 100.3 224 224-100.3 224-224 224zm-48-224c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48zm96 0c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48z',
+  edit2: 'M384 0l-80 80 96 96 80-80c26.2-26.2 26.2-68.6 0-94.8L478.8 1.2C466.3-11.3 448.1-11.3 435.6 1.2L384 0zm0 0L96 288v192h192L480 144 384 0zM0 456v24c0 13.3 10.7 24 24 24h376L0 88 0 456z',
+  download2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h128v64c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-64h128c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224v192c0 0-43.2 32-96 32h-48v-80h-32v80h-48c-52.8 0-96-32-96-32V256c0-123.7 100.3-224 224-224z',
+  upload2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224v224H32V256C32 132.3 132.3 32 256 32zm32-112v96h128v-96H288zm-64 0v96H96v-96h128z',
+  share2: 'M408 0H304c-26.5 0-48 21.5-48 48v64c0 26.5 21.5 48 48 48h48l-48 48H304c-53 0-96 43-96 96v32c0 53 43 96 96 96h104c88.4 0 160-71.6 160-160V48c0-26.5-21.5-48-48-48zm-16 288H304c-35.3 0-64-28.7-64-64v-32c0-35.3 28.7-64 64-64h88c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64zM120 0H16C7.2 0 0 7.2 0 16v480c0 8.8 7.2 16 16 16h64v-96H48V16h32v384h32V16h32v384h32V16h32v384h32V16h32v384h16V16h32v384h32V16h32v384h32V16h32v384h16V16h32v384h16V0h-96v96h-32V0h-32v96h-32V0h-32v96h-32V0h-32v96h-32V0h-32v96h-32V0H120z',
+  bookmark2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224s-100.3 224-224 224z',
+  lock2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-224c-26.5 0-48 21.5-48 48v32c0 26.5 21.5 48 48 48h32v96h-32c-53 0-96-43-96-96v-32c0-53 43-96 96-96h160c53 0 96 43 96 96v32c0 53-43 96-96 96h-32v-96h32c26.5 0 48-21.5 48-48v-32c0-26.5-21.5-48-48-48H240z',
+  eye2: 'M503.7 238.5L274.9 9.7c-12.5-12.5-32.7-12.5-45.3 0L8.3 238.5c-12.5 12.5-12.5 32.7 0 45.3l46.5 46.5c12.5 12.5 32.7 12.5 45.3 0L128 256.7V464c0 26.5 21.5 48 48 48h160c26.5 0 48-21.5 48-48V256.7l27.9 73.6c12.5 12.5 32.7 12.5 45.3 0l46.5-46.5c12.5-12.5 12.5-32.7 0-45.3zM256 384c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  bell2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-96c44.2 0 80-35.8 80-80H160c0 44.2 35.8 80 80 80z',
+  chat2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h32v96l114.3-96H448c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224v192c0 0-43.2 32-96 32H221.7L128 480v-32H64c0 0 0-384 192-384z',
+  mail2: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm0 128l-224 128L0 128V64l256 144L512 64v64z',
+  phone2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm96 416h-32v-64h-64v64h-64v-64h-64v64H96V128h32v64h64v-64h64v64h64v-64h32v288z',
+  home2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-96V224H96v160h144zm192 0V224H272v160h144z',
+  search2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-123.7 0-224-100.3-224-224S132.3 32 256 32s224 100.3 224 224-100.3 224-224 224zm0-320c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96z',
+  star3: 'M256 0l72.2 152.5L500 174.8l-120 117 28.3 164.2L256 381.7 103.7 456 132 291.8 12 174.8l171.8-22.3z',
+  heart2: 'M256 447.8c-11.8-10.6-228.4-208.4-228.4-319.5C27.6 77.8 77.8 27.6 128.3 27.6c31.4 0 61.4 15.7 79.8 40.5 18.4-24.8 48.4-40.5 79.8-40.5 50.5 0 100.7 50.2 100.7 100.7 0 111.1-216.6 308.9-228.4 319.5z',
+  cart2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224s-100.3 224-224 224zm-16-96c44.2 0 80-35.8 80-80h-32c0 26.5-21.5 48-48 48s-48-21.5-48-48h-32c0 44.2 35.8 80 80 80z',
+  gift: 'M448 96H336V32c0-17.7-14.3-32-32-32h-64c-17.7 0-32 14.3-32 32v64H64C28.7 96 0 124.7 0 160v288c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64zM192 32h128v64H192V32zm256 416H64V192h384v256zM128 352c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm32-160H96v-32h320v32z',
+  tag2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-176c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  calendar2: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm0 128H352v-64h96v64zM160 0v64h192V0H160zM448 416H64V160h384v256zm-16-96c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80zm32-64h-32v-32h32v32z',
+  clock2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm16-208V128h-32v160h128v-32H272z',
+  trophy3: 'M448 0H64C28.7 0 0 28.7 0 64v128c0 70.6 51 129.2 118.5 140.1C112 345.5 96 382.1 96 424h64c0-44.2 35.8-80 80-80h32c44.2 0 80 35.8 80 80h64c0-41.9-16-78.5-22.5-99.9C461 313.2 512 254.6 512 184V64c0-35.3-28.7-64-64-64zM256 424H128V184h128v240zm128 0H288V184h96v240z',
+  flag2: 'M0 0h64v512H0V0zm96 0h32v512H96V0zm64 0h384v64H160V0z',
+  camera3: 'M448 96H336l-32-32H176L144 96H32C14.3 96 0 110.3 0 128v288c0 17.7 14.3 32 32 32h416c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32zM256 384c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z',
+  music3: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zM192 416H128V160h64v256zm192 0H288V96h96v320z',
+  video: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm-16 288l-192-128v256l192-128z',
+  headphones4: 'M448 0H64C28.7 0 0 28.7 0 64v192c0 70.6 51 129.2 118.5 140.1C112 401.5 96 438.1 96 480h64c0-44.2 35.8-80 80-80h32c44.2 0 80 35.8 80 80h64c0-41.9-16-78.5-22.5-99.9C461 369.2 512 310.6 512 240V64c0-35.3-28.7-64-64-64zM256 424H192v-48h64v48zm128 0h-64v-48h64v48z',
+  shield2: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-144l96-96-48-48-48 48-24-24-48 48 48 48-72 72h192l-72-72 48-48-48-48-24 24-48-48-48 48 96 96z',
+  key: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-123.7 0-224-100.3-224-224S132.3 32 256 32s224 100.3 224 224-100.3 224-224 224zm-16-160c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  map2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-176c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  plane2: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm-16 288l-192-128v256l192-128z',
+  car: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-192c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  user2: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-160c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z',
+  users: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-96c-44.2 0-80-35.8-80-80h32c0 26.5 21.5 48 48 48h48c26.5 0 48-21.5 48-48h32c0 44.2-35.8 80-80 80z',
+  building: 'M256 0C114.6 0 0 114.6 0 256v192c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V256C512 114.6 397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-96c-44.2 0-80-35.8-80-80v-64h32v64c0 26.5 21.5 48 48 48h48c26.5 0 48-21.5 48-48v-64h32v64c0 44.2-35.8 80-80 80z',
+  globe3: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480V32c123.7 0 224 100.3 224 224S379.7 480 256 480zm-16-96c-44.2 0-80-35.8-80-80h32c0 26.5 21.5 48 48 48h48c26.5 0 48-21.5 48-48h32c0 44.2-35.8 80-80 80z',
+  code3: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm128 320l-48-48 96-96-96-96 48-48 144 144-144 144z',
+  terminal3: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm128 320l-48-48 96-96-96-96 48-48 144 144-144 144z',
+  database3: 'M256 0C114.6 0 0 51.2 0 114.2v283.6C0 460.8 114.6 512 256 512s256-51.2 256-114.2V114.2C512 51.2 397.4 0 256 0zm0 480c-115.3 0-208-45.5-208-101.8V114.2C48 57.9 140.7 12 256 12s208 45.9 208 102.4v262c0 56.3-92.7 101.8-208 101.8z',
+  server3: 'M0 0h512v128H0V0zm0 192h512v128H0V192zM0 384h512v128H0V384zM48 48h416v32H48V48zm0 192h416v32H48v-32zm0 192h416v32H48v-32z',
+  chip: 'M448 0H64C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm-16 128v256H80V128h352zm-176 288h-32v-32h32v32z',
+  wifi3: 'M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 480c-123.7 0-224-100.3-224-224S132.3 32 256 32s224 100.3 224 224-100.3 224-224 224zm0-320c-53 0-96 43-96 96h32c0-35.3 28.7-64 64-64s64 28.7 64 64h32c0-53-43-96-96-96z',
+  battery: 'M384 0H128C92.7 0 64 28.7 64 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 448H112V64h288v384zm48-48h32V96h-32v304z',
+  signal2: 'M0 0h512v512H0V0zm48 48v416h416V48H48zm64 368V128h32v288H112zm80 0V208h32v208H192zm80 0V160h32v256H272zm80 0V240h32v176H352z',
+};
+
+const FLATICON_ICONS: IconEntry[] = [
+  { name: 'Megaphone', component: createFlaticonIcon(FLATICON_PATHS.megaphone), category: 'Communication', keywords: ['speaker', 'announcement', 'broadcast'], library: 'flaticon' },
+  { name: 'Rocket', component: createFlaticonIcon(FLATICON_PATHS.rocket), category: 'Actions', keywords: ['launch', 'send', 'startup'], library: 'flaticon' },
+  { name: 'Headphones', component: createFlaticonIcon(FLATICON_PATHS.headphones2), category: 'Device', keywords: ['audio', 'listen', 'music'], library: 'flaticon' },
+  { name: 'Pizza', component: createFlaticonIcon(FLATICON_PATHS.pizza), category: 'Social', keywords: ['food', 'restaurant', 'delivery'], library: 'flaticon' },
+  { name: 'Cloud', component: createFlaticonIcon(FLATICON_PATHS.cloud2), category: 'Device', keywords: ['storage', 'server', 'online'], library: 'flaticon' },
+  { name: 'Globe', component: createFlaticonIcon(FLATICON_PATHS.globe2), category: 'Navigation', keywords: ['world', 'earth', 'web'], library: 'flaticon' },
+  { name: 'Puzzle', component: createFlaticonIcon(FLATICON_PATHS.puzzle), category: 'Actions', keywords: ['game', 'piece', 'module'], library: 'flaticon' },
+  { name: 'Gem', component: createFlaticonIcon(FLATICON_PATHS.gem), category: 'Shapes', keywords: ['diamond', 'jewel', 'precious'], library: 'flaticon' },
+  { name: 'Crown', component: createFlaticonIcon(FLATICON_PATHS.crown), category: 'Social', keywords: ['king', 'queen', 'royal'], library: 'flaticon' },
+  { name: 'Diamond', component: createFlaticonIcon(FLATICON_PATHS.diamond), category: 'Shapes', keywords: ['gem', 'jewel', 'precious'], library: 'flaticon' },
+  { name: 'Star', component: createFlaticonIcon(FLATICON_PATHS.star2), category: 'Actions', keywords: ['rating', 'favorite', 'bookmark'], library: 'flaticon' },
+  { name: 'Medal', component: createFlaticonIcon(FLATICON_PATHS.medal), category: 'Social', keywords: ['award', 'prize', 'achievement'], library: 'flaticon' },
+  { name: 'Trophy', component: createFlaticonIcon(FLATICON_PATHS.trophy2), category: 'Social', keywords: ['winner', 'champion', 'competition'], library: 'flaticon' },
+  { name: 'Palette', component: createFlaticonIcon(FLATICON_PATHS.palette2), category: 'Media', keywords: ['color', 'paint', 'design'], library: 'flaticon' },
+  { name: 'Scissors', component: createFlaticonIcon(FLATICON_PATHS.scissors), category: 'Actions', keywords: ['cut', 'trim', 'clip'], library: 'flaticon' },
+  { name: 'Magic', component: createFlaticonIcon(FLATICON_PATHS.magic), category: 'Actions', keywords: ['wand', 'sparkle', 'magic'], library: 'flaticon' },
+  { name: 'Lightning', component: createFlaticonIcon(FLATICON_PATHS.lightning), category: 'Actions', keywords: ['bolt', 'fast', 'energy'], library: 'flaticon' },
+  { name: 'Fire', component: createFlaticonIcon(FLATICON_PATHS.fire), category: 'Actions', keywords: ['hot', 'trending', 'flame'], library: 'flaticon' },
+  { name: 'Moon', component: createFlaticonIcon(FLATICON_PATHS.moon), category: 'Shapes', keywords: ['dark', 'night', 'theme'], library: 'flaticon' },
+  { name: 'Sun', component: createFlaticonIcon(FLATICON_PATHS.sun), category: 'Shapes', keywords: ['light', 'day', 'bright'], library: 'flaticon' },
+  { name: 'Camera', component: createFlaticonIcon(FLATICON_PATHS.camera2), category: 'Media', keywords: ['photo', 'picture', 'snap'], library: 'flaticon' },
+  { name: 'Music', component: createFlaticonIcon(FLATICON_PATHS.music2), category: 'Media', keywords: ['audio', 'song', 'melody'], library: 'flaticon' },
+  { name: 'Paintbrush', component: createFlaticonIcon(FLATICON_PATHS.paintbrush), category: 'Media', keywords: ['art', 'draw', 'paint'], library: 'flaticon' },
+  { name: 'Pen', component: createFlaticonIcon(FLATICON_PATHS.pen), category: 'Actions', keywords: ['write', 'edit', 'pencil'], library: 'flaticon' },
+  { name: 'Type', component: createFlaticonIcon(FLATICON_PATHS.type2), category: 'Media', keywords: ['text', 'font', 'typography'], library: 'flaticon' },
+  { name: 'Align', component: createFlaticonIcon(FLATICON_PATHS.align), category: 'Media', keywords: ['text', 'layout', 'justify'], library: 'flaticon' },
+  { name: 'Bold', component: createFlaticonIcon(FLATICON_PATHS.bold), category: 'Media', keywords: ['text', 'strong', 'emphasis'], library: 'flaticon' },
+  { name: 'Italic', component: createFlaticonIcon(FLATICON_PATHS.italic), category: 'Media', keywords: ['text', 'emphasis', 'slant'], library: 'flaticon' },
+  { name: 'Underline', component: createFlaticonIcon(FLATICON_PATHS.underline), category: 'Media', keywords: ['text', 'line', 'emphasis'], library: 'flaticon' },
+  { name: 'Link', component: createFlaticonIcon(FLATICON_PATHS.link2), category: 'Actions', keywords: ['chain', 'url', 'hyperlink'], library: 'flaticon' },
+  { name: 'Code', component: createFlaticonIcon(FLATICON_PATHS.code2), category: 'Actions', keywords: ['programming', 'developer', 'brackets'], library: 'flaticon' },
+  { name: 'Terminal', component: createFlaticonIcon(FLATICON_PATHS.terminal2), category: 'Actions', keywords: ['console', 'command', 'shell'], library: 'flaticon' },
+  { name: 'Server', component: createFlaticonIcon(FLATICON_PATHS.server2), category: 'Device', keywords: ['hosting', 'backend', 'rack'], library: 'flaticon' },
+  { name: 'Database', component: createFlaticonIcon(FLATICON_PATHS.database2), category: 'Device', keywords: ['storage', 'data', 'sql'], library: 'flaticon' },
+  { name: 'Wifi', component: createFlaticonIcon(FLATICON_PATHS.wifi2), category: 'Device', keywords: ['internet', 'wireless', 'signal'], library: 'flaticon' },
+  { name: 'Signal', component: createFlaticonIcon(FLATICON_PATHS.signal), category: 'Device', keywords: ['connection', 'bars', 'strength'], library: 'flaticon' },
+  { name: 'Folder', component: createFlaticonIcon(FLATICON_PATHS.folder2), category: 'Files', keywords: ['directory', 'storage', 'organize'], library: 'flaticon' },
+  { name: 'File', component: createFlaticonIcon(FLATICON_PATHS.file2), category: 'Files', keywords: ['document', 'page', 'paper'], library: 'flaticon' },
+  { name: 'Trash', component: createFlaticonIcon(FLATICON_PATHS.trash2), category: 'Actions', keywords: ['delete', 'remove', 'bin'], library: 'flaticon' },
+  { name: 'Edit', component: createFlaticonIcon(FLATICON_PATHS.edit2), category: 'Actions', keywords: ['pencil', 'write', 'modify'], library: 'flaticon' },
+  { name: 'Download', component: createFlaticonIcon(FLATICON_PATHS.download2), category: 'Actions', keywords: ['save', 'export', 'arrow'], library: 'flaticon' },
+  { name: 'Upload', component: createFlaticonIcon(FLATICON_PATHS.upload2), category: 'Actions', keywords: ['import', 'send', 'arrow'], library: 'flaticon' },
+  { name: 'Share', component: createFlaticonIcon(FLATICON_PATHS.share2), category: 'Actions', keywords: ['forward', 'distribute', 'social'], library: 'flaticon' },
+  { name: 'Bookmark', component: createFlaticonIcon(FLATICON_PATHS.bookmark2), category: 'Actions', keywords: ['save', 'flag', 'mark'], library: 'flaticon' },
+  { name: 'Lock', component: createFlaticonIcon(FLATICON_PATHS.lock2), category: 'Actions', keywords: ['security', 'private', 'password'], library: 'flaticon' },
+  { name: 'Eye', component: createFlaticonIcon(FLATICON_PATHS.eye2), category: 'Actions', keywords: ['view', 'show', 'visible'], library: 'flaticon' },
+  { name: 'Bell', component: createFlaticonIcon(FLATICON_PATHS.bell2), category: 'Communication', keywords: ['notification', 'alert', 'ring'], library: 'flaticon' },
+  { name: 'Chat', component: createFlaticonIcon(FLATICON_PATHS.chat2), category: 'Communication', keywords: ['message', 'bubble', 'talk'], library: 'flaticon' },
+  { name: 'Mail', component: createFlaticonIcon(FLATICON_PATHS.mail2), category: 'Communication', keywords: ['email', 'envelope', 'send'], library: 'flaticon' },
+  { name: 'Phone', component: createFlaticonIcon(FLATICON_PATHS.phone2), category: 'Communication', keywords: ['call', 'telephone', 'mobile'], library: 'flaticon' },
+  { name: 'Home', component: createFlaticonIcon(FLATICON_PATHS.home2), category: 'Navigation', keywords: ['house', 'main', 'dashboard'], library: 'flaticon' },
+  { name: 'Search', component: createFlaticonIcon(FLATICON_PATHS.search2), category: 'Navigation', keywords: ['find', 'lookup', 'magnify'], library: 'flaticon' },
+  { name: 'Heart', component: createFlaticonIcon(FLATICON_PATHS.heart2), category: 'Actions', keywords: ['love', 'like', 'favorite'], library: 'flaticon' },
+  { name: 'Cart', component: createFlaticonIcon(FLATICON_PATHS.cart2), category: 'Commerce', keywords: ['shopping', 'buy', 'purchase'], library: 'flaticon' },
+  { name: 'Gift', component: createFlaticonIcon(FLATICON_PATHS.gift), category: 'Commerce', keywords: ['present', 'surprise', 'birthday'], library: 'flaticon' },
+  { name: 'Tag', component: createFlaticonIcon(FLATICON_PATHS.tag2), category: 'Commerce', keywords: ['label', 'price', 'sale'], library: 'flaticon' },
+  { name: 'Calendar', component: createFlaticonIcon(FLATICON_PATHS.calendar2), category: 'Navigation', keywords: ['date', 'schedule', 'event'], library: 'flaticon' },
+  { name: 'Clock', component: createFlaticonIcon(FLATICON_PATHS.clock2), category: 'Navigation', keywords: ['time', 'watch', 'timer'], library: 'flaticon' },
+  { name: 'Flag', component: createFlaticonIcon(FLATICON_PATHS.flag2), category: 'Actions', keywords: ['report', 'important', 'mark'], library: 'flaticon' },
+  { name: 'Shield', component: createFlaticonIcon(FLATICON_PATHS.shield2), category: 'Actions', keywords: ['security', 'protect', 'safe'], library: 'flaticon' },
+  { name: 'Key', component: createFlaticonIcon(FLATICON_PATHS.key), category: 'Actions', keywords: ['access', 'password', 'unlock'], library: 'flaticon' },
+  { name: 'Map', component: createFlaticonIcon(FLATICON_PATHS.map2), category: 'Maps', keywords: ['location', 'navigation', 'place'], library: 'flaticon' },
+  { name: 'Plane', component: createFlaticonIcon(FLATICON_PATHS.plane2), category: 'Maps', keywords: ['travel', 'flight', 'airplane'], library: 'flaticon' },
+  { name: 'Car', component: createFlaticonIcon(FLATICON_PATHS.car), category: 'Maps', keywords: ['drive', 'vehicle', 'transport'], library: 'flaticon' },
+  { name: 'User', component: createFlaticonIcon(FLATICON_PATHS.user2), category: 'Social', keywords: ['person', 'profile', 'avatar'], library: 'flaticon' },
+  { name: 'Users', component: createFlaticonIcon(FLATICON_PATHS.users), category: 'Social', keywords: ['group', 'team', 'people'], library: 'flaticon' },
+  { name: 'Building', component: createFlaticonIcon(FLATICON_PATHS.building), category: 'Commerce', keywords: ['office', 'company', 'corporate'], library: 'flaticon' },
+  { name: 'Globe3', component: createFlaticonIcon(FLATICON_PATHS.globe3), category: 'Device', keywords: ['internet', 'web', 'worldwide'], library: 'flaticon' },
+  { name: 'Chip', component: createFlaticonIcon(FLATICON_PATHS.chip), category: 'Device', keywords: ['processor', 'cpu', 'hardware'], library: 'flaticon' },
+  { name: 'Battery', component: createFlaticonIcon(FLATICON_PATHS.battery), category: 'Device', keywords: ['power', 'charge', 'energy'], library: 'flaticon' },
+  { name: 'Headphones2', component: createFlaticonIcon(FLATICON_PATHS.headphones3), category: 'Device', keywords: ['audio', 'listen', 'headset'], library: 'flaticon' },
+];
+
 // Combine all and update counts
-export const ICON_LIBRARY: IconEntry[] = [...MUI_ICONS, ...LUCIDE_ICONS, ...FA_ICONS];
+export const ICON_LIBRARY: IconEntry[] = [...MUI_ICONS, ...LUCIDE_ICONS, ...FA_ICONS, ...FLATICON_ICONS];
 
 // Update counts
 ICON_LIBRARIES[0].count = MUI_ICONS.length;
 ICON_LIBRARIES[1].count = LUCIDE_ICONS.length;
 ICON_LIBRARIES[2].count = FA_ICONS.length;
+ICON_LIBRARIES[3].count = FLATICON_ICONS.length;
