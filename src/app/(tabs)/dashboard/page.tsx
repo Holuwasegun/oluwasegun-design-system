@@ -247,20 +247,32 @@ export default function DashboardPage() {
                     <Box
                       onClick={() => router.push(section.href)}
                       sx={{
-                        p: 1.5,
-                        borderRadius: 2,
+                        p: 2,
+                        borderRadius: 2.5,
                         cursor: "pointer",
-                        transition: "all 0.15s ease",
-                        "&:hover": { bgcolor: `${scheme.primary}08`, transform: 'translateY(-1px)' },
+                        transition: "all 0.2s ease",
+                        boxShadow: (theme) => theme.palette.mode === 'dark' 
+                          ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
+                          : '-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.1)',
+                        "&:hover": { 
+                          boxShadow: (theme) => theme.palette.mode === 'dark' 
+                            ? 'inset 4px 4px 8px rgba(0,0,0,0.6), inset -4px -4px 8px rgba(255,255,255,0.02)'
+                            : 'inset 4px 4px 8px rgba(0,0,0,0.12), inset -4px -4px 8px rgba(255,255,255,0.85)',
+                        },
+                        "&:active": { 
+                          boxShadow: (theme) => theme.palette.mode === 'dark' 
+                            ? 'inset 6px 6px 12px rgba(0,0,0,0.8), inset -6px -6px 12px rgba(255,255,255,0.01)'
+                            : 'inset 6px 6px 12px rgba(0,0,0,0.18), inset -6px -6px 12px rgba(255,255,255,0.9)',
+                        },
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 0.25 }}>
-                        <Avatar sx={{ width: 24, height: 24, bgcolor: "transparent", color: "text.secondary", '& svg': { fontSize: 16 } }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1 }}>
+                        <Avatar sx={{ width: 28, height: 28, bgcolor: "transparent", color: scheme.primary, '& svg': { fontSize: 18 } }}>
                           {section.icon}
                         </Avatar>
-                        <Typography variant="caption" sx={{ fontWeight: 600, letterSpacing: '0.01em' }}>{section.label}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600, letterSpacing: '0.01em' }}>{section.label}</Typography>
                       </Box>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontSize: "0.6rem", lineHeight: 1.4 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", fontSize: "0.65rem", lineHeight: 1.4, pl: 1 }}>
                         {section.description}
                       </Typography>
                     </Box>

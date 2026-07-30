@@ -31,8 +31,8 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
     : '-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.1)';
     
   const shadowInset = isDark
-    ? 'inset 3px 3px 6px rgba(0,0,0,0.5), inset -3px -3px 6px rgba(255,255,255,0.03)'
-    : 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.7)';
+    ? 'inset 4px 4px 8px rgba(0,0,0,0.6), inset -4px -4px 8px rgba(255,255,255,0.02)'
+    : 'inset 4px 4px 8px rgba(0,0,0,0.12), inset -4px -4px 8px rgba(255,255,255,0.85)';
 
   const shadowButton = isDark
     ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
