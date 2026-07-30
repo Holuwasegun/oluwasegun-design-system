@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useAppStore } from "@/store";
 import { Suspense } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import Sidebar from "@/components/Sidebar";
@@ -22,8 +22,7 @@ import BrandGalleryView from "@/components/views/BrandGalleryView";
 const TOPBAR_HEIGHT = 64;
 
 function DashboardContent() {
-  const searchParams = useSearchParams();
-  const currentView = searchParams.get("view") || "home";
+  const { currentView } = useAppStore();
   const theme = useTheme();
 
   let ViewComponent = DashboardHomeView;

@@ -279,14 +279,18 @@ export const useProjectStore = create<ProjectStore>()(
 );
 
 // ---------- Sidebar Store ----------
-interface SidebarStore {
+interface AppStore {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  currentView: string;
+  setCurrentView: (view: string) => void;
 }
 
-export const useAppStore = create<SidebarStore>((set) => ({
+export const useAppStore = create<AppStore>((set) => ({
   sidebarOpen: true,
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  currentView: "home",
+  setCurrentView: (view) => set({ currentView: view }),
 }));

@@ -14,8 +14,7 @@ import {
   DarkMode, LightMode,
   Menu as MenuIcon,
 } from '@mui/icons-material';
-import Link from 'next/link';
-import { useThemeStore } from '@/store';
+import { useThemeStore, useAppStore } from '@/store';
 import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
 import { generatePreviewTokens } from '@/lib/token-utils';
 import { SCREENS, type ScreenType, type ScreenMeta } from '@/lib/screen-templates';
@@ -53,7 +52,7 @@ function SidebarContent({
       <Box sx={{ px: 2, py: 2, }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <Tooltip title="Back to dashboard">
-            <IconButton component={Link} href="?view=home" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+            <IconButton onClick={() => useAppStore.getState().setCurrentView('home')} size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
               <BackIcon sx={{ fontSize: 18 }} />
             </IconButton>
           </Tooltip>

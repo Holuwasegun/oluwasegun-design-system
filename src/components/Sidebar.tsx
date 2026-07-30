@@ -31,8 +31,6 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { useAppStore } from '@/store';
 
 const DRAWER_WIDTH = 240;
@@ -57,9 +55,7 @@ export default function Sidebar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentView = searchParams.get('view') || 'home';
-  const { sidebarOpen, toggleSidebar, setSidebarOpen } = useAppStore();
+  const { sidebarOpen, toggleSidebar, setSidebarOpen, currentView, setCurrentView } = useAppStore();
 
   const drawerContent = (
     <Box
@@ -128,9 +124,10 @@ export default function Sidebar() {
           return (
             <ListItem key={item.href} disablePadding sx={{ mb: 0.25 }}>
               <ListItemButton
-                component={Link}
-                href={`/dashboard?view=${item.href}`}
-                onClick={() => isMobile && setSidebarOpen(false)}
+                onClick={() => {
+                  setCurrentView(item.href);
+                  if (isMobile) setSidebarOpen(false);
+                }}
                 sx={{
                   borderRadius: 2,
                   minHeight: 44,

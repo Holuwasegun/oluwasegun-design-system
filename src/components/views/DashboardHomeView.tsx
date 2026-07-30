@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useRouter } from "next/navigation";
+
 import {
   Box,
   Typography,
@@ -10,7 +10,6 @@ import {
   Grid,
   Chip,
   Avatar,
-  Divider,
 } from "@mui/material";
 import {
   Palette as PaletteIcon,
@@ -22,7 +21,7 @@ import {
   Animation as AnimationIcon,
   Widgets as WidgetsIcon,
 } from "@mui/icons-material";
-import { useThemeStore, useProjectStore } from "@/store";
+import { useThemeStore, useProjectStore, useAppStore } from "@/store";
 import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
 import { generateTonalPalette, generateNeutralPalette, UI_TONE_LEVELS } from "@/theme/tonal-palette";
 
@@ -56,14 +55,14 @@ function getTextColor(hex: string): string {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
+  const setCurrentView = useAppStore(s => s.setCurrentView);
   const { config, currentProjectId } = useThemeStore();
   const { projects } = useProjectStore();
   const currentProject = projects.find((p) => p.id === currentProjectId);
 
   const scheme: ColorScheme = useMemo(() => generateSchemeFromConfig(config), [config]);
   const primaryPalette = useMemo(() => generateTonalPalette(config.keyColors.primary), [config.keyColors.primary]);
-  const neutralPalette = useMemo(() => generateNeutralPalette(), []);
+
 
   const keyColorCount = Object.keys(config.keyColors).length;
 
@@ -245,7 +244,7 @@ export default function DashboardPage() {
                 {sections.map((section) => (
                   <Grid key={section.href} size={{ xs: 6 }}>
                     <Box
-                      onClick={() => router.push("?view=" + section.href)}
+                      onClick={() => setCurrentView(section.href)}
                       sx={{
                         p: 2,
                         borderRadius: 2.5,

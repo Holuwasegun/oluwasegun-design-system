@@ -15,8 +15,7 @@ import {
   ArrowBack as BackIcon,
   Menu as MenuIcon,
 } from '@mui/icons-material';
-import Link from 'next/link';
-import { useThemeStore } from '@/store';
+import { useThemeStore, useAppStore } from '@/store';
 import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
 import ColorPaletteSection from '@/components/brand-gallery/ColorPaletteSection';
 import TypographySection from '@/components/brand-gallery/TypographySection';
@@ -51,7 +50,7 @@ function SidebarContent({
       <Box sx={{ px: 2, py: 2, }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <Tooltip title="Back to dashboard">
-            <IconButton component={Link} href="?view=home" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+            <IconButton onClick={() => useAppStore.getState().setCurrentView('home')} size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
               <BackIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Tooltip>
