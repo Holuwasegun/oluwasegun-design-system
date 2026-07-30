@@ -27,14 +27,14 @@ import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
 import { generateTonalPalette, generateNeutralPalette, UI_TONE_LEVELS } from "@/theme/tonal-palette";
 
 const sections = [
-  { label: "Color", icon: <PaletteIcon />, href: "/color", description: "Key colors, tonal palettes, color roles" },
-  { label: "Typography", icon: <TextFieldsIcon />, href: "/typography", description: "Type scale generator, size & weight" },
-  { label: "Spacing", icon: <SpaceBarIcon />, href: "/spacing", description: "Base unit, spacing scale, grid" },
-  { label: "Shadows", icon: <GradientIcon />, href: "/shadows", description: "Shadow elevation tokens" },
-  { label: "Elevation", icon: <LayersIcon />, href: "/elevation", description: "Elevation levels, hover demos" },
-  { label: "Border Radius", icon: <CropSquareIcon />, href: "/radius", description: "Shape scale, radius tokens" },
-  { label: "Motion", icon: <AnimationIcon />, href: "/motion", description: "Duration, easing, transitions" },
-  { label: "Components", icon: <WidgetsIcon />, href: "/components", description: "Buttons, cards, alerts, fields" },
+  { label: "Color", icon: <PaletteIcon />, href: "color", description: "Key colors, tonal palettes, color roles" },
+  { label: "Typography", icon: <TextFieldsIcon />, href: "typography", description: "Type scale generator, size & weight" },
+  { label: "Spacing", icon: <SpaceBarIcon />, href: "spacing", description: "Base unit, spacing scale, grid" },
+  { label: "Shadows", icon: <GradientIcon />, href: "shadows", description: "Shadow elevation tokens" },
+  { label: "Elevation", icon: <LayersIcon />, href: "elevation", description: "Elevation levels, hover demos" },
+  { label: "Border Radius", icon: <CropSquareIcon />, href: "radius", description: "Shape scale, radius tokens" },
+  { label: "Motion", icon: <AnimationIcon />, href: "motion", description: "Duration, easing, transitions" },
+  { label: "Components", icon: <WidgetsIcon />, href: "components", description: "Buttons, cards, alerts, fields" },
 ];
 
 function MiniPalette({ colors }: { colors: string[] }) {
@@ -245,7 +245,7 @@ export default function DashboardPage() {
                 {sections.map((section) => (
                   <Grid key={section.href} size={{ xs: 6 }}>
                     <Box
-                      onClick={() => router.push(section.href)}
+                      onClick={() => router.push("?view=" + section.href)}
                       sx={{
                         p: 2,
                         borderRadius: 2.5,

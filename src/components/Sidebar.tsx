@@ -32,30 +32,33 @@ import {
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useAppStore } from '@/store';
 
 const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 64;
 
 const navItems = [
-  { label: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
-  { label: 'Color', icon: <PaletteIcon />, href: '/color' },
-  { label: 'Typography', icon: <TextFieldsIcon />, href: '/typography' },
-  { label: 'Spacing', icon: <SpaceBarIcon />, href: '/spacing' },
-  { label: 'Shadows', icon: <GradientIcon />, href: '/shadows' },
-  { label: 'Elevation', icon: <LayersIcon />, href: '/elevation' },
-  { label: 'Border Radius', icon: <CropSquareIcon />, href: '/radius' },
-  { label: 'Motion', icon: <AnimationIcon />, href: '/motion' },
-  { label: 'Components', icon: <WidgetsIcon />, href: '/components' },
-  { label: 'Preview', icon: <PreviewIcon />, href: '/preview' },
-  { label: 'Screen Preview', icon: <ScreenPreviewIcon />, href: '/screen-preview' },
-  { label: 'Brand Gallery', icon: <BrandGalleryIcon />, href: '/brand-gallery' },
+  { label: 'Dashboard', icon: <DashboardIcon />, href: 'home' },
+  { label: 'Color', icon: <PaletteIcon />, href: 'color' },
+  { label: 'Typography', icon: <TextFieldsIcon />, href: 'typography' },
+  { label: 'Spacing', icon: <SpaceBarIcon />, href: 'spacing' },
+  { label: 'Shadows', icon: <GradientIcon />, href: 'shadows' },
+  { label: 'Elevation', icon: <LayersIcon />, href: 'elevation' },
+  { label: 'Border Radius', icon: <CropSquareIcon />, href: 'radius' },
+  { label: 'Motion', icon: <AnimationIcon />, href: 'motion' },
+  { label: 'Components', icon: <WidgetsIcon />, href: 'components' },
+  { label: 'Preview', icon: <PreviewIcon />, href: 'preview' },
+  { label: 'Screen Preview', icon: <ScreenPreviewIcon />, href: 'screen-preview' },
+  { label: 'Brand Gallery', icon: <BrandGalleryIcon />, href: 'brand-gallery' },
 ];
 
 export default function Sidebar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentView = searchParams.get('view') || 'home';
   const { sidebarOpen, toggleSidebar, setSidebarOpen } = useAppStore();
 
   const drawerContent = (
@@ -121,12 +124,12 @@ export default function Sidebar() {
 
       <List sx={{ flex: 1, px: 1, py: 1.5 }}>
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = currentView === item.href;
           return (
             <ListItem key={item.href} disablePadding sx={{ mb: 0.25 }}>
               <ListItemButton
                 component={Link}
-                href={item.href}
+                href={`/dashboard?view=${item.href}`}
                 onClick={() => isMobile && setSidebarOpen(false)}
                 sx={{
                   borderRadius: 2,

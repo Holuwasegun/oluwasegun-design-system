@@ -51,7 +51,7 @@ function SidebarContent({
       <Box sx={{ px: 2, py: 2, }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <Tooltip title="Back to dashboard">
-            <IconButton component={Link} href="/dashboard" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+            <IconButton component={Link} href="?view=home" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
               <BackIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Tooltip>
