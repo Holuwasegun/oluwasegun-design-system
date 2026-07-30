@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useThemeStore } from '@/store';
-import { generateSchemeFromConfig } from '@/theme/scheme';
+import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
 import ColorPaletteSection from '@/components/brand-gallery/ColorPaletteSection';
 import TypographySection from '@/components/brand-gallery/TypographySection';
 import IconLibrarySection from '@/components/brand-gallery/IconLibrarySection';
@@ -43,8 +43,8 @@ type SectionId = typeof SECTIONS[number]['id'];
 function SidebarContent({
   activeSection, scrollToSection, scheme, config, presentMode, togglePresent, onSelect,
 }: {
-  activeSection: SectionId; scrollToSection: (id: SectionId) => void; scheme: Record<string, string>;
-  config: Record<string, unknown>; presentMode: boolean; togglePresent: () => void; onSelect?: () => void;
+  activeSection: SectionId; scrollToSection: (id: SectionId) => void; scheme: ColorScheme;
+  config: ThemeConfig; presentMode: boolean; togglePresent: () => void; onSelect?: () => void;
 }) {
   return (
     <>

@@ -19,7 +19,7 @@ import {
   Slider,
   Chip,
   Popover,
-  Fade,
+  useTheme,
 } from "@mui/material";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -220,6 +220,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   isDefault: boolean;
   onColorClick?: () => void;
 }) {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -297,7 +298,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        TransitionComponent={Fade}
+        transitionDuration={300}
         slotProps={{
           paper: {
             sx: {
