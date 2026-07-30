@@ -89,7 +89,6 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: `0 4px 12px ${scheme.primary}44`,
                 }}
               >
                 <Typography sx={{ color: scheme.onPrimary, fontWeight: 700, fontSize: '1.1rem', lineHeight: 1 }}>O</Typography>
@@ -263,8 +262,6 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
                   borderRadius: 2,
                   textTransform: 'none',
                   fontSize: '0.9rem',
-                  boxShadow: `0 4px 14px ${scheme.primary}33`,
-                  '&:hover': { boxShadow: `0 6px 20px ${scheme.primary}44` },
                 }}
               >
                 Sign In

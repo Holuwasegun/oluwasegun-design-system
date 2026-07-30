@@ -116,8 +116,8 @@ export default function DashboardPage() {
               variant="outlined"
               sx={{
                 height: "100%",
-                transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-                '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.06)', transform: 'translateY(-1px)' },
+                transition: 'transform 0.2s ease',
+                '&:hover': { transform: 'translateY(-1px)' },
               }}
             >
               <CardContent sx={{ p: 2, "&:last-child": { pb: 2 }, textAlign: "center" }}>
@@ -140,8 +140,7 @@ export default function DashboardPage() {
             variant="outlined"
             sx={{
               height: "100%",
-              transition: 'box-shadow 0.2s ease',
-              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+              transition: 'transform 0.2s ease',
             }}
           >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
@@ -170,8 +169,7 @@ export default function DashboardPage() {
             variant="outlined"
             sx={{
               height: "100%",
-              transition: 'box-shadow 0.2s ease',
-              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+              transition: 'transform 0.2s ease',
             }}
           >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
@@ -199,8 +197,7 @@ export default function DashboardPage() {
             variant="outlined"
             sx={{
               height: "100%",
-              transition: 'box-shadow 0.2s ease',
-              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+              transition: 'transform 0.2s ease',
             }}
           >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
@@ -236,8 +233,7 @@ export default function DashboardPage() {
             variant="outlined"
             sx={{
               height: "100%",
-              transition: 'box-shadow 0.2s ease',
-              '&:hover': { boxShadow: '0 4px 20px rgba(0,0,0,0.06)' },
+              transition: 'transform 0.2s ease',
             }}
           >
             <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>

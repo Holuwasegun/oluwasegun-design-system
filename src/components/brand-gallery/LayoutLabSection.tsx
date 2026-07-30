@@ -535,7 +535,6 @@ export default function LayoutLabSection() {
                   key={suggestion.id}
                   sx={{
                     borderRadius: 2, overflow: 'hidden', transition: 'all 0.2s',
-                    '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
                     cursor: 'pointer',
                   }}
                   onClick={() => setSelectedLayout(isSelected ? null : suggestion.id)}

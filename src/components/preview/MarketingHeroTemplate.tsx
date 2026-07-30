@@ -100,7 +100,6 @@ export default function MarketingHeroTemplate({ scheme }: { scheme: ColorScheme 
                   overflow: 'hidden',
                   height: 340,
                   bgcolor: scheme.surfaceContainerHigh,
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
                 }}
               >
                 <Box sx={{ width: '100%', height: '100%', bgcolor: scheme.primaryContainer, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

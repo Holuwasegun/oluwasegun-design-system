@@ -188,7 +188,6 @@ export default function TopBar() {
               fontWeight: 700,
               ml: 0.5,
               flexShrink: 0,
-              boxShadow: `0 2px 8px ${theme.palette.primary.main}33`,
             }}
           >
             O

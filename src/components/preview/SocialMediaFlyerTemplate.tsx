@@ -32,7 +32,6 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               width: 340,
               borderRadius: 6,
               overflow: 'hidden',
-              boxShadow: 8,
               bgcolor: scheme.surfaceContainerLowest,
             }}
           >
@@ -90,7 +89,6 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               width: 340,
               borderRadius: 6,
               overflow: 'hidden',
-              boxShadow: 8,
               bgcolor: scheme.surfaceContainerLowest,
             }}
           >
@@ -147,7 +145,6 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               width: 340,
               borderRadius: 6,
               overflow: 'hidden',
-              boxShadow: 8,
               bgcolor: scheme.surfaceContainerLowest,
             }}
           >

@@ -176,8 +176,7 @@ function ColorCard({ name, value, showContrast, contrastBg }: {
           borderRadius: 3,
           overflow: 'hidden',
           cursor: 'pointer',
-          transition: 'all 0.2s',
-          '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 },
+          '&:hover': { transform: 'translateY(-2px)' },
         }}
       >
         <Box sx={{ height: 120, bgcolor: value, position: 'relative' }}>
@@ -238,7 +237,6 @@ function PaletteRow({ palette, scheme }: { palette: typeof SUGGESTED_PALETTES[nu
         p: { xs: 1.5, sm: 2 },
         borderRadius: 2,
         transition: 'all 0.2s',
-        '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
       }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
           <Box>
@@ -261,7 +259,6 @@ function PaletteRow({ palette, scheme }: { palette: typeof SUGGESTED_PALETTES[nu
                   height: { xs: 40, sm: 48 },
                   borderRadius: 1.5,
                   bgcolor: hex,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                   cursor: 'pointer',
                   transition: 'transform 0.15s',
                   '&:hover': { transform: 'scale(1.1)' },

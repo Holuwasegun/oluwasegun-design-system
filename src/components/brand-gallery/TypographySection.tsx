@@ -126,7 +126,6 @@ function PairingCard({
       p: { xs: 1.5, sm: 2 },
       borderRadius: 2,
       transition: 'all 0.15s',
-      '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
     }}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
         <Box>

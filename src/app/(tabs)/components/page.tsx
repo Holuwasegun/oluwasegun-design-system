@@ -175,8 +175,6 @@ function ButtonsPanel() {
               height: 56,
               borderRadius: '16px',
               textTransform: 'none',
-              boxShadow: `0 4px 14px ${scheme.primary}55`,
-              '&:hover': { boxShadow: `0 6px 20px ${scheme.primary}77` },
             }}
           >
             <SendIcon />
@@ -188,7 +186,6 @@ function ButtonsPanel() {
               borderRadius: '16px',
               textTransform: 'none',
               px: 3,
-              boxShadow: `0 4px 14px ${scheme.primary}55`,
             }}
           >
             <SendIcon sx={{ mr: 1 }} />
@@ -307,8 +304,8 @@ function CardsPanel() {
             borderRadius: 3,
             maxWidth: 480,
             overflow: 'hidden',
-            transition: 'box-shadow 0.3s, transform 0.3s',
-            '&:hover': { boxShadow: '0 8px 30px rgba(0,0,0,0.08)', transform: 'translateY(-2px)' },
+            transition: 'transform 0.3s',
+            '&:hover': { transform: 'translateY(-2px)' },
           }}
         >
           <Box
@@ -374,8 +371,7 @@ function CardsPanel() {
                 sx={{
                   borderRadius: 3,
                   height: '100%',
-                  transition: 'box-shadow 0.3s',
-                  '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.06)' },
+                  transition: 'transform 0.3s',
                 }}
               >
                 <CardContent sx={{ p: 2.5 }}>

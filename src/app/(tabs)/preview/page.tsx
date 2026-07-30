@@ -10,6 +10,7 @@ import {
   MenuItem,
   Chip,
   Divider,
+  Paper,
 } from '@mui/material';
 import { useThemeStore } from '@/store';
 import { generateSchemeFromConfig, type ColorScheme } from '@/theme/scheme';
@@ -49,16 +50,13 @@ export default function PreviewPage() {
       </Typography>
 
       {/* Preset Selector */}
-      <Box
+      <Paper
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 3,
           mb: 4,
           p: 2,
-          bgcolor: 'background.paper',
-          borderRadius: 3,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
           flexWrap: 'wrap',
         }}
       >
@@ -99,14 +97,13 @@ export default function PreviewPage() {
           variant="outlined"
           sx={{ fontWeight: 600, textTransform: 'capitalize' }}
         />
-      </Box>
+      </Paper>
 
       {/* Preview Container */}
-      <Box
+      <Paper
         sx={{
           borderRadius: 4,
           overflow: 'hidden',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
         }}
       >
         {selectedPreset === 'auth-login' && <AuthLoginTemplate scheme={scheme} />}
@@ -114,7 +111,7 @@ export default function PreviewPage() {
         {selectedPreset === 'marketing-hero' && <MarketingHeroTemplate scheme={scheme} />}
         {selectedPreset === 'ecommerce-card' && <EcommerceProductCard scheme={scheme} />}
         {selectedPreset === 'social-flyer' && <SocialMediaFlyerTemplate scheme={scheme} />}
-      </Box>
+      </Paper>
 
       {/* Token Summary */}
       <Box sx={{ mt: 4, p: 3, bgcolor: 'background.paper', borderRadius: 3, }}>

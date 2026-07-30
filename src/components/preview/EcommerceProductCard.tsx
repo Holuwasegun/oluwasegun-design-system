@@ -42,9 +42,8 @@ export default function EcommerceProductCard({ scheme }: { scheme: ColorScheme }
                   display: 'flex',
                   flexDirection: 'column',
                   borderRadius: 6,
-                  boxShadow: 6,
                   transition: 'transform 0.3s, box-shadow 0.3s',
-                  '&:hover': { transform: 'translateY(-8px)', boxShadow: 12 },
+                  '&:hover': { transform: 'translateY(-8px)' },
                 }}
               >
                 <Box

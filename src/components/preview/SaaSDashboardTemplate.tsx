@@ -123,7 +123,6 @@ export default function SaaSDashboardTemplate({ scheme }: { scheme: ColorScheme 
                   flex: 1,
                   minHeight: 140,
                   borderRadius: 4,
-                  boxShadow: 3,
                   bgcolor: card.bg,
                   color: card.color,
                 }}
