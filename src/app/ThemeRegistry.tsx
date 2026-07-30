@@ -18,10 +18,10 @@ function buildFontFamily(stored: string | undefined) {
   return `'${family}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
 }
 
-function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) {
-  const scheme = generateSchemeFromConfig(config);
+function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], resolvedMode: "light" | "dark") {
+  const scheme = generateSchemeFromConfig(config, resolvedMode);
   
-  const isDark = config.mode === 'dark';
+  const isDark = resolvedMode === 'dark';
   const bgColor = isDark ? '#1A1D24' : '#E0E5EC';
   const textPrimary = isDark ? '#F7FAFC' : '#2D3748';
   const textSecondary = isDark ? '#A0AEC0' : '#718096';
@@ -40,7 +40,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) 
 
   return createTheme({
     palette: {
-      mode: config.mode,
+      mode: resolvedMode,
       primary: {
         main: scheme.primary,
         light: scheme.primaryContainer,
@@ -165,14 +165,23 @@ export default function ThemeRegistry({ children }: ThemeRegistryProps) {
   const cache = useMemo(() => createCache({ key: "mui", prepend: true }), []);
   const config = useThemeStore((s) => s.config);
   const [mounted, setMounted] = useState(false);
+  const [systemIsDark, setSystemIsDark] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setSystemIsDark(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => setSystemIsDark(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
-  const theme = useMemo(() => makeTheme(config), [config]);
+  const resolvedMode = config.mode === "system" ? (systemIsDark ? "dark" : "light") : config.mode;
+  const theme = useMemo(() => makeTheme(config, resolvedMode), [config, resolvedMode]);
 
   if (!mounted) {
-    const fallbackTheme = makeTheme({ ...useThemeStore.getState().config, keyColors: useThemeStore.getState().config.keyColors ?? config.keyColors });
+    const fallbackTheme = makeTheme({ ...useThemeStore.getState().config, keyColors: useThemeStore.getState().config.keyColors ?? config.keyColors }, "light");
     return (
       <CacheProvider value={cache}>
         <ThemeProvider theme={fallbackTheme}>

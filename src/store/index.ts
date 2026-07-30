@@ -7,6 +7,7 @@ import {
   type SpacingConfig,
   type MotionConfig,
   DEFAULT_THEME_CONFIG,
+  generateSchemeFromConfig,
 } from "@/theme/scheme";
 
 // ---------- Project ----------
@@ -36,6 +37,7 @@ interface ThemeStore {
   setMotion: (motion: Partial<MotionConfig>) => void;
   resetConfig: () => void;
   exportConfig: () => string;
+  exportCssTokens: () => string;
   importConfig: (json: string) => boolean;
 }
 
@@ -91,12 +93,15 @@ export const useThemeStore = create<ThemeStore>()(
         set((state) => ({ config: { ...state.config, mode } })),
 
       toggleMode: () =>
-        set((state) => ({
-          config: {
-            ...state.config,
-            mode: state.config.mode === "light" ? "dark" : "light",
-          },
-        })),
+        set((state) => {
+          const nextMode = state.config.mode === "system" ? "light" : state.config.mode === "light" ? "dark" : "system";
+          return {
+            config: {
+              ...state.config,
+              mode: nextMode,
+            },
+          };
+        }),
 
       setTypography: (typography) =>
         set((state) => ({
@@ -129,6 +134,36 @@ export const useThemeStore = create<ThemeStore>()(
         }),
 
       exportConfig: () => JSON.stringify(get().config, null, 2),
+
+      exportCssTokens: () => {
+        const config = get().config;
+        const lightScheme = generateSchemeFromConfig(config, "light");
+        const darkScheme = generateSchemeFromConfig(config, "dark");
+        let css = ":root {\n";
+        for (const [k, v] of Object.entries(lightScheme)) {
+          css += `  --md-sys-color-${k.replace(/[A-Z]/g, m => '-' + m.toLowerCase())}-light: ${v};\n`;
+        }
+        for (const [k, v] of Object.entries(darkScheme)) {
+          css += `  --md-sys-color-${k.replace(/[A-Z]/g, m => '-' + m.toLowerCase())}-dark: ${v};\n`;
+        }
+        css += "}\n\n";
+        
+        css += "@media (prefers-color-scheme: light) {\n  :root {\n";
+        for (const [k] of Object.entries(lightScheme)) {
+          const cssKey = k.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
+          css += `    --md-sys-color-${cssKey}: var(--md-sys-color-${cssKey}-light);\n`;
+        }
+        css += "  }\n}\n\n";
+
+        css += "@media (prefers-color-scheme: dark) {\n  :root {\n";
+        for (const [k] of Object.entries(darkScheme)) {
+          const cssKey = k.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
+          css += `    --md-sys-color-${cssKey}: var(--md-sys-color-${cssKey}-dark);\n`;
+        }
+        css += "  }\n}\n";
+
+        return css;
+      },
 
       importConfig: (json) => {
         try {

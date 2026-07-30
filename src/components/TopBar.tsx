@@ -18,6 +18,7 @@ import {
   Menu as MenuIcon,
   LightMode as LightModeIcon,
   DarkMode as DarkModeIcon,
+  SettingsBrightness as SystemModeIcon,
   FileDownload as ExportIcon,
   FileUpload as ImportIcon,
   Folder as ProjectIcon,
@@ -43,7 +44,7 @@ export default function TopBar() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const pathname = usePathname();
   const { toggleSidebar } = useAppStore();
-  const { config, toggleMode, exportConfig, currentProjectId } = useThemeStore();
+  const { config, toggleMode, exportConfig, exportCssTokens, currentProjectId } = useThemeStore();
   const { projects } = useProjectStore();
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
 
@@ -60,6 +61,18 @@ export default function TopBar() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const handleExportCss = () => {
+    const css = exportCssTokens();
+    const blob = new Blob([css], { type: "text/css" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${currentProject ? currentProject.name.replace(/\s+/g, "-").toLowerCase() : "oluwasegun-design-system"}-tokens.css`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   const handleImport = () => {
     const input = document.createElement("input");
@@ -138,7 +151,24 @@ export default function TopBar() {
                 borderRadius: 2,
               }}
             >
-              {isMobile ? <ExportIcon fontSize="small" /> : "Export"}
+              {isMobile ? <ExportIcon fontSize="small" /> : "JSON"}
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="Export CSS tokens">
+            <Button
+              size="small"
+              startIcon={isMobile ? undefined : <ExportIcon sx={{ fontSize: "1rem !important" }} />}
+              onClick={handleExportCss}
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+                minWidth: 0,
+                px: isMobile ? 1 : 1.5,
+                borderRadius: 2,
+              }}
+            >
+              {isMobile ? <ExportIcon fontSize="small" /> : "CSS"}
             </Button>
           </Tooltip>
 
@@ -159,7 +189,7 @@ export default function TopBar() {
             </Button>
           </Tooltip>
 
-          <Tooltip title={`Switch to ${config.mode === "light" ? "dark" : "light"} mode`}>
+          <Tooltip title={`Switch theme mode (current: ${config.mode})`}>
             <IconButton
               size="small"
               onClick={toggleMode}
@@ -171,9 +201,11 @@ export default function TopBar() {
               }}
             >
               {config.mode === "light" ? (
+                <LightModeIcon fontSize="small" />
+              ) : config.mode === "dark" ? (
                 <DarkModeIcon fontSize="small" />
               ) : (
-                <LightModeIcon fontSize="small" />
+                <SystemModeIcon fontSize="small" />
               )}
             </IconButton>
           </Tooltip>

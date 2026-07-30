@@ -3,7 +3,7 @@ import {
   type TonalTone,
 } from "./tonal-palette";
 
-export type SchemeMode = "light" | "dark";
+export type SchemeMode = "light" | "dark" | "system";
 
 export interface ColorScheme {
   primary: string;
@@ -215,7 +215,7 @@ export const DEFAULT_KEY_COLORS: Record<string, string> = {
 
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   keyColors: { ...DEFAULT_KEY_COLORS },
-  mode: "light",
+  mode: "system",
   typography: { baseSize: 14, scale: 1.25 },
   spacing: { baseUnit: 2 },
   motion: { durationScale: 1 },
@@ -290,14 +290,15 @@ export const DEFAULT_KEY_COLOR_NAMES: Record<string, string> = {
 
 export const SCHEME_KEY_ORDER = ["primary", "secondary", "tertiary", "neutral", "neutralVariant"];
 
-export function generateSchemeFromConfig(config: ThemeConfig): ColorScheme {
+export function generateSchemeFromConfig(config: ThemeConfig, overrideMode?: "light" | "dark"): ColorScheme {
   const kc = config.keyColors;
+  const mode = overrideMode ?? (config.mode === "system" ? "light" : config.mode);
   return generateColorScheme(
     kc.primary ?? DEFAULT_KEY_COLORS.primary,
     kc.secondary ?? DEFAULT_KEY_COLORS.secondary,
     kc.tertiary ?? DEFAULT_KEY_COLORS.tertiary,
     kc.neutral ?? DEFAULT_KEY_COLORS.neutral,
     kc.neutralVariant ?? DEFAULT_KEY_COLORS.neutralVariant,
-    config.mode
+    mode
   );
 }
