@@ -1,10 +1,10 @@
-import { type ThemeConfig, generateSchemeFromConfig, generateTypeScale, generateSpacingScale } from '@/theme/scheme';
+import { type ThemeConfig, type SchemeMode, generateSchemeFromConfig, generateTypeScale, generateSpacingScale } from '@/theme/scheme';
 
 export interface PreviewTokens {
   scheme: Record<string, string>;
   typography: { fontFamily: string; styles: Record<string, { fontSize: number; lineHeight: number; fontWeight: number; letterSpacing: number }> };
   spacing: { baseUnit: number; scale: Record<string, number> };
-  mode: 'light' | 'dark';
+  mode: SchemeMode;
 }
 
 export function generatePreviewTokens(config: ThemeConfig): PreviewTokens {

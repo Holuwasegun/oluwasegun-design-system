@@ -16,9 +16,9 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { useThemeStore } from '@/store';
-import { generateSchemeFromConfig } from '@/theme/scheme';
+import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
 import { generatePreviewTokens } from '@/lib/token-utils';
-import { SCREENS, type ScreenType } from '@/lib/screen-templates';
+import { SCREENS, type ScreenType, type ScreenMeta } from '@/lib/screen-templates';
 
 const VIEWPORTS = [
   { key: 'desktop', label: 'Desktop', icon: <DesktopIcon sx={{ fontSize: 18 }} />, width: '100%' },
@@ -43,10 +43,10 @@ function SidebarContent({
   config, toggleMode, activeViewport, handleSelectViewport, activeScreen, handleSelectScreen,
   activeVp, scheme, activeMeta, iframeReady,
 }: {
-  config: Record<string, unknown>; toggleMode: () => void; activeViewport: ViewportKey;
+  config: ThemeConfig; toggleMode: () => void; activeViewport: ViewportKey;
   handleSelectViewport: (v: ViewportKey) => void; activeScreen: ScreenType;
-  handleSelectScreen: (s: ScreenType) => void; activeVp: Record<string, unknown>; scheme: Record<string, string>;
-  activeMeta: Record<string, unknown>; iframeReady: boolean;
+  handleSelectScreen: (s: ScreenType) => void; activeVp: typeof VIEWPORTS[number]; scheme: ColorScheme;
+  activeMeta?: ScreenMeta; iframeReady: boolean;
 }) {
   return (
     <>
