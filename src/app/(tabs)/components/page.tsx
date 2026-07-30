@@ -147,13 +147,13 @@ function ButtonsPanel() {
       <Box>
         <SectionLabel>Icon Buttons</SectionLabel>
         <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
-          <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <IconButton sx={{ borderRadius: 2 }}>
             <BookmarkBorderIcon fontSize="small" />
           </IconButton>
-          <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <IconButton sx={{ borderRadius: 2 }}>
             <ShareIcon fontSize="small" />
           </IconButton>
-          <IconButton color="error" sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <IconButton color="error" sx={{ borderRadius: 2 }}>
             <DeleteOutlineIcon fontSize="small" />
           </IconButton>
           <IconButton>

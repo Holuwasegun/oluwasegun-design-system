@@ -11,6 +11,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ICON_LIBRARY, ICON_CATEGORIES, ICON_LIBRARIES, type IconEntry, type IconLibraryId } from '@/lib/icon-data';
 import { copyToClipboard } from '@/lib/brand-gallery-utils';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 function IconCard({ entry, onClick }: { entry: IconEntry; onClick: () => void }) {
   const Icon = entry.component;
@@ -42,7 +43,6 @@ const MemoizedIconCard = React.memo(IconCard);
 function downloadSvgFromComponent(entry: IconEntry, color: string, size: number) {
   const Icon = entry.component;
   const svgNS = 'http://www.w3.org/2000/svg';
-  const { renderToStaticMarkup } = require('react-dom/server');
   const svgString = renderToStaticMarkup(React.createElement(Icon, { sx: { fontSize: size, color } }));
   const fullSvg = `<svg xmlns="${svgNS}" viewBox="0 0 24 24" width="${size}" height="${size}">${svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '')}</svg>`;
   const blob = new Blob([fullSvg], { type: 'image/svg+xml;charset=utf-8' });
@@ -58,7 +58,6 @@ function downloadSvgFromComponent(entry: IconEntry, color: string, size: number)
 
 function downloadPngFromComponent(entry: IconEntry, color: string, size: number, scale = 2) {
   const Icon = entry.component;
-  const { renderToStaticMarkup } = require('react-dom/server');
   const svgString = renderToStaticMarkup(React.createElement(Icon, { sx: { fontSize: size, color } }));
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -87,12 +86,57 @@ function downloadPngFromComponent(entry: IconEntry, color: string, size: number,
   img.src = url;
 }
 
+function generateSvgString(entry: IconEntry, color: string, size: number): string {
+  const Icon = entry.component;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svgString = renderToStaticMarkup(React.createElement(Icon, { sx: { fontSize: size, color } }));
+  return `<svg xmlns="${svgNS}" viewBox="0 0 24 24" width="${size}" height="${size}">${svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '')}</svg>`;
+}
+
+async function copySvgToClipboard(entry: IconEntry, color: string, size: number): Promise<boolean> {
+  const svg = generateSvgString(entry, color, size);
+  return copyToClipboard(svg);
+}
+
+async function copyPngToClipboard(entry: IconEntry, color: string, size: number, scale = 2): Promise<boolean> {
+  const Icon = entry.component;
+  const svgString = renderToStaticMarkup(React.createElement(Icon, { sx: { fontSize: size, color } }));
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return false;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    img.onload = async () => {
+      canvas.width = size * scale;
+      canvas.height = size * scale;
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(async (blob) => {
+        if (!blob) { resolve(false); return; }
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob }),
+          ]);
+          resolve(true);
+        } catch {
+          resolve(false);
+        }
+      }, 'image/png');
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
+    img.src = url;
+  });
+}
+
 export default function IconLibrarySection() {
   const [search, setSearch] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<IconEntry | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeLibrary, setActiveLibrary] = useState<IconLibraryId | null>(null);
-  const [snack, setSnack] = useState(false);
+  const [snack, setSnack] = useState<string | null>(null);
 
   const filteredIcons = useMemo(() => {
     let list = ICON_LIBRARY;
@@ -113,7 +157,17 @@ export default function IconLibrarySection() {
 
   const handleCopyName = useCallback(async (name: string) => {
     const ok = await copyToClipboard(`<${name} />`);
-    if (ok) setSnack(true);
+    if (ok) setSnack('Component name copied');
+  }, []);
+
+  const handleCopySvg = useCallback(async (entry: IconEntry) => {
+    const ok = await copySvgToClipboard(entry, 'currentColor', 24);
+    if (ok) setSnack('SVG code copied');
+  }, []);
+
+  const handleCopyPng = useCallback(async (entry: IconEntry) => {
+    const ok = await copyPngToClipboard(entry, 'currentColor', 24, 2);
+    if (ok) setSnack('PNG image copied');
   }, []);
 
   const totalIcons = activeLibrary
@@ -124,7 +178,7 @@ export default function IconLibrarySection() {
     <Box>
       <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.25rem', md: '1.5rem' } }}>Icon Library</Typography>
       <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3, fontSize: { xs: '0.8125rem', md: '0.875rem' } }}>
-        {totalIcons} icons across {ICON_LIBRARIES.length} libraries. Click to preview, download as SVG or PNG.
+        {totalIcons} icons across {ICON_LIBRARIES.length} libraries. Click to preview, download or copy as SVG or PNG.
       </Typography>
 
       {/* Library Selector */}
@@ -243,15 +297,15 @@ export default function IconLibrarySection() {
             <Divider sx={{ mb: 2 }} />
 
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1.5 }}>
-              Download as
+              Download
             </Typography>
             <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'center' }}>
               <Box
                 onClick={() => downloadSvgFromComponent(selectedIcon, 'currentColor', 24)}
                 sx={{
-                  flex: 1, py: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider',
+                  flex: 1, py: 1.5, borderRadius: 2,
                   cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
-                  '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+                  '&:hover': { bgcolor: 'action.hover' },
                 }}
               >
                 <DownloadIcon sx={{ fontSize: 18, color: 'primary.main', mb: 0.25 }} />
@@ -261,9 +315,9 @@ export default function IconLibrarySection() {
               <Box
                 onClick={() => downloadPngFromComponent(selectedIcon, 'currentColor', 24, 2)}
                 sx={{
-                  flex: 1, py: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider',
+                  flex: 1, py: 1.5, borderRadius: 2,
                   cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
-                  '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+                  '&:hover': { bgcolor: 'action.hover' },
                 }}
               >
                 <DownloadIcon sx={{ fontSize: 18, color: 'secondary.main', mb: 0.25 }} />
@@ -272,13 +326,43 @@ export default function IconLibrarySection() {
               </Box>
             </Stack>
 
+            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1.5, mt: 2 }}>
+              Copy to clipboard
+            </Typography>
+            <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'center' }}>
+              <Box
+                onClick={() => handleCopySvg(selectedIcon)}
+                sx={{
+                  flex: 1, py: 1.5, borderRadius: 2,
+                  cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
+                  '&:hover': { bgcolor: 'action.hover' },
+                }}
+              >
+                <ContentCopyIcon sx={{ fontSize: 18, color: 'primary.main', mb: 0.25 }} />
+                <Typography variant="caption" sx={{ display: 'block', fontWeight: 600, fontSize: '0.7rem' }}>SVG Code</Typography>
+                <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem' }}>Markup string</Typography>
+              </Box>
+              <Box
+                onClick={() => handleCopyPng(selectedIcon)}
+                sx={{
+                  flex: 1, py: 1.5, borderRadius: 2,
+                  cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
+                  '&:hover': { bgcolor: 'action.hover' },
+                }}
+              >
+                <ContentCopyIcon sx={{ fontSize: 18, color: 'secondary.main', mb: 0.25 }} />
+                <Typography variant="caption" sx={{ display: 'block', fontWeight: 600, fontSize: '0.7rem' }}>PNG Image</Typography>
+                <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem' }}>Bitmap 2x</Typography>
+              </Box>
+            </Stack>
+
             <Box
               onClick={() => handleCopyName(selectedIcon.name)}
               sx={{
-                mt: 1.5, py: 1, borderRadius: 2, border: '1px solid', borderColor: 'divider',
+                mt: 1.5, py: 1, borderRadius: 2,
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.75,
                 transition: 'all 0.15s',
-                '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+                '&:hover': { bgcolor: 'action.hover' },
               }}
             >
               <ContentCopyIcon sx={{ fontSize: 13 }} />
@@ -290,9 +374,9 @@ export default function IconLibrarySection() {
         )}
       </Dialog>
 
-      <Snackbar open={snack} autoHideDuration={1500} onClose={() => setSnack(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+      <Snackbar open={!!snack} autoHideDuration={1500} onClose={() => setSnack(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <Alert severity="success" variant="filled" sx={{ borderRadius: 2 }}>
-          Component name copied
+          {snack}
         </Alert>
       </Snackbar>
     </Box>

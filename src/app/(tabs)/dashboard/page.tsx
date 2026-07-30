@@ -39,7 +39,7 @@ const sections = [
 
 function MiniPalette({ colors }: { colors: string[] }) {
   return (
-    <Box sx={{ display: "flex", borderRadius: 1.5, overflow: "hidden", height: 28, border: "1px solid", borderColor: "divider" }}>
+    <Box sx={{ display: "flex", borderRadius: 1.5, overflow: "hidden", height: 28, }}>
       {colors.map((c, i) => (
         <Box key={i} sx={{ flex: 1, bgcolor: c }} />
       ))}
@@ -76,7 +76,6 @@ export default function DashboardPage() {
           p: { xs: 3, md: 5 },
           borderRadius: 4,
           background: `linear-gradient(135deg, ${scheme.primary}08 0%, ${scheme.tertiary}08 50%, ${scheme.secondary}05 100%)`,
-          border: `1px solid ${scheme.primary}15`,
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -211,7 +210,7 @@ export default function DashboardPage() {
               </Box>
               <Box sx={{ display: "flex", gap: 0.5, mb: 1 }}>
                 {["surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"].map((key) => (
-                  <Box key={key} sx={{ flex: 1, height: 44, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, border: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <Box key={key} sx={{ flex: 1, height: 44, bgcolor: scheme[key as keyof ColorScheme], borderRadius: 1.5, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
                     <Typography sx={{ fontSize: { xs: "0.5rem", sm: "0.5625rem" }, color: scheme.onSurface, textAlign: "center", px: 0.25, whiteSpace: "nowrap", fontWeight: 500 }}>
                       {key.replace("surfaceContainer", "SC")}
                     </Typography>
@@ -255,10 +254,8 @@ export default function DashboardPage() {
                         p: 1.5,
                         borderRadius: 2,
                         cursor: "pointer",
-                        border: "1px solid",
-                        borderColor: "divider",
                         transition: "all 0.15s ease",
-                        "&:hover": { borderColor: "primary.main", bgcolor: `${scheme.primary}08`, transform: 'translateY(-1px)' },
+                        "&:hover": { bgcolor: `${scheme.primary}08`, transform: 'translateY(-1px)' },
                       }}
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 0.25 }}>

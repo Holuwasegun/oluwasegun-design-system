@@ -128,7 +128,7 @@ export default function ProjectManager({ open, onClose }: ProjectManagerProps) {
         <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
           {currentProjectId ? (
             <Button variant="outlined" onClick={handleSave} sx={{ flex: 1, textTransform: 'none' }}>
-              Save "{currentProject?.name}"
+              Save &quot;{currentProject?.name}&quot;
             </Button>
           ) : (
             <Button variant="outlined" onClick={() => setShowSaveAs(true)} sx={{ flex: 1, textTransform: 'none' }}>

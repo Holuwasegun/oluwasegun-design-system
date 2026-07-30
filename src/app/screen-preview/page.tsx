@@ -43,14 +43,14 @@ function SidebarContent({
   config, toggleMode, activeViewport, handleSelectViewport, activeScreen, handleSelectScreen,
   activeVp, scheme, activeMeta, iframeReady,
 }: {
-  config: any; toggleMode: () => void; activeViewport: ViewportKey;
+  config: Record<string, unknown>; toggleMode: () => void; activeViewport: ViewportKey;
   handleSelectViewport: (v: ViewportKey) => void; activeScreen: ScreenType;
-  handleSelectScreen: (s: ScreenType) => void; activeVp: any; scheme: any;
-  activeMeta: any; iframeReady: boolean;
+  handleSelectScreen: (s: ScreenType) => void; activeVp: Record<string, unknown>; scheme: Record<string, string>;
+  activeMeta: Record<string, unknown>; iframeReady: boolean;
 }) {
   return (
     <>
-      <Box sx={{ px: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 2, }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <Tooltip title="Back to dashboard">
             <IconButton component={Link} href="/dashboard" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
@@ -75,7 +75,7 @@ function SidebarContent({
         </Stack>
       </Box>
 
-      <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 1.5, }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
           <Tooltip title={`Switch to ${config.mode === 'light' ? 'dark' : 'light'} mode`}>
@@ -86,7 +86,7 @@ function SidebarContent({
         </Stack>
       </Box>
 
-      <Box sx={{ px: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 2, }}>
         <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25 }}>Viewport</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0.5 }}>
           {VIEWPORTS.map((vp) => {
@@ -99,7 +99,6 @@ function SidebarContent({
                   py: 1.25, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5,
                   borderRadius: 1.5, cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
                   bgcolor: isActive ? `${scheme.primary}0D` : 'transparent',
-                  border: `1px solid ${isActive ? `${scheme.primary}30` : 'divider'}`,
                   '&:hover': { bgcolor: isActive ? `${scheme.primary}14` : 'action.hover' },
                 }}
               >
@@ -127,7 +126,6 @@ function SidebarContent({
                   px: 1.5, py: 1.25, borderRadius: 1.5, cursor: 'pointer',
                   transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
                   bgcolor: isActive ? `${scheme.primary}0D` : 'transparent',
-                  border: `1px solid ${isActive ? `${scheme.primary}30` : 'transparent'}`,
                   '&:hover': { bgcolor: isActive ? `${scheme.primary}14` : 'action.hover' },
                   position: 'relative',
                 }}
@@ -148,7 +146,7 @@ function SidebarContent({
         </Stack>
       </Box>
 
-      <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 1.5, }}>
         <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: 10, lineHeight: 1.4 }}>Tokens sync live from the design system</Typography>
       </Box>
     </>
@@ -207,8 +205,7 @@ export default function ScreenPreviewPage() {
       {!isMobile && (
         <Box sx={{
           width: 280, flexShrink: 0, position: 'sticky', top: 0,
-          height: '100vh', display: 'flex', flexDirection: 'column',
-          borderRight: '1px solid', borderColor: 'divider', bgcolor: 'background.paper',
+          height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper',
         }}>
           <SidebarContent {...sidebarProps} />
         </Box>
@@ -227,8 +224,7 @@ export default function ScreenPreviewPage() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Top Bar */}
         <Box sx={{
-          px: { xs: 1.5, sm: 3 }, py: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper',
+          px: { xs: 1.5, sm: 3 }, py: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: 'background.paper',
           position: 'sticky', top: 0, zIndex: 10,
         }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
@@ -259,7 +255,7 @@ export default function ScreenPreviewPage() {
 
         {/* Mobile Viewport Selector */}
         {isMobile && (
-          <Box sx={{ px: 1.5, py: 1, borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
+          <Box sx={{ px: 1.5, py: 1, bgcolor: 'background.paper' }}>
             <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'center' }}>
               {VIEWPORTS.map((vp) => {
                 const isActive = activeViewport === vp.key;
@@ -290,14 +286,13 @@ export default function ScreenPreviewPage() {
             height: { xs: 'calc(100vh - 120px)', sm: 'calc(100vh - 96px)' },
             borderRadius: { xs: 1.5, sm: 2.5 }, overflow: 'hidden',
             bgcolor: 'background.paper',
-            border: '1px solid', borderColor: 'divider',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
             transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
             position: 'relative',
           }}>
             {/* Device Frame Chrome */}
             <Box sx={{
-              height: { xs: 28, sm: 32 }, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider',
+              height: { xs: 28, sm: 32 }, bgcolor: 'background.paper',
               display: 'flex', alignItems: 'center', px: 1.5, gap: 0.75,
             }}>
               <Box sx={{ width: { xs: 6, sm: 8 }, height: { xs: 6, sm: 8 }, borderRadius: '50%', bgcolor: '#ff5f57' }} />
@@ -323,7 +318,7 @@ export default function ScreenPreviewPage() {
               ref={iframeRef}
               src="/screen-preview/preview"
               title="Screen Preview"
-              style={{ width: '100%', height: 'calc(100% - 32px)', border: 'none' }}
+              style={{ width: '100%', height: 'calc(100% - 32px)', }}
             />
           </Box>
         </Box>

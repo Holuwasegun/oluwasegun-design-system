@@ -164,8 +164,6 @@ function RadiusBuilder() {
                 minHeight: 200,
                 bgcolor: 'grey.100',
                 borderRadius: 2,
-                border: 1,
-                borderColor: 'divider',
               }}
             >
               <Box
@@ -186,7 +184,7 @@ function RadiusBuilder() {
                 <Button variant="contained" sx={{ borderRadius: radiusCSS, textTransform: 'none' }}>Button</Button>
                 <Button variant="outlined" sx={{ borderRadius: radiusCSS, textTransform: 'none' }}>Outlined</Button>
                 <Chip label="Chip" sx={{ borderRadius: radiusCSS, bgcolor: 'primary.main', color: 'primary.contrastText' }} />
-                <Chip label="Outlined" variant="outlined" sx={{ borderRadius: radiusCSS, borderColor: 'primary.main', color: 'primary.main' }} />
+                <Chip label="Outlined" variant="outlined" sx={{ borderRadius: radiusCSS, color: 'primary.main' }} />
               </Box>
               <Paper variant="outlined" sx={{ p: 1.5, borderRadius: radiusCSS, display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Avatar sx={{ width: 32, height: 32, borderRadius: radiusCSS }}>A</Avatar>
@@ -290,7 +288,7 @@ export default function RadiusPage() {
             <Chip
               label="Outlined"
               variant="outlined"
-              sx={{ borderRadius: value, borderColor: 'primary.main', color: 'primary.main' }}
+              sx={{ borderRadius: value, color: 'primary.main' }}
             />
             <Button
               variant="contained"

@@ -74,10 +74,8 @@ function TypeRow({
         px: { xs: 1.5, sm: 2 },
         py: 1,
         borderRadius: 1.5,
-        border: '1px solid',
-        borderColor: 'divider',
         transition: 'all 0.15s',
-        '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+        '&:hover': { bgcolor: 'action.hover' },
       }}
     >
       {/* Name */}
@@ -127,10 +125,8 @@ function PairingCard({
     <Box sx={{
       p: { xs: 1.5, sm: 2 },
       borderRadius: 2,
-      border: '1px solid',
-      borderColor: 'divider',
       transition: 'all 0.15s',
-      '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
+      '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.04)' },
     }}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
         <Box>

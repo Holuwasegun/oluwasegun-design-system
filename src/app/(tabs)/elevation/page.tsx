@@ -92,8 +92,6 @@ export default function ElevationPage() {
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.3s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
-                  border: isHovered ? '1px solid' : '1px solid transparent',
-                  borderColor: isHovered ? 'primary.main' : 'transparent',
                 }}
               >
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
@@ -137,8 +135,6 @@ export default function ElevationPage() {
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.4s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
-                  border: isHovered ? '1px solid' : '1px solid transparent',
-                  borderColor: isHovered ? 'primary.main' : 'transparent',
                 }}
               >
                 <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>

@@ -243,8 +243,6 @@ export default function SpacingPage() {
             </Typography>
             <Box
               sx={{
-                border: '1px dashed',
-                borderColor: 'divider',
                 borderRadius: 1.5,
                 p: `${baseUnit}px`,
               }}

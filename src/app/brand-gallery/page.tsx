@@ -43,12 +43,12 @@ type SectionId = typeof SECTIONS[number]['id'];
 function SidebarContent({
   activeSection, scrollToSection, scheme, config, presentMode, togglePresent, onSelect,
 }: {
-  activeSection: SectionId; scrollToSection: (id: SectionId) => void; scheme: any;
-  config: any; presentMode: boolean; togglePresent: () => void; onSelect?: () => void;
+  activeSection: SectionId; scrollToSection: (id: SectionId) => void; scheme: Record<string, string>;
+  config: Record<string, unknown>; presentMode: boolean; togglePresent: () => void; onSelect?: () => void;
 }) {
   return (
     <>
-      <Box sx={{ px: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 2, }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
           <Tooltip title="Back to dashboard">
             <IconButton component={Link} href="/dashboard" size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
@@ -102,7 +102,7 @@ function SidebarContent({
         </Stack>
       </Box>
 
-      <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ px: 2, py: 1.5, }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Chip label={config.mode === 'light' ? 'Light' : 'Dark'} size="small" variant="outlined" sx={{ fontSize: 10, height: 20 }} />
           <Tooltip title={presentMode ? 'Exit presentation' : 'Presentation mode'}>
@@ -167,8 +167,7 @@ export default function BrandGalleryPage() {
       {!isMobile && (
         <Box sx={{
           width: 240, flexShrink: 0, position: 'sticky', top: 0,
-          height: '100vh', display: 'flex', flexDirection: 'column',
-          borderRight: '1px solid', borderColor: 'divider', bgcolor: 'background.paper',
+          height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.paper',
         }}>
           <SidebarContent {...sidebarData} />
         </Box>
@@ -188,7 +187,6 @@ export default function BrandGalleryPage() {
         {/* Top Bar */}
         <Box sx={{
           px: { xs: 1.5, md: 4 }, py: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          borderBottom: '1px solid', borderColor: 'divider',
           position: 'sticky', top: 0, zIndex: 10,
           bgcolor: (t) => `${t.palette.background.paper}ee`,
           backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',

@@ -59,7 +59,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
   return (
     <Box sx={{ fontFamily: tokens.typography.fontFamily, bgcolor: s.background, color: s.onBackground, height: '100%', overflow: 'hidden' }}>
       {/* App Bar */}
-      <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${s.outlineVariant}` }}>
+      <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
         <Typography variant="h6" sx={{ fontWeight: 700, color: s.primary, fontSize: 18 }}>FinTrack</Typography>
         <Stack direction="row" spacing={sp * 1} sx={{ alignItems: 'center' }}>
           <Box sx={{ bgcolor: s.surfaceContainerHigh, borderRadius: 99, px: sp * 1.5, py: sp * 0.5, display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 180 }}>
@@ -84,7 +84,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
             { label: 'Monthly Income', value: '₦8,420', change: '+8.2%', up: true, icon: <TrendingUp /> },
             { label: 'Expenses', value: '₦3,240', change: '-3.1%', up: false, icon: <TrendingDown /> },
           ].map((stat) => (
-            <Card key={stat.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <Card key={stat.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, }}>
               <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Box>
@@ -113,7 +113,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
           </Box>
           <Box sx={{ flex: 2 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: sp * 1, fontSize: 14 }}>Recent Transactions</Typography>
-            <TableContainer component={Paper} sx={{ bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <TableContainer component={Paper} sx={{ bgcolor: s.surfaceContainerLow, }}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -154,7 +154,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
   return (
     <Box sx={{ fontFamily: tokens.typography.fontFamily, bgcolor: s.background, color: s.onBackground, height: '100%', display: 'flex', overflow: 'hidden' }}>
       {/* Sidebar */}
-      <Box sx={{ width: 200, bgcolor: s.surfaceContainer, borderRight: `1px solid ${s.outlineVariant}`, p: sp * 1.5, display: { xs: 'none', md: 'flex' }, flexDirection: 'column' }}>
+      <Box sx={{ width: 200, bgcolor: s.surfaceContainer, p: sp * 1.5, display: { xs: 'none', md: 'flex' }, flexDirection: 'column' }}>
         <Typography variant="h6" sx={{ fontWeight: 700, color: s.primary, mb: sp * 2, fontSize: 16 }}>Acme Inc</Typography>
         <List dense disablePadding>
           {[
@@ -176,7 +176,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
 
       {/* Main Content */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${s.outlineVariant}` }}>
+        <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
           <Typography variant="h6" sx={{ fontWeight: 600, fontSize: 18 }}>Dashboard</Typography>
           <Stack direction="row" spacing={sp * 1} sx={{ alignItems: 'center' }}>
             <Button variant="contained" sx={{ textTransform: 'none', borderRadius: 1.5, fontSize: 12, py: 0.5, px: 1.5 }}>Generate Report</Button>
@@ -193,7 +193,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
               { label: 'Conversion', value: '3.24%', sub: '+0.4% improvement' },
               { label: 'Avg Order', value: '₦86.50', sub: '+₦4.20 vs avg' },
             ].map((kpi) => (
-              <Card key={kpi.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+              <Card key={kpi.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, }}>
                 <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
                   <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 11 }}>{kpi.label}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 700, my: 0.25, fontSize: 20 }}>{kpi.value}</Typography>
@@ -205,7 +205,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
 
           {/* Chart + Team */}
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={sp * 1.5}>
-            <Card sx={{ flex: 2, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <Card sx={{ flex: 2, bgcolor: s.surfaceContainerLow, }}>
               <CardContent sx={{ p: sp * 2 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: sp * 1.5, fontSize: 14 }}>Revenue Overview</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.75, height: 140 }}>
@@ -221,7 +221,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
               </CardContent>
             </Card>
 
-            <Card sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <Card sx={{ flex: 1, bgcolor: s.surfaceContainerLow, }}>
               <CardContent sx={{ p: sp * 2 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: sp * 1.5, fontSize: 14 }}>Team</Typography>
                 <Stack spacing={sp * 1}>
@@ -257,7 +257,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
   return (
     <Box sx={{ fontFamily: tokens.typography.fontFamily, bgcolor: s.background, color: s.onBackground, height: '100%', overflow: 'hidden' }}>
       {/* Nav */}
-      <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${s.outlineVariant}` }}>
+      <Box sx={{ bgcolor: s.surfaceContainer, px: sp * 2.5, py: sp * 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
         <Stack direction="row" spacing={sp * 1.5} sx={{ alignItems: 'center' }}>
           <School sx={{ color: s.primary, fontSize: 22 }} />
           <Typography variant="h6" sx={{ fontWeight: 700, fontSize: 18 }}>EduLearn</Typography>
@@ -281,7 +281,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
             { label: 'Completed', value: '5', icon: <CheckCircle /> },
             { label: 'Hours', value: '124', icon: <CalendarToday /> },
           ].map((stat) => (
-            <Card key={stat.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <Card key={stat.label} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, }}>
               <CardContent sx={{ p: sp * 1.5, display: 'flex', alignItems: 'center', gap: sp * 1, '&:last-child': { pb: sp * 1.5 } }}>
                 <Box sx={{ bgcolor: s.primaryContainer, borderRadius: 1.5, p: 0.75, display: 'flex' }}>
                   {React.cloneElement(stat.icon, { sx: { color: s.onPrimaryContainer, fontSize: 18 } })}
@@ -303,7 +303,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
             { title: 'System Design', progress: 45, lessons: '9/20', color: s.secondary },
             { title: 'TypeScript', progress: 92, lessons: '23/25', color: s.tertiary },
           ].map((course) => (
-            <Card key={course.title} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+            <Card key={course.title} sx={{ flex: 1, bgcolor: s.surfaceContainerLow, }}>
               <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
                 <Box sx={{ width: '100%', height: 4, bgcolor: s.surfaceContainerHighest, borderRadius: 99, mb: sp * 1, overflow: 'hidden' }}>
                   <Box sx={{ width: `${course.progress}%`, height: '100%', bgcolor: course.color, borderRadius: 99 }} />
@@ -313,7 +313,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
                   <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 11 }}>{course.lessons} lessons</Typography>
                   <Typography variant="caption" sx={{ fontWeight: 600, color: course.color, fontSize: 11 }}>{course.progress}%</Typography>
                 </Stack>
-                <Button variant="outlined" fullWidth sx={{ mt: sp * 1, textTransform: 'none', borderRadius: 1.5, borderColor: s.outlineVariant, color: s.onSurface, fontSize: 12, py: 0.5 }}>Continue</Button>
+                <Button variant="outlined" fullWidth sx={{ mt: sp * 1, textTransform: 'none', borderRadius: 1.5, color: s.onSurface, fontSize: 12, py: 0.5 }}>Continue</Button>
               </CardContent>
             </Card>
           ))}
@@ -321,7 +321,7 @@ const EducationScreen = React.memo(function EducationScreen({ tokens }: { tokens
 
         {/* Upcoming */}
         <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: sp * 1, fontSize: 14 }}>Upcoming</Typography>
-        <Card sx={{ bgcolor: s.surfaceContainerLow, border: `1px solid ${s.outlineVariant}` }}>
+        <Card sx={{ bgcolor: s.surfaceContainerLow, }}>
           <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
             <Stack spacing={sp * 0.75}>
               {[
@@ -393,14 +393,14 @@ const SignupScreen = React.memo(function SignupScreen({ tokens }: { tokens: Prev
             </Button>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Divider sx={{ flex: 1, borderColor: s.outlineVariant }} />
+              <Divider sx={{ flex: 1,}} />
               <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 11 }}>or sign up with</Typography>
-              <Divider sx={{ flex: 1, borderColor: s.outlineVariant }} />
+              <Divider sx={{ flex: 1,}} />
             </Box>
 
             <Stack direction="row" spacing={sp * 1}>
-              <Button fullWidth variant="outlined" startIcon={<Google />} sx={{ textTransform: 'none', borderRadius: 1.5, borderColor: s.outlineVariant, color: s.onSurface, fontSize: 12, py: 0.75 }}>Google</Button>
-              <Button fullWidth variant="outlined" startIcon={<GitHub />} sx={{ textTransform: 'none', borderRadius: 1.5, borderColor: s.outlineVariant, color: s.onSurface, fontSize: 12, py: 0.75 }}>GitHub</Button>
+              <Button fullWidth variant="outlined" startIcon={<Google />} sx={{ textTransform: 'none', borderRadius: 1.5, color: s.onSurface, fontSize: 12, py: 0.75 }}>Google</Button>
+              <Button fullWidth variant="outlined" startIcon={<GitHub />} sx={{ textTransform: 'none', borderRadius: 1.5, color: s.onSurface, fontSize: 12, py: 0.75 }}>GitHub</Button>
             </Stack>
 
             <Typography variant="body2" sx={{ textAlign: 'center', color: s.onSurfaceVariant, fontSize: 12 }}>

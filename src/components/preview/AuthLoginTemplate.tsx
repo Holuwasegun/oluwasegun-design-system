@@ -194,9 +194,8 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
                   borderRadius: 2,
                   py: 1.1,
                   fontWeight: 500,
-                  borderColor: 'divider',
                   color: 'text.primary',
-                  '&:hover': { borderColor: 'text.secondary', bgcolor: 'action.hover' },
+                  '&:hover': { bgcolor: 'action.hover' },
                 }}
               >
                 Google
@@ -210,9 +209,8 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
                   borderRadius: 2,
                   py: 1.1,
                   fontWeight: 500,
-                  borderColor: 'divider',
                   color: 'text.primary',
-                  '&:hover': { borderColor: 'text.secondary', bgcolor: 'action.hover' },
+                  '&:hover': { bgcolor: 'action.hover' },
                 }}
               >
                 GitHub

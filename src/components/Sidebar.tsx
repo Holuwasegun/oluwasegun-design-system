@@ -88,17 +88,19 @@ export default function Sidebar() {
             width: 36,
             height: 36,
             borderRadius: 2,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            backgroundColor: 'background.default',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            boxShadow: `0 2px 8px ${theme.palette.primary.main}33`,
+            boxShadow: theme.palette.mode === 'dark' 
+              ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
+              : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
           }}
         >
           <Typography
             variant="h6"
-            sx={{ color: '#fff', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
+            sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
           >
             O
           </Typography>
@@ -132,22 +134,16 @@ export default function Sidebar() {
                   justifyContent: sidebarOpen ? 'initial' : 'center',
                   px: sidebarOpen ? 2 : 1.5,
                   position: 'relative',
-                  backgroundColor: isActive ? `${theme.palette.primary.main}0D` : 'transparent',
+                  backgroundColor: isActive ? 'background.default' : 'transparent',
+                  boxShadow: isActive 
+                    ? theme.palette.mode === 'dark'
+                      ? 'inset 3px 3px 6px rgba(0,0,0,0.5), inset -3px -3px 6px rgba(255,255,255,0.03)'
+                      : 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.7)'
+                    : 'none',
                   color: isActive ? 'primary.main' : 'text.secondary',
                   transition: 'all 0.15s ease',
-                  '&::before': isActive ? {
-                    content: '""',
-                    position: 'absolute',
-                    left: 0,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: 3,
-                    height: 20,
-                    borderRadius: '0 4px 4px 0',
-                    bgcolor: 'primary.main',
-                  } : {},
                   '&:hover': {
-                    backgroundColor: isActive ? `${theme.palette.primary.main}0D` : `${theme.palette.action.hover}`,
+                    backgroundColor: isActive ? 'background.default' : 'rgba(0,0,0,0.02)',
                   },
                 }}
               >
@@ -204,7 +200,6 @@ export default function Sidebar() {
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
             boxSizing: 'border-box',
-            borderRight: `1px solid ${theme.palette.divider}`,
           },
         }}
       >
@@ -231,7 +226,6 @@ export default function Sidebar() {
           '& .MuiDrawer-paper': {
             width: sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
             boxSizing: 'border-box',
-            borderRight: `1px solid ${theme.palette.divider}`,
             overflowX: 'hidden',
             transition: theme.transitions.create('width', {
               easing: theme.transitions.easing.sharp,

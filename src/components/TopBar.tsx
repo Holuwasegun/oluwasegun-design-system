@@ -84,7 +84,6 @@ export default function TopBar() {
           backgroundColor: `${theme.palette.background.paper}CC`,
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${theme.palette.divider}`,
           color: "text.primary",
         }}
       >

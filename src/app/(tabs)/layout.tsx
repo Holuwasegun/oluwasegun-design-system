@@ -34,7 +34,6 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
           component="footer"
           sx={{
             mt: 8,
-            borderTop: `1px solid ${theme.palette.divider}`,
             bgcolor: `${theme.palette.background.paper}80`,
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',

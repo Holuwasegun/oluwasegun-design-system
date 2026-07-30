@@ -59,8 +59,6 @@ export default function PreviewPage() {
           bgcolor: 'background.paper',
           borderRadius: 3,
           boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-          border: '1px solid',
-          borderColor: 'divider',
           flexWrap: 'wrap',
         }}
       >
@@ -106,8 +104,6 @@ export default function PreviewPage() {
       {/* Preview Container */}
       <Box
         sx={{
-          border: '1px solid',
-          borderColor: 'divider',
           borderRadius: 4,
           overflow: 'hidden',
           boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
@@ -121,7 +117,7 @@ export default function PreviewPage() {
       </Box>
 
       {/* Token Summary */}
-      <Box sx={{ mt: 4, p: 3, bgcolor: 'background.paper', borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ mt: 4, p: 3, bgcolor: 'background.paper', borderRadius: 3, }}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 2 }}>
           Active Design Tokens
         </Typography>
@@ -134,7 +130,7 @@ export default function PreviewPage() {
             { label: 'Error', value: scheme.error },
           ].map((token) => (
             <Box key={token.label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{ width: 16, height: 16, borderRadius: '50%', bgcolor: token.value, border: '1px solid', borderColor: 'divider' }} />
+              <Box sx={{ width: 16, height: 16, borderRadius: '50%', bgcolor: token.value, }} />
               <Typography variant="caption" sx={{ fontWeight: 600 }}>{token.label}</Typography>
               <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>{token.value}</Typography>
             </Box>

@@ -20,6 +20,24 @@ function buildFontFamily(stored: string | undefined) {
 
 function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) {
   const scheme = generateSchemeFromConfig(config);
+  
+  const isDark = config.mode === 'dark';
+  const bgColor = isDark ? '#1A1D24' : '#E0E5EC';
+  const textPrimary = isDark ? '#F7FAFC' : '#2D3748';
+  const textSecondary = isDark ? '#A0AEC0' : '#718096';
+  
+  const shadowProtruding = isDark
+    ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
+    : '-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.1)';
+    
+  const shadowInset = isDark
+    ? 'inset 3px 3px 6px rgba(0,0,0,0.5), inset -3px -3px 6px rgba(255,255,255,0.03)'
+    : 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.7)';
+
+  const shadowButton = isDark
+    ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
+    : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)';
+
   return createTheme({
     palette: {
       mode: config.mode,
@@ -42,14 +60,14 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) 
         contrastText: scheme.onError,
       },
       background: {
-        default: scheme.background,
-        paper: scheme.surfaceContainerLow,
+        default: bgColor,
+        paper: bgColor,
       },
       text: {
-        primary: scheme.onBackground,
-        secondary: scheme.onSurfaceVariant,
+        primary: textPrimary,
+        secondary: textSecondary,
       },
-      divider: scheme.outlineVariant,
+      divider: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
       warning: {
         main: scheme.tertiary,
         light: scheme.tertiaryContainer,
@@ -74,6 +92,72 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"]) 
       overline: { fontSize: "0.6875rem", fontWeight: 500, lineHeight: 1.4545, letterSpacing: "0.08em" },
     },
     shape: { borderRadius: 12 },
+    components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            boxShadow: shadowProtruding,
+            backgroundImage: 'none',
+            border: 'none',
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            boxShadow: shadowProtruding,
+            backgroundImage: 'none',
+            border: 'none',
+          },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: bgColor,
+            boxShadow: isDark ? '6px 0px 14px rgba(0,0,0,0.5)' : '6px 0px 14px rgba(0,0,0,0.1)',
+            border: 'none',
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: bgColor,
+            boxShadow: isDark ? '0px 6px 14px rgba(0,0,0,0.5)' : '0px 6px 14px rgba(0,0,0,0.1)',
+            border: 'none',
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            boxShadow: shadowInset,
+            backgroundColor: bgColor,
+            borderRadius: 8,
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          notchedOutline: {
+            border: 'none',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          outlined: {
+            border: 'none',
+            boxShadow: shadowButton,
+            '&:hover': {
+              border: 'none',
+              boxShadow: shadowInset,
+            }
+          },
+        },
+      },
+    }
   });
 }
 
@@ -82,6 +166,7 @@ export default function ThemeRegistry({ children }: ThemeRegistryProps) {
   const config = useThemeStore((s) => s.config);
   const [mounted, setMounted] = useState(false);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   const theme = useMemo(() => makeTheme(config), [config]);

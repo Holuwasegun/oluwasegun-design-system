@@ -98,7 +98,7 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
 
   if (layout.type === 'centered-hero') {
     return (
-      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', }}>
         {image && layout.heroPosition === 'top' && (
           <Box sx={{ flex: 1, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '40%' }} />
         )}
@@ -123,7 +123,7 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
 
   if (layout.type === 'split-horizontal') {
     return (
-      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', }}>
         {image && layout.heroPosition === 'left' && (
           <Box sx={{ width: '45%', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
@@ -148,7 +148,7 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
 
   if (layout.type === 'split-vertical') {
     return (
-      <Box sx={{ width: w, height: h, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ width: w, height: h, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', }}>
         {image && layout.heroPosition === 'top' && (
           <Box sx={{ flex: 1, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
@@ -173,7 +173,7 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
 
   if (layout.type === 'card-overlay') {
     return (
-      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', position: 'relative', border: '1px solid', borderColor: 'divider' }}>
+      <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', position: 'relative', }}>
         {image && (
           <Box sx={{ position: 'absolute', inset: 0, backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         )}
@@ -198,12 +198,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
 
   // minimalist
   return (
-    <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid', borderColor: 'divider' }}>
+    <Box sx={{ width: w, height: h, bgcolor: colorUsage.background, borderRadius: spacing.borderRadius * scale, overflow: 'hidden', display: 'flex', flexDirection: 'column', }}>
       {image && layout.heroPosition === 'top' && (
         <Box sx={{ height: '35%', backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
       )}
       <Box sx={{ flex: 1, p: spacing.padding * scale, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', gap: spacing.gap * scale * 0.3 }}>
-        <Divider sx={{ width: 40 * scale, mb: spacing.gap * scale * 0.3, borderColor: colorUsage.accent }} />
+        <Divider sx={{ width: 40 * scale, mb: spacing.gap * scale * 0.3,}} />
         <Typography sx={{ fontWeight: 700, fontSize: Math.max(7, 14 * scale), color: colorUsage.text, fontFamily, lineHeight: 1.2, textAlign: 'right' }}>
           {primaryText}
         </Typography>
@@ -299,8 +299,8 @@ export default function LayoutLabSection() {
 
       const data: GenerationResult = await res.json();
       setResult(data);
-    } catch (err: any) {
-      setError(err.message || 'Layout generation is taking longer than expected. Please try again.');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Layout generation is taking longer than expected. Please try again.');
     } finally {
       setGenerating(false);
     }
@@ -393,7 +393,7 @@ export default function LayoutLabSection() {
       </Typography>
 
       {/* Input Form */}
-      <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 3 }}>
+      <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.paper', borderRadius: 2, mb: 3 }}>
         <Stack spacing={2.5}>
           {/* Image Upload */}
           <Box>
@@ -402,7 +402,7 @@ export default function LayoutLabSection() {
             </Typography>
             {heroImage ? (
               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-                <Box sx={{ width: 56, height: 56, borderRadius: 1.5, backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center', border: '1px solid', borderColor: 'divider' }} />
+                <Box sx={{ width: 56, height: 56, borderRadius: 1.5, backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center', }} />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography variant="body2" sx={{ fontSize: 12, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{heroImageName}</Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 10 }}>Ready to use</Typography>
@@ -418,7 +418,7 @@ export default function LayoutLabSection() {
                 variant="outlined"
                 startIcon={<UploadIcon sx={{ fontSize: 16 }} />}
                 onClick={() => fileInputRef.current?.click()}
-                sx={{ textTransform: 'none', borderColor: 'divider', color: 'text.secondary', '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' }, py: 1.5 }}
+                sx={{ textTransform: 'none', color: 'text.secondary', '&:hover': { bgcolor: 'action.hover' }, py: 1.5 }}
                 fullWidth
               >
                 Upload image (JPG, PNG, SVG — max 5MB)
@@ -534,15 +534,14 @@ export default function LayoutLabSection() {
                 <Box
                   key={suggestion.id}
                   sx={{
-                    border: '1px solid', borderColor: isSelected ? 'primary.main' : 'divider',
                     borderRadius: 2, overflow: 'hidden', transition: 'all 0.2s',
-                    '&:hover': { borderColor: 'primary.main', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+                    '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
                     cursor: 'pointer',
                   }}
                   onClick={() => setSelectedLayout(isSelected ? null : suggestion.id)}
                 >
                   {/* Preview */}
-                  <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', bgcolor: 'grey.50', borderBottom: '1px solid', borderColor: 'divider' }}>
+                  <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', bgcolor: 'grey.50', }}>
                     <Box id={`layout-preview-${suggestion.id}`}>
                       <LayoutPreview
                         suggestion={swapped}
@@ -594,7 +593,7 @@ export default function LayoutLabSection() {
 
                   {/* Token Swap Panel */}
                   {isSelected && (
-                    <Box sx={{ px: 2, py: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'grey.50' }}>
+                    <Box sx={{ px: 2, py: 2, bgcolor: 'grey.50' }}>
                       <Stack direction="row" sx={{ alignItems: 'center', gap: 0.5, mb: 1.5 }}>
                         <SwapIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
                         <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -633,7 +632,7 @@ export default function LayoutLabSection() {
                                 {SCHEME_COLOR_OPTIONS.map((c) => (
                                   <MenuItem key={c} value={scheme[c as keyof typeof scheme] || currentColor}>
                                     <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-                                      <Box sx={{ width: 14, height: 14, borderRadius: 0.5, bgcolor: scheme[c as keyof typeof scheme] || '#ccc', border: '1px solid', borderColor: 'divider', flexShrink: 0 }} />
+                                      <Box sx={{ width: 14, height: 14, borderRadius: 0.5, bgcolor: scheme[c as keyof typeof scheme] || '#ccc', flexShrink: 0 }} />
                                       <Typography sx={{ fontSize: 11 }}>{c}</Typography>
                                     </Stack>
                                   </MenuItem>

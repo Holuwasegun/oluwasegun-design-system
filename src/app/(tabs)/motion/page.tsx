@@ -115,7 +115,7 @@ function DurationControls() {
 
             return (
               <Grid size={{ xs: 6, sm: 4, md: 3 }} key={name}>
-                <Box sx={{ p: 1.5, border: '1px solid', borderColor: isOverridden ? 'primary.main' : 'divider', borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
+                <Box sx={{ p: 1.5, borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                     <Typography variant="caption" sx={{ fontWeight: 500, fontSize: '0.7rem' }}>{name}</Typography>
                     {isOverridden && (
@@ -192,7 +192,7 @@ function EasingControls() {
             const isOverridden = name in overrides;
 
             return (
-              <Box key={name} sx={{ p: 2, border: '1px solid', borderColor: isOverridden ? 'primary.main' : 'divider', borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
+              <Box key={name} sx={{ p: 2, borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>{name}</Typography>
                   {isOverridden && (

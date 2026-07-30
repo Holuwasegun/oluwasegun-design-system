@@ -18,6 +18,8 @@ import {
   DialogActions,
   Slider,
   Chip,
+  Popover,
+  Fade,
 } from "@mui/material";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -143,8 +145,6 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
           gridTemplateColumns: { xs: "repeat(auto-fill, minmax(40px, 1fr))", sm: "none" },
           borderRadius: 2,
           overflow: { xs: "visible", sm: "auto" },
-          border: "1px solid",
-          borderColor: "divider",
           gap: { xs: 0, sm: 0 },
           bgcolor: 'divider',
           "&::-webkit-scrollbar": { height: 4 },
@@ -199,6 +199,18 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
 }
 
 // ---------- Key Color Picker ----------
+function hexToRgb(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16) || 0;
+  const g = parseInt(hex.slice(3, 5), 16) || 0;
+  const b = parseInt(hex.slice(5, 7), 16) || 0;
+  return { r, g, b };
+}
+
+function rgbToHex(r: number, g: number, b: number) {
+  const toHex = (v: number) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0").toUpperCase();
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
 function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault, onColorClick }: {
   label: string;
   description: string;
@@ -208,23 +220,50 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   isDefault: boolean;
   onColorClick?: () => void;
 }) {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+    if (onColorClick) onColorClick();
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const rgb = hexToRgb(value);
+
+  const handleRgbChange = (color: 'r'|'g'|'b', val: number) => {
+    const newRgb = { ...rgb, [color]: val };
+    onChange(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+  };
+
+  const open = Boolean(anchorEl);
+
+  const neumorphicInset = theme.palette.mode === 'dark' 
+    ? "inset 3px 3px 6px rgba(0,0,0,0.5), inset -3px -3px 6px rgba(255,255,255,0.03)"
+    : "inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.7)";
+
   return (
-    <Card variant="outlined" sx={{ height: "100%" }}>
+    <Card 
+      variant="outlined" 
+      sx={{ 
+        height: "100%", 
+        cursor: "pointer", 
+        transition: "transform 0.15s, box-shadow 0.15s",
+        "&:hover": { transform: "scale(1.02)", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }
+      }}
+      onClick={handleClick}
+    >
       <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1 }}>
           <Box
-            onClick={onColorClick}
             sx={{
               width: 40,
               height: 40,
               borderRadius: 1.5,
               bgcolor: value,
-              border: "2px solid",
-              borderColor: "divider",
               flexShrink: 0,
-              cursor: "pointer",
-              transition: "transform 0.15s, box-shadow 0.15s",
-              "&:hover": { transform: "scale(1.1)", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" },
             }}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -239,7 +278,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
             <Button
               size="small"
               color="error"
-              onClick={onRemove}
+              onClick={(e) => { e.stopPropagation(); onRemove(); }}
               startIcon={<DeleteOutlineRoundedIcon />}
               sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.7rem", px: 1 }}
             >
@@ -248,27 +287,135 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
           )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
-          <input
-            type="color"
-            value={value}
-            onChange={(e) => onChange(e.target.value.toUpperCase())}
-            style={{ width: 36, height: 36, border: "none", padding: 0, cursor: "pointer", borderRadius: 4 }}
-          />
-          <TextField
-            size="small"
+          <Typography variant="caption" sx={{ fontFamily: "monospace", fontWeight: 600 }}>{value}</Typography>
+        </Box>
+      </CardContent>
+
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        TransitionComponent={Fade}
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: 'background.paper',
+              borderRadius: 3,
+              p: 3,
+              mt: 1,
+              width: 260,
+              boxShadow: theme.palette.mode === 'dark'
+                ? "-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)"
+                : "-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.15)",
+            }
+          }
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}>
+            Adjust Color
+          </Typography>
+          
+          {['r', 'g', 'b'].map((color) => {
+            const val = rgb[color as keyof typeof rgb];
+            return (
+              <Box key={color} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 12, textTransform: 'uppercase' }}>
+                  {color}
+                </Typography>
+                <Slider
+                  size="small"
+                  value={val}
+                  min={0}
+                  max={255}
+                  onChange={(_, newValue) => handleRgbChange(color as 'r'|'g'|'b', newValue as number)}
+                  sx={{
+                    color: color === 'r' ? '#ff4d4d' : color === 'g' ? '#4dff4d' : '#4d4dff',
+                    "& .MuiSlider-track": {
+                       boxShadow: neumorphicInset,
+                    },
+                    "& .MuiSlider-rail": {
+                       opacity: 1,
+                       bgcolor: 'background.default',
+                       boxShadow: neumorphicInset,
+                    },
+                    "& .MuiSlider-thumb": {
+                       width: 16,
+                       height: 16,
+                       bgcolor: 'background.paper',
+                       borderRadius: 4,
+                       boxShadow: theme.palette.mode === 'dark'
+                         ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
+                         : '-6px -6px 14px #ffffff, 6px 6px 14px #babecc',
+                       "&:hover, &.Mui-focusVisible": {
+                         boxShadow: theme.palette.mode === 'dark'
+                           ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
+                           : '-6px -6px 14px #ffffff, 6px 6px 14px #babecc',
+                       }
+                    }
+                  }}
+                />
+                <Box
+                  component="input"
+                  type="number"
+                  value={val}
+                  onChange={(e) => {
+                    let v = parseInt(e.target.value) || 0;
+                    v = Math.max(0, Math.min(255, v));
+                    handleRgbChange(color as 'r'|'g'|'b', v);
+                  }}
+                  sx={{
+                    width: 44,
+                    height: 28,
+                    bgcolor: 'background.default',
+                    borderRadius: 1.5,
+                    textAlign: 'center',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: 'text.primary',
+                    boxShadow: neumorphicInset,
+                    outline: 'none',
+                    "&:focus": {
+                      boxShadow: "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.9)",
+                    }
+                  }}
+                />
+              </Box>
+            );
+          })}
+          
+          <Box
+            component="input"
             value={value}
             onChange={(e) => {
               let val = e.target.value;
               if (!val.startsWith("#")) val = "#" + val;
               if (/^#[0-9A-F]{6}$/i.test(val)) onChange(val.toUpperCase());
             }}
-            slotProps={{
-              input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const, fontSize: "0.8rem" } },
+            sx={{
+              width: '100%',
+              height: 36,
+              bgcolor: '#F0F0F3',
+              borderRadius: 2,
+              textAlign: 'center',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              color: '#333',
+              fontFamily: 'monospace',
+              textTransform: 'uppercase',
+              boxShadow: neumorphicInset,
+              outline: 'none',
+              mt: 1,
+              "&:focus": {
+                boxShadow: "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.9)",
+              }
             }}
-            fullWidth
           />
         </Box>
-      </CardContent>
+      </Popover>
     </Card>
   );
 }
@@ -290,8 +437,7 @@ function ColorRoleCard({ label, hex, onClick }: { label: string; hex: string; on
     >
       <Box
         sx={{
-          width: 32, height: 32, borderRadius: 1, bgcolor: hex,
-          border: "1px solid", borderColor: "divider", flexShrink: 0,
+          width: 32, height: 32, borderRadius: 1, bgcolor: hex, flexShrink: 0,
         }}
       />
       <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -321,8 +467,11 @@ function HslDetailDialog({ open, hex, onClose, onChange }: {
 
   useEffect(() => {
     const hslNew = hexToHsl(hex);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalH(hslNew.h);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalS(hslNew.s);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHexInput(hex);
   }, [hex]);
 
@@ -335,7 +484,7 @@ function HslDetailDialog({ open, hex, onClose, onChange }: {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, fontWeight: 600 }}>
-        <Box sx={{ width: 28, height: 28, borderRadius: 1, bgcolor: hex, border: "1px solid", borderColor: "divider" }} />
+        <Box sx={{ width: 28, height: 28, borderRadius: 1, bgcolor: hex, }} />
         Edit Color
       </DialogTitle>
       <DialogContent dividers>
@@ -490,7 +639,7 @@ function AddKeyColorDialog({ open, onClose, onAdd }: {
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value.toUpperCase())}
-              style={{ width: 48, height: 48, border: "none", padding: 0, cursor: "pointer", borderRadius: 6 }}
+              style={{ width: 48, height: 48, padding: 0, cursor: "pointer", borderRadius: 6 }}
             />
             <TextField
               size="small"

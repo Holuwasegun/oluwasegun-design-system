@@ -170,8 +170,6 @@ function ShadowBuilder() {
                 minHeight: 200,
                 bgcolor: 'grey.100',
                 borderRadius: 2,
-                border: 1,
-                borderColor: 'divider',
               }}
             >
               <Box

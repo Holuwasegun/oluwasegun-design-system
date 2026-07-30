@@ -548,8 +548,8 @@ function LivePreview({ styles, fontFamily }: { styles: TypeStyle[]; fontFamily: 
       <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>Live Preview</Typography>
 
-        <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: 'grey.100', px: 4, py: 5, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ borderRadius: 2, overflow: 'hidden' }}>
+          <Box sx={{ bgcolor: 'grey.100', px: 4, py: 5, }}>
             <Typography noWrap sx={{ fontFamily: ff, fontSize: Math.min(displayLarge?.fontSize ?? 57, 57), fontWeight: displayLarge?.fontWeight ?? 400, lineHeight: 1.2, letterSpacing: `${displayLarge?.letterSpacing ?? -0.25}em`, mb: 2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
               Typography Scale
             </Typography>
