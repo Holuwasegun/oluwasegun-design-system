@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   AppBar,
   Toolbar,
@@ -27,28 +27,29 @@ import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/color": "Color",
-  "/typography": "Typography",
-  "/spacing": "Spacing",
-  "/shadows": "Shadows",
-  "/elevation": "Elevation",
-  "/radius": "Border Radius",
-  "/motion": "Motion",
-  "/components": "Components",
-  "/preview": "Preview",
+  "home": "Dashboard",
+  "color": "Color",
+  "typography": "Typography",
+  "spacing": "Spacing",
+  "shadows": "Shadows",
+  "elevation": "Elevation",
+  "radius": "Border Radius",
+  "motion": "Motion",
+  "components": "Components",
+  "preview": "Preview",
 };
 
 export default function TopBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentView = searchParams.get("view") || "home";
   const { toggleSidebar } = useAppStore();
   const { config, toggleMode, exportConfig, exportCssTokens, currentProjectId } = useThemeStore();
   const { projects } = useProjectStore();
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
 
-  const title = pageTitles[pathname] || "Design System";
+  const title = pageTitles[currentView] || "Design System";
   const currentProject = projects.find((p) => p.id === currentProjectId);
 
   const handleExport = () => {
