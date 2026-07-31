@@ -42,6 +42,7 @@ import {
   type TonalPalette,
 } from "@/theme/tonal-palette";
 import { relativeLuminance } from "@/lib/token-utils";
+import { CustomColorPicker } from "@/components/color-picker/CustomColorPicker";
 
 // ---------- HSL Utilities ----------
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
@@ -71,6 +72,19 @@ function hslToHex(h: number, s: number, l: number): string {
   else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; }
   else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
   const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, "0").toUpperCase();
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function hexToRgb(hex: string) {
+  const norm = normalizeHex(isValidHex(hex) ? hex : "#000000");
+  const r = parseInt(norm.slice(1, 3), 16) || 0;
+  const g = parseInt(norm.slice(3, 5), 16) || 0;
+  const b = parseInt(norm.slice(5, 7), 16) || 0;
+  return { r, g, b };
+}
+
+function rgbToHex(r: number, g: number, b: number) {
+  const toHex = (v: number) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0").toUpperCase();
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
@@ -142,6 +156,153 @@ function formatName(key: string): string {
 
 function getTextColor(bgHex: string): string {
   return relativeLuminance(bgHex) > 0.5 ? "#1D1B20" : "#FFFFFF";
+}
+
+// ---------- Senior UI Embedded Color Field & Picker ----------
+function ColorFieldWithPicker({
+  value,
+  onChange,
+  size = "small",
+  fullWidth = true,
+}: {
+  value: string;
+  onChange: (hex: string) => void;
+  size?: "small" | "medium";
+  fullWidth?: boolean;
+}) {
+  const theme = useTheme();
+  const [typedHex, setTypedHex] = useState(value);
+  const [pickerAnchorEl, setPickerAnchorEl] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTypedHex(value);
+  }, [value]);
+
+  const validHex = isValidHex(typedHex);
+  const activeColor = validHex ? normalizeHex(typedHex) : normalizeHex(isValidHex(value) ? value : '#000000');
+
+  const handleInputChange = (input: string) => {
+    setTypedHex(input);
+    let val = input.trim();
+    if (!val.startsWith('#')) val = '#' + val;
+    if (isValidHex(val)) {
+      onChange(normalizeHex(val));
+    }
+  };
+
+  return (
+    <Box sx={{ position: 'relative', width: fullWidth ? '100%' : 'auto', display: 'inline-flex', alignItems: 'center' }}>
+      <TextField
+        size={size}
+        fullWidth={fullWidth}
+        value={typedHex}
+        onChange={(e) => handleInputChange(e.target.value)}
+        onBlur={() => setTypedHex(value)}
+        error={!validHex}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start" sx={{ mr: 0.75 }}>
+                <Tooltip title="Pick color">
+                  <Box
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPickerAnchorEl(e.currentTarget);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPickerAnchorEl(e.currentTarget as HTMLElement);
+                      }
+                    }}
+                    role="button"
+                    aria-label="Pick color"
+                    tabIndex={0}
+                    sx={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: '50%',
+                      bgcolor: activeColor,
+                      cursor: 'pointer',
+                      border: '2px solid',
+                      borderColor: 'background.paper',
+                      boxShadow: '0 0 0 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1)',
+                      transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                      flexShrink: 0,
+                      '&:hover': {
+                        transform: 'scale(1.15)',
+                        boxShadow: '0 0 0 2px primary.main, 0 2px 6px rgba(0,0,0,0.2)',
+                      },
+                      '&:focus-visible': {
+                        outline: '2px solid',
+                        outlineColor: 'primary.main',
+                        outlineOffset: 2,
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.8125rem', ml: 0.5 }}>
+                  #
+                </Typography>
+              </InputAdornment>
+            ),
+            style: {
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              fontSize: '0.8125rem',
+              letterSpacing: '0.05em',
+            },
+          },
+        }}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 2.5,
+            bgcolor: 'background.default',
+            '& fieldset': { borderColor: validHex ? 'divider' : 'error.main' },
+            '&:hover fieldset': { borderColor: 'primary.main' },
+          },
+        }}
+      />
+
+      {/* Custom Color Picker Popover — embedded, keeps design flow intact */}
+      <Popover
+        open={Boolean(pickerAnchorEl)}
+        anchorEl={pickerAnchorEl}
+        onClose={() => setPickerAnchorEl(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        transitionDuration={180}
+        onClick={(e) => e.stopPropagation()}
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: 'background.paper',
+              borderRadius: 4,
+              p: 2,
+              mt: 1,
+              width: 288,
+              maxWidth: 'calc(100vw - 32px)',
+              boxShadow: theme.palette.mode === 'dark'
+                ? '0 20px 40px -10px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08)'
+                : '0 20px 40px -10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)',
+              overflow: 'visible',
+            },
+          },
+        }}
+      >
+        <CustomColorPicker
+          value={activeColor}
+          onChange={(newHex) => {
+            setTypedHex(newHex);
+            onChange(newHex);
+          }}
+          onDone={() => setPickerAnchorEl(null)}
+        />
+      </Popover>
+    </Box>
+  );
 }
 
 // ---------- Senior UI Designed Color Adjust Popover ----------
@@ -460,36 +621,9 @@ function ColorAdjustPopover({
             HEX COLOR CODE
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <TextField
-              size="small"
-              fullWidth
+            <ColorFieldWithPicker
               value={inputHex}
-              onChange={(e) => handleHexInput(e.target.value)}
-              onBlur={() => setInputHex(currentHex)}
-              error={!isValidHex(inputHex)}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.9rem' }}>#</Typography>
-                    </InputAdornment>
-                  ),
-                  style: {
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    fontSize: '0.875rem',
-                    letterSpacing: '0.05em',
-                  },
-                },
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 2.5,
-                  bgcolor: 'background.default',
-                  '& fieldset': { borderColor: isValidHex(inputHex) ? 'divider' : 'error.main' },
-                  '&:hover fieldset': { borderColor: 'primary.main' },
-                },
-              }}
+              onChange={(newHex) => handleHexInput(newHex)}
             />
             <Tooltip title={copied ? 'Copied!' : 'Copy Hex'}>
               <IconButton
@@ -679,19 +813,6 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
 }
 
 // ---------- Key Color Picker ----------
-function hexToRgb(hex: string) {
-  const norm = normalizeHex(isValidHex(hex) ? hex : "#000000");
-  const r = parseInt(norm.slice(1, 3), 16) || 0;
-  const g = parseInt(norm.slice(3, 5), 16) || 0;
-  const b = parseInt(norm.slice(5, 7), 16) || 0;
-  return { r, g, b };
-}
-
-function rgbToHex(r: number, g: number, b: number) {
-  const toHex = (v: number) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0").toUpperCase();
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
 function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault, onRename, onColorClick }: {
   label: string;
   description: string;
@@ -707,13 +828,6 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   const [renameMode, setRenameMode] = useState(false);
   const [renameValue, setRenameValue] = useState(label);
 
-  const [typedHex, setTypedHex] = useState(value);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTypedHex(value);
-  }, [value]);
-
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (renameMode) return;
     setAnchorEl(e.currentTarget);
@@ -722,15 +836,6 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleDirectHexChange = (input: string) => {
-    setTypedHex(input);
-    let val = input.trim();
-    if (!val.startsWith('#')) val = '#' + val;
-    if (isValidHex(val)) {
-      onChange(normalizeHex(val));
-    }
   };
 
   return (
@@ -751,7 +856,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               width: 40,
               height: 40,
               borderRadius: 1.5,
-              bgcolor: isValidHex(typedHex) ? normalizeHex(typedHex) : value,
+              bgcolor: isValidHex(value) ? normalizeHex(value) : value,
               flexShrink: 0,
               boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
             }}
@@ -833,39 +938,9 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
           )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }} onClick={(e) => e.stopPropagation()}>
-          <TextField
-            size="small"
-            variant="outlined"
-            value={typedHex}
-            onChange={(e) => handleDirectHexChange(e.target.value)}
-            onBlur={() => setTypedHex(value)}
-            error={!isValidHex(typedHex)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ mr: 0.25 }}>
-                    <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.8rem' }}>#</Typography>
-                  </InputAdornment>
-                ),
-                style: {
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  fontSize: '0.8125rem',
-                  padding: '2px 6px',
-                  letterSpacing: '0.05em',
-                },
-              },
-            }}
-            sx={{
-              width: '100%',
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                height: 32,
-                bgcolor: 'background.default',
-                '& fieldset': { borderColor: isValidHex(typedHex) ? 'divider' : 'error.main' },
-                '&:hover fieldset': { borderColor: 'primary.main' },
-              },
-            }}
+          <ColorFieldWithPicker
+            value={value}
+            onChange={onChange}
           />
         </Box>
       </CardContent>
@@ -1111,23 +1186,9 @@ function HslDetailDialog({ open, hex, title, onClose, onChange }: {
               HEX COLOR CODE
             </Typography>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <TextField
-                size="small"
-                fullWidth
+              <ColorFieldWithPicker
                 value={inputHex}
-                onChange={(e) => handleHexInput(e.target.value)}
-                onBlur={() => setInputHex(currentHex)}
-                error={!isValidHex(inputHex)}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.9rem' }}>#</Typography>
-                      </InputAdornment>
-                    ),
-                    style: { fontFamily: 'monospace', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '0.05em' },
-                  },
-                }}
+                onChange={handleHexInput}
               />
               <Tooltip title={copied ? 'Copied!' : 'Copy Hex'}>
                 <IconButton
