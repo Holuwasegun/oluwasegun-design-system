@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -19,11 +19,16 @@ import {
   Slider,
   Chip,
   Popover,
+  Stack,
+  InputAdornment,
   useTheme,
 } from "@mui/material";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { useThemeStore } from "@/store";
 import {
   generateSchemeFromConfig,
@@ -69,6 +74,31 @@ function hslToHex(h: number, s: number, l: number): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+function normalizeHex(hex: string): string {
+  let val = hex.trim();
+  if (!val.startsWith("#")) val = "#" + val;
+  if (/^#[0-9A-F]{3}$/i.test(val)) {
+    val = "#" + val[1] + val[1] + val[2] + val[2] + val[3] + val[3];
+  }
+  return val.toUpperCase();
+}
+
+function isValidHex(hex: string): boolean {
+  return /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex.trim());
+}
+
+function calculateContrastRatio(hex: string): number {
+  const norm = normalizeHex(isValidHex(hex) ? hex : "#000000");
+  const r = parseInt(norm.slice(1, 3), 16) / 255;
+  const g = parseInt(norm.slice(3, 5), 16) / 255;
+  const b = parseInt(norm.slice(5, 7), 16) / 255;
+  const toL = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const lum = 0.2126 * toL(r) + 0.7152 * toL(g) + 0.0722 * toL(b);
+  const ratioWhite = 1.05 / (lum + 0.05);
+  const ratioBlack = (lum + 0.05) / 0.05;
+  return Math.max(ratioWhite, ratioBlack);
+}
+
 const SCHEME_GROUPS = [
   {
     label: "Primary",
@@ -112,6 +142,412 @@ function getTextColor(bgHex: string): string {
   return relativeLuminance(bgHex) > 0.5 ? "#1D1B20" : "#FFFFFF";
 }
 
+// ---------- Senior UI Designed Color Adjust Popover ----------
+function ColorAdjustPopover({
+  open,
+  anchorEl,
+  onClose,
+  title,
+  subtitle,
+  hex,
+  onChange,
+}: {
+  open: boolean;
+  anchorEl: HTMLElement | null;
+  onClose: () => void;
+  title: string;
+  subtitle?: string;
+  hex: string;
+  onChange?: (hex: string) => void;
+}) {
+  const theme = useTheme();
+  const [format, setFormat] = useState<'rgb' | 'hsl'>('rgb');
+  const [inputHex, setInputHex] = useState(hex);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setInputHex(hex);
+  }, [hex]);
+
+  const currentHex = isValidHex(inputHex) ? normalizeHex(inputHex) : hex;
+  const rgb = useMemo(() => hexToRgb(currentHex), [currentHex]);
+  const hsl = useMemo(() => hexToHsl(currentHex), [currentHex]);
+
+  const handleRgbChange = (channel: 'r' | 'g' | 'b', val: number) => {
+    if (!onChange) return;
+    const newRgb = { ...rgb, [channel]: val };
+    const newHex = rgbToHex(newRgb.r, newRgb.g, newRgb.b);
+    setInputHex(newHex);
+    onChange(newHex);
+  };
+
+  const handleHslChange = (channel: 'h' | 's' | 'l', val: number) => {
+    if (!onChange) return;
+    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [channel]: val };
+    const newHex = hslToHex(newHsl.h, newHsl.s, newHsl.l);
+    setInputHex(newHex);
+    onChange(newHex);
+  };
+
+  const handleHexInput = (raw: string) => {
+    setInputHex(raw);
+    let val = raw.trim();
+    if (!val.startsWith('#')) val = '#' + val;
+    if (isValidHex(val) && onChange) {
+      const normalized = normalizeHex(val);
+      onChange(normalized);
+    }
+  };
+
+  const contrastRatio = useMemo(() => calculateContrastRatio(currentHex), [currentHex]);
+  const contrastText = getTextColor(currentHex);
+
+  return (
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+      transitionDuration={200}
+      slotProps={{
+        paper: {
+          sx: {
+            bgcolor: 'background.paper',
+            borderRadius: 4,
+            p: 2.5,
+            mt: 1.5,
+            width: { xs: 310, sm: 340 },
+            maxWidth: 'calc(100vw - 32px)',
+            boxShadow: theme.palette.mode === 'dark'
+              ? '0 20px 40px -10px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08)'
+              : '0 20px 40px -10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)',
+            overflow: 'visible',
+          },
+        },
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {/* Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: 2,
+                bgcolor: currentHex,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                border: '2px solid',
+                borderColor: 'background.paper',
+                flexShrink: 0,
+              }}
+            />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.2, color: 'text.primary' }}>
+                {title}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                {subtitle || currentHex}
+              </Typography>
+            </Box>
+          </Stack>
+          <IconButton size="small" onClick={onClose} sx={{ color: 'text.secondary', p: 0.5 }}>
+            <CloseRoundedIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Box>
+
+        {/* Format Selector Toggle */}
+        <Box sx={{ display: 'flex', bgcolor: 'action.hover', borderRadius: 2.5, p: 0.5, mb: 2 }}>
+          <Button
+            size="small"
+            onClick={() => setFormat('rgb')}
+            sx={{
+              flex: 1,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              py: 0.5,
+              minWidth: 0,
+              bgcolor: format === 'rgb' ? 'primary.main' : 'transparent',
+              color: format === 'rgb' ? 'primary.contrastText' : 'text.secondary',
+              boxShadow: format === 'rgb' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none',
+              '&:hover': {
+                bgcolor: format === 'rgb' ? 'primary.main' : 'action.selected',
+              },
+            }}
+          >
+            RGB
+          </Button>
+          <Button
+            size="small"
+            onClick={() => setFormat('hsl')}
+            sx={{
+              flex: 1,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              py: 0.5,
+              minWidth: 0,
+              bgcolor: format === 'hsl' ? 'primary.main' : 'transparent',
+              color: format === 'hsl' ? 'primary.contrastText' : 'text.secondary',
+              boxShadow: format === 'hsl' ? '0 2px 6px rgba(0,0,0,0.15)' : 'none',
+              '&:hover': {
+                bgcolor: format === 'hsl' ? 'primary.main' : 'action.selected',
+              },
+            }}
+          >
+            HSL
+          </Button>
+        </Box>
+
+        {/* RGB Sliders */}
+        {format === 'rgb' && [
+          { key: 'r', label: 'R', color: '#EF4444', val: rgb.r, max: 255 },
+          { key: 'g', label: 'G', color: '#10B981', val: rgb.g, max: 255 },
+          { key: 'b', label: 'B', color: '#3B82F6', val: rgb.b, max: 255 },
+        ].map((ch) => (
+          <Box key={ch.key} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: 'text.secondary', width: 14, textTransform: 'uppercase', textAlign: 'center' }}
+            >
+              {ch.label}
+            </Typography>
+            <Slider
+              size="small"
+              value={ch.val}
+              min={0}
+              max={ch.max}
+              onChange={(_, v) => handleRgbChange(ch.key as 'r' | 'g' | 'b', v as number)}
+              sx={{
+                flex: 1,
+                color: ch.color,
+                '& .MuiSlider-rail': {
+                  opacity: 0.25,
+                  bgcolor: ch.color,
+                },
+                '& .MuiSlider-thumb': {
+                  width: 16,
+                  height: 16,
+                  bgcolor: 'background.paper',
+                  border: `2px solid ${ch.color}`,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+                },
+              }}
+            />
+            <TextField
+              size="small"
+              type="number"
+              value={ch.val}
+              onChange={(e) => {
+                let n = parseInt(e.target.value, 10);
+                if (isNaN(n)) n = 0;
+                n = Math.max(0, Math.min(ch.max, n));
+                handleRgbChange(ch.key as 'r' | 'g' | 'b', n);
+              }}
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  max: ch.max,
+                  style: {
+                    padding: '4px 6px',
+                    textAlign: 'center',
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    fontSize: '0.8125rem',
+                  },
+                },
+              }}
+              sx={{
+                width: 54,
+                flexShrink: 0,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.default',
+                  '& fieldset': { borderColor: 'divider' },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                },
+              }}
+            />
+          </Box>
+        ))}
+
+        {/* HSL Sliders */}
+        {format === 'hsl' && [
+          { key: 'h', label: 'H', val: hsl.h, max: 360, bg: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)' },
+          { key: 's', label: 'S', val: hsl.s, max: 100, bg: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))` },
+          { key: 'l', label: 'L', val: hsl.l, max: 100, bg: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))` },
+        ].map((ch) => (
+          <Box key={ch.key} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: 'text.secondary', width: 14, textTransform: 'uppercase', textAlign: 'center' }}
+            >
+              {ch.label}
+            </Typography>
+            <Slider
+              size="small"
+              value={ch.val}
+              min={0}
+              max={ch.max}
+              onChange={(_, v) => handleHslChange(ch.key as 'h' | 's' | 'l', v as number)}
+              sx={{
+                flex: 1,
+                '& .MuiSlider-track': { background: 'transparent' },
+                '& .MuiSlider-rail': {
+                  opacity: 1,
+                  background: ch.bg,
+                  height: 6,
+                  borderRadius: 3,
+                },
+                '& .MuiSlider-thumb': {
+                  width: 16,
+                  height: 16,
+                  bgcolor: 'background.paper',
+                  border: '2px solid',
+                  borderColor: 'primary.main',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+                },
+              }}
+            />
+            <TextField
+              size="small"
+              type="number"
+              value={ch.val}
+              onChange={(e) => {
+                let n = parseInt(e.target.value, 10);
+                if (isNaN(n)) n = 0;
+                n = Math.max(0, Math.min(ch.max, n));
+                handleHslChange(ch.key as 'h' | 's' | 'l', n);
+              }}
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                  max: ch.max,
+                  style: {
+                    padding: '4px 6px',
+                    textAlign: 'center',
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    fontSize: '0.8125rem',
+                  },
+                },
+              }}
+              sx={{
+                width: 54,
+                flexShrink: 0,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.default',
+                  '& fieldset': { borderColor: 'divider' },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                },
+              }}
+            />
+          </Box>
+        ))}
+
+        {/* Editable HEX Field & Copy Action */}
+        <Box sx={{ mt: 1, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.75 }}>
+            HEX COLOR CODE
+          </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <TextField
+              size="small"
+              fullWidth
+              value={inputHex}
+              onChange={(e) => handleHexInput(e.target.value)}
+              onBlur={() => setInputHex(currentHex)}
+              error={!isValidHex(inputHex)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.9rem' }}>#</Typography>
+                    </InputAdornment>
+                  ),
+                  style: {
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    letterSpacing: '0.05em',
+                  },
+                },
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2.5,
+                  bgcolor: 'background.default',
+                  '& fieldset': { borderColor: isValidHex(inputHex) ? 'divider' : 'error.main' },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                },
+              }}
+            />
+            <Tooltip title={copied ? 'Copied!' : 'Copy Hex'}>
+              <IconButton
+                onClick={() => {
+                  navigator.clipboard.writeText(currentHex);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                sx={{
+                  bgcolor: 'background.default',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2.5,
+                  p: 1,
+                  flexShrink: 0,
+                  '&:hover': { bgcolor: 'action.hover', borderColor: 'primary.main' },
+                }}
+              >
+                {copied ? <CheckRoundedIcon sx={{ fontSize: 18, color: 'success.main' }} /> : <ContentCopyRoundedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />}
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
+
+        {/* Contrast Preview Bar */}
+        <Box
+          sx={{
+            mt: 1.5,
+            p: 1.25,
+            borderRadius: 2.5,
+            bgcolor: currentHex,
+            color: contrastText,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)',
+            transition: 'background-color 0.2s',
+          }}
+        >
+          <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.02em' }}>
+            Contrast Preview
+          </Typography>
+          <Chip
+            label={`${contrastRatio.toFixed(1)}:1 (${contrastRatio >= 4.5 ? 'WCAG AA' : contrastRatio >= 3.0 ? 'Large Text' : 'Low'})`}
+            size="small"
+            sx={{
+              height: 20,
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              bgcolor: contrastText === '#FFFFFF' || contrastText === '#fff' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.4)',
+              color: contrastText,
+              backdropFilter: 'blur(4px)',
+            }}
+          />
+        </Box>
+      </Box>
+    </Popover>
+  );
+}
+
 // ---------- Tonal Palette Strip ----------
 function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, onKeyColorChange }: {
   label: string;
@@ -121,31 +557,8 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
   keyColorHex?: string;
   onKeyColorChange?: (hex: string) => void;
 }) {
-  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [hslFormat, setHslFormat] = useState<'rgb' | 'hsl'>('hsl');
-  const [localHex, setLocalHex] = useState<string | null>(null);
-
   const hex = keyColorHex ?? palette[40];
-  const displayHex = localHex ?? hex;
-  const rgb = hexToRgb(hex);
-  const hsl = useMemo(() => hexToHsl(hex), [hex]);
-
-  const handleRgbChange = (color: 'r'|'g'|'b', val: number) => {
-    if (!onKeyColorChange) return;
-    const newRgb = { ...rgb, [color]: val };
-    onKeyColorChange(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
-  };
-
-  const handleHslChange = (component: 'h'|'s'|'l', val: number) => {
-    if (!onKeyColorChange) return;
-    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [component]: val };
-    onKeyColorChange(hslToHex(newHsl.h, newHsl.s, newHsl.l));
-  };
-
-  const neumorphicInset = theme.palette.mode === 'dark' 
-    ? "inset 5px 5px 10px rgba(0,0,0,0.6), inset -5px -5px 10px rgba(255,255,255,0.05)"
-    : "inset 5px 5px 10px rgba(0,0,0,0.12), inset -5px -5px 10px rgba(255,255,255,0.9)";
 
   return (
     <Box sx={{ mb: 2.5 }}>
@@ -217,156 +630,25 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
         ))}
       </Box>
 
-      <Popover
+      <ColorAdjustPopover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
-        onClose={() => { setAnchorEl(null); setLocalHex(null); }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        slotProps={{
-          paper: {
-            sx: {
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              p: 3,
-              mt: 1,
-              width: 300,
-              boxShadow: theme.palette.mode === 'dark'
-                ? "-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)"
-                : "-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.15)",
-            }
-          }
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 280 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Box sx={{ width: 32, height: 32, borderRadius: 1.5, bgcolor: hex, flexShrink: 0 }} />
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
-              {label} — Key Color
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 0.5, bgcolor: 'background.default', borderRadius: 2, p: 0.5 }}>
-            <Button
-              size="small"
-              variant={hslFormat === 'rgb' ? 'contained' : 'text'}
-              onClick={() => setHslFormat('rgb')}
-              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
-            >
-              RGB
-            </Button>
-            <Button
-              size="small"
-              variant={hslFormat === 'hsl' ? 'contained' : 'text'}
-              onClick={() => setHslFormat('hsl')}
-              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
-            >
-              HSL
-            </Button>
-          </Box>
-
-          {hslFormat === 'rgb' && ['r', 'g', 'b'].map((color) => {
-            const val = rgb[color as keyof typeof rgb];
-            return (
-              <Box key={color} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 12, textTransform: 'uppercase' }}>{color}</Typography>
-                <Slider
-                  size="small"
-                  value={val}
-                  min={0}
-                  max={255}
-                  onChange={(_, v) => handleRgbChange(color as 'r'|'g'|'b', v as number)}
-                  sx={{ color: color === 'r' ? '#ff4d4d' : color === 'g' ? '#4dff4d' : '#4d4dff' }}
-                />
-                <Box
-                  component="input"
-                  type="number"
-                  value={val}
-                  onChange={(e) => {
-                    let v = parseInt(e.target.value) || 0;
-                    v = Math.max(0, Math.min(255, v));
-                    handleRgbChange(color as 'r'|'g'|'b', v);
-                  }}
-                  sx={{
-                    width: 44, height: 28, bgcolor: 'background.default', borderRadius: 1.5,
-                    textAlign: 'center', fontSize: '0.75rem', fontWeight: 600,
-                    color: 'text.primary', boxShadow: neumorphicInset, outline: 'none',
-                  }}
-                />
-              </Box>
-            );
-          })}
-
-          {hslFormat === 'hsl' && (
-            <>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Hue</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.h}°</Typography>
-                </Box>
-                <Slider size="small" value={hsl.h} min={0} max={360} onChange={(_, v) => handleHslChange('h', v as number)}
-                  sx={{
-                    "& .MuiSlider-track": { background: "transparent" },
-                    "& .MuiSlider-rail": { opacity: 1, background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)" },
-                  }}
-                />
-              </Box>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Saturation</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.s}%</Typography>
-                </Box>
-                <Slider size="small" value={hsl.s} min={0} max={100} onChange={(_, v) => handleHslChange('s', v as number)}
-                  sx={{
-                    "& .MuiSlider-rail": { opacity: 1, background: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))` },
-                  }}
-                />
-              </Box>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Lightness</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.l}%</Typography>
-                </Box>
-                <Slider size="small" value={hsl.l} min={0} max={100} onChange={(_, v) => handleHslChange('l', v as number)}
-                  sx={{
-                    "& .MuiSlider-rail": { opacity: 1, background: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))` },
-                  }}
-                />
-              </Box>
-            </>
-          )}
-
-          <Box
-            component="input"
-            value={displayHex}
-            onChange={(e) => {
-              const raw = e.target.value;
-              setLocalHex(raw);
-              let val = raw;
-              if (!val.startsWith("#")) val = "#" + val;
-              if (/^#[0-9A-F]{6}$/i.test(val) && onKeyColorChange) {
-                onKeyColorChange(val.toUpperCase());
-                setLocalHex(null);
-              }
-            }}
-            onBlur={() => setLocalHex(null)}
-            sx={{
-              width: '100%', height: 36, bgcolor: 'background.default', borderRadius: 2,
-              textAlign: 'center', fontSize: '0.85rem', fontWeight: 700, color: 'text.primary',
-              fontFamily: 'monospace', textTransform: 'uppercase', boxShadow: neumorphicInset, outline: 'none',
-            }}
-          />
-        </Box>
-      </Popover>
+        onClose={() => setAnchorEl(null)}
+        title={label}
+        subtitle="Key Color Adjust"
+        hex={hex}
+        onChange={onKeyColorChange}
+      />
     </Box>
   );
 }
 
 // ---------- Key Color Picker ----------
 function hexToRgb(hex: string) {
-  const r = parseInt(hex.slice(1, 3), 16) || 0;
-  const g = parseInt(hex.slice(3, 5), 16) || 0;
-  const b = parseInt(hex.slice(5, 7), 16) || 0;
+  const norm = normalizeHex(isValidHex(hex) ? hex : "#000000");
+  const r = parseInt(norm.slice(1, 3), 16) || 0;
+  const g = parseInt(norm.slice(3, 5), 16) || 0;
+  const b = parseInt(norm.slice(5, 7), 16) || 0;
   return { r, g, b };
 }
 
@@ -389,9 +671,6 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [renameMode, setRenameMode] = useState(false);
   const [renameValue, setRenameValue] = useState(label);
-  const [localHex, setLocalHex] = useState<string | null>(null);
-
-  const displayHex = localHex ?? value;
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (renameMode) return;
@@ -401,28 +680,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
 
   const handleClose = () => {
     setAnchorEl(null);
-    setLocalHex(null);
   };
-
-  const rgb = hexToRgb(value);
-  const hsl = useMemo(() => hexToHsl(value), [value]);
-  const [format, setFormat] = useState<'rgb' | 'hsl'>('rgb');
-
-  const handleRgbChange = (color: 'r'|'g'|'b', val: number) => {
-    const newRgb = { ...rgb, [color]: val };
-    onChange(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
-  };
-
-  const handleHslChange = (component: 'h'|'s'|'l', val: number) => {
-    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [component]: val };
-    onChange(hslToHex(newHsl.h, newHsl.s, newHsl.l));
-  };
-
-  const open = Boolean(anchorEl);
-
-  const neumorphicInset = theme.palette.mode === 'dark' 
-    ? "inset 5px 5px 10px rgba(0,0,0,0.6), inset -5px -5px 10px rgba(255,255,255,0.05)"
-    : "inset 5px 5px 10px rgba(0,0,0,0.12), inset -5px -5px 10px rgba(255,255,255,0.9)";
 
   return (
     <Card 
@@ -527,226 +785,15 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
         </Box>
       </CardContent>
 
-      <Popover
-        open={open}
+      <ColorAdjustPopover
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        transitionDuration={300}
-        slotProps={{
-          paper: {
-            sx: {
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              p: 3,
-              mt: 1,
-              width: 300,
-              boxShadow: theme.palette.mode === 'dark'
-                ? "-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)"
-                : "-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.15)",
-            }
-          }
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 280 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: displayHex, flexShrink: 0, boxShadow: neumorphicInset }} />
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                {label}
-              </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>
-                {displayHex}
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 0.5, bgcolor: 'background.default', borderRadius: 2, p: 0.5 }}>
-            <Button
-              size="small"
-              variant={format === 'rgb' ? 'contained' : 'text'}
-              onClick={() => setFormat('rgb')}
-              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
-            >
-              RGB
-            </Button>
-            <Button
-              size="small"
-              variant={format === 'hsl' ? 'contained' : 'text'}
-              onClick={() => setFormat('hsl')}
-              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
-            >
-              HSL
-            </Button>
-          </Box>
-          
-          {format === 'rgb' && ['r', 'g', 'b'].map((color) => {
-            const val = rgb[color as keyof typeof rgb];
-            return (
-              <Box key={color} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 12, textTransform: 'uppercase' }}>
-                  {color}
-                </Typography>
-                <Slider
-                  size="small"
-                  value={val}
-                  min={0}
-                  max={255}
-                  onChange={(_, newValue) => handleRgbChange(color as 'r'|'g'|'b', newValue as number)}
-                  sx={{
-                    color: color === 'r' ? '#ff4d4d' : color === 'g' ? '#4dff4d' : '#4d4dff',
-                    "& .MuiSlider-track": {
-                       boxShadow: neumorphicInset,
-                    },
-                    "& .MuiSlider-rail": {
-                       opacity: 1,
-                       bgcolor: 'background.default',
-                       boxShadow: neumorphicInset,
-                    },
-                    "& .MuiSlider-thumb": {
-                       width: 18,
-                       height: 18,
-                       bgcolor: 'background.paper',
-                       borderRadius: 5,
-                       boxShadow: theme.palette.mode === 'dark'
-                         ? '-8px -8px 18px rgba(255,255,255,0.05), 8px 8px 18px rgba(0,0,0,0.65)'
-                         : '-8px -8px 18px #ffffff, 8px 8px 18px #b0b0b8',
-                       "&:hover, &.Mui-focusVisible": {
-                         boxShadow: theme.palette.mode === 'dark'
-                           ? '-8px -8px 18px rgba(255,255,255,0.05), 8px 8px 18px rgba(0,0,0,0.65)'
-                           : '-8px -8px 18px #ffffff, 8px 8px 18px #b0b0b8',
-                       }
-                    }
-                  }}
-                />
-                <Box
-                  component="input"
-                  type="number"
-                  value={val}
-                  onChange={(e) => {
-                    let v = parseInt(e.target.value) || 0;
-                    v = Math.max(0, Math.min(255, v));
-                    handleRgbChange(color as 'r'|'g'|'b', v);
-                  }}
-                  sx={{
-                    width: 44,
-                    height: 28,
-                    bgcolor: 'background.default',
-                    borderRadius: 1.5,
-                    textAlign: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    color: 'text.primary',
-                    boxShadow: neumorphicInset,
-                    outline: 'none',
-                    "&:focus": {
-                      boxShadow: "inset 5px 5px 10px rgba(0,0,0,0.15), inset -5px -5px 10px rgba(255,255,255,0.9)",
-                    }
-                  }}
-                />
-              </Box>
-            );
-          })}
-
-          {format === 'hsl' && (
-            <>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Hue</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.h}°</Typography>
-                </Box>
-                <Slider
-                  size="small"
-                  value={hsl.h}
-                  min={0}
-                  max={360}
-                  onChange={(_, v) => handleHslChange('h', v as number)}
-                  sx={{
-                    "& .MuiSlider-track": { background: "transparent" },
-                    "& .MuiSlider-rail": {
-                      opacity: 1,
-                      background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
-                    },
-                  }}
-                />
-              </Box>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Saturation</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.s}%</Typography>
-                </Box>
-                <Slider
-                  size="small"
-                  value={hsl.s}
-                  min={0}
-                  max={100}
-                  onChange={(_, v) => handleHslChange('s', v as number)}
-                  sx={{
-                    "& .MuiSlider-rail": {
-                      opacity: 1,
-                      background: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))`,
-                    },
-                  }}
-                />
-              </Box>
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary">Lightness</Typography>
-                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.l}%</Typography>
-                </Box>
-                <Slider
-                  size="small"
-                  value={hsl.l}
-                  min={0}
-                  max={100}
-                  onChange={(_, v) => handleHslChange('l', v as number)}
-                  sx={{
-                    "& .MuiSlider-rail": {
-                      opacity: 1,
-                      background: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))`,
-                    },
-                  }}
-                />
-              </Box>
-            </>
-          )}
-          
-          <Box
-            component="input"
-            value={displayHex}
-            onChange={(e) => {
-              const raw = e.target.value;
-              setLocalHex(raw);
-              let val = raw;
-              if (!val.startsWith("#")) val = "#" + val;
-              if (/^#[0-9A-F]{6}$/i.test(val)) {
-                onChange(val.toUpperCase());
-                setLocalHex(null);
-              }
-            }}
-            onBlur={() => setLocalHex(null)}
-            sx={{
-              width: '100%',
-              height: 36,
-              bgcolor: 'background.default',
-              borderRadius: 2,
-              textAlign: 'center',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              color: 'text.primary',
-              fontFamily: 'monospace',
-              textTransform: 'uppercase',
-              boxShadow: neumorphicInset,
-              outline: 'none',
-              "&:focus": {
-                boxShadow: "inset 5px 5px 10px rgba(0,0,0,0.15), inset -5px -5px 10px rgba(255,255,255,0.9)",
-              }
-            }}
-          />
-        </Box>
-      </Popover>
+        title={label}
+        subtitle={description || 'Key Color'}
+        hex={value}
+        onChange={onChange}
+      />
     </Card>
   );
 }
@@ -784,148 +831,267 @@ function ColorRoleCard({ label, hex, onClick }: { label: string; hex: string; on
 }
 
 // ---------- HSL Detail Dialog ----------
-function HslDetailDialog({ open, hex, onClose, onChange }: {
+function HslDetailDialog({ open, hex, title, onClose, onChange }: {
   open: boolean;
   hex: string;
+  title?: string;
   onClose: () => void;
   onChange: (hex: string) => void;
 }) {
-  const hsl = hexToHsl(hex);
-  const [localH, setLocalH] = useState(hsl.h);
-  const [localS, setLocalS] = useState(hsl.s);
-  const [localL] = useState(hsl.l);
-  const [hexInput, setHexInput] = useState(hex);
+  const [inputHex, setInputHex] = useState(hex);
+  const [format, setFormat] = useState<'rgb' | 'hsl'>('rgb');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const hslNew = hexToHsl(hex);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLocalH(hslNew.h);
-    setLocalS(hslNew.s);
-    setHexInput(hex);
+    setInputHex(hex);
   }, [hex]);
 
-  const updateFromHsl = useCallback((h: number, s: number, l: number) => {
-    const newHex = hslToHex(h, s, l);
-    setHexInput(newHex);
+  const currentHex = isValidHex(inputHex) ? normalizeHex(inputHex) : hex;
+  const rgb = useMemo(() => hexToRgb(currentHex), [currentHex]);
+  const hsl = useMemo(() => hexToHsl(currentHex), [currentHex]);
+
+  const handleRgbChange = (channel: 'r' | 'g' | 'b', val: number) => {
+    const newRgb = { ...rgb, [channel]: val };
+    const newHex = rgbToHex(newRgb.r, newRgb.g, newRgb.b);
+    setInputHex(newHex);
     onChange(newHex);
-  }, [onChange]);
+  };
+
+  const handleHslChange = (channel: 'h' | 's' | 'l', val: number) => {
+    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [channel]: val };
+    const newHex = hslToHex(newHsl.h, newHsl.s, newHsl.l);
+    setInputHex(newHex);
+    onChange(newHex);
+  };
+
+  const handleHexInput = (raw: string) => {
+    setInputHex(raw);
+    let val = raw.trim();
+    if (!val.startsWith('#')) val = '#' + val;
+    if (isValidHex(val)) {
+      const normalized = normalizeHex(val);
+      onChange(normalized);
+    }
+  };
+
+  const contrastRatio = useMemo(() => calculateContrastRatio(currentHex), [currentHex]);
+  const contrastText = getTextColor(currentHex);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, fontWeight: 600 }}>
-        <Box sx={{ width: 28, height: 28, borderRadius: 1, bgcolor: hex, }} />
-        Edit Color
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xs"
+      fullWidth
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 4,
+            p: 1,
+          },
+        },
+      }}
+    >
+      <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1 }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Box
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: 2,
+              bgcolor: currentHex,
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+              border: '2px solid',
+              borderColor: 'background.paper',
+            }}
+          />
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            {title || 'Edit Color Role'}
+          </Typography>
+        </Stack>
+        <IconButton size="small" onClick={onClose}>
+          <CloseRoundedIcon sx={{ fontSize: 18 }} />
+        </IconButton>
       </DialogTitle>
-      <DialogContent dividers>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {/* Hex Input */}
-          <Box>
-            <Typography variant="caption" sx={{ fontWeight: 600, mb: 1, display: "block" }}>HEX</Typography>
-            <TextField
+      <DialogContent dividers sx={{ py: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* Format Selector Toggle */}
+          <Box sx={{ display: 'flex', bgcolor: 'action.hover', borderRadius: 2.5, p: 0.5 }}>
+            <Button
               size="small"
-              value={hexInput}
-              onChange={(e) => {
-                let val = e.target.value;
-                if (!val.startsWith("#")) val = "#" + val;
-                setHexInput(val.toUpperCase());
-                if (/^#[0-9A-F]{6}$/i.test(val)) {
-                  const hslNew = hexToHsl(val);
-                  setLocalH(hslNew.h);
-                  setLocalS(hslNew.s);
-                  onChange(val.toUpperCase());
-                }
+              onClick={() => setFormat('rgb')}
+              sx={{
+                flex: 1,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 700,
+                fontSize: '0.75rem',
+                py: 0.5,
+                bgcolor: format === 'rgb' ? 'primary.main' : 'transparent',
+                color: format === 'rgb' ? 'primary.contrastText' : 'text.secondary',
               }}
-              fullWidth
-              slotProps={{ input: { style: { fontFamily: "monospace", textTransform: "uppercase" as const } } }}
-            />
+            >
+              RGB
+            </Button>
+            <Button
+              size="small"
+              onClick={() => setFormat('hsl')}
+              sx={{
+                flex: 1,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 700,
+                fontSize: '0.75rem',
+                py: 0.5,
+                bgcolor: format === 'hsl' ? 'primary.main' : 'transparent',
+                color: format === 'hsl' ? 'primary.contrastText' : 'text.secondary',
+              }}
+            >
+              HSL
+            </Button>
           </Box>
 
-          {/* HSL Sliders */}
-          <Box>
-            <Typography variant="caption" sx={{ fontWeight: 600, mb: 0.5, display: "block" }}>HSL</Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
-              <Chip label={`hsl(${localH}, ${localS}%, ${localL}%)`} size="small" sx={{ fontFamily: "monospace", fontSize: "0.75rem" }} />
-            </Box>
-
-            {/* Hue */}
-            <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                <Typography variant="caption" color="text.secondary">Hue</Typography>
-                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localH}°</Typography>
-              </Box>
-              <Slider
-                size="small"
-                value={localH}
-                min={0}
-                max={360}
-                onChange={(_, v) => {
-                  const val = v as number;
-                  setLocalH(val);
-                  updateFromHsl(val, localS, localL);
-                }}
-                sx={{
-                  "& .MuiSlider-track": { background: "transparent" },
-                  "& .MuiSlider-rail": {
-                    opacity: 1,
-                    background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Saturation */}
-            <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                <Typography variant="caption" color="text.secondary">Saturation</Typography>
-                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localS}%</Typography>
-              </Box>
-              <Slider
-                size="small"
-                value={localS}
-                min={0}
-                max={100}
-                onChange={(_, v) => {
-                  const val = v as number;
-                  setLocalS(val);
-                  updateFromHsl(localH, val, localL);
-                }}
-                sx={{
-                  "& .MuiSlider-rail": {
-                    opacity: 1,
-                    background: `linear-gradient(to right, hsl(${localH}, 0%, ${localL}%), hsl(${localH}, 100%, ${localL}%))`,
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Lightness */}
-            <Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                <Typography variant="caption" color="text.secondary">Lightness</Typography>
-                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{localL}%</Typography>
-              </Box>
-              <Slider
-                size="small"
-                value={localL}
-                min={0}
-                max={100}
-                disabled
-                sx={{
-                  "& .MuiSlider-rail": {
-                    opacity: 1,
-                    background: `linear-gradient(to right, hsl(${localH}, ${localS}%, 0%), hsl(${localH}, ${localS}%, 50%), hsl(${localH}, ${localS}%, 100%))`,
-                  },
-                }}
-              />
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: -0.5 }}>
-                Lightness is determined by the tonal palette
+          {/* RGB Sliders */}
+          {format === 'rgb' && [
+            { key: 'r', label: 'R', color: '#EF4444', val: rgb.r, max: 255 },
+            { key: 'g', label: 'G', color: '#10B981', val: rgb.g, max: 255 },
+            { key: 'b', label: 'B', color: '#3B82F6', val: rgb.b, max: 255 },
+          ].map((ch) => (
+            <Box key={ch.key} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 14, textTransform: 'uppercase', textAlign: 'center' }}>
+                {ch.label}
               </Typography>
+              <Slider
+                size="small"
+                value={ch.val}
+                min={0}
+                max={ch.max}
+                onChange={(_, v) => handleRgbChange(ch.key as 'r' | 'g' | 'b', v as number)}
+                sx={{ flex: 1, color: ch.color }}
+              />
+              <TextField
+                size="small"
+                type="number"
+                value={ch.val}
+                onChange={(e) => {
+                  let n = parseInt(e.target.value, 10);
+                  if (isNaN(n)) n = 0;
+                  n = Math.max(0, Math.min(ch.max, n));
+                  handleRgbChange(ch.key as 'r' | 'g' | 'b', n);
+                }}
+                slotProps={{ htmlInput: { min: 0, max: ch.max, style: { padding: '4px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: '0.8125rem' } } }}
+                sx={{ width: 54, flexShrink: 0 }}
+              />
             </Box>
+          ))}
+
+          {/* HSL Sliders */}
+          {format === 'hsl' && [
+            { key: 'h', label: 'H', val: hsl.h, max: 360, bg: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)' },
+            { key: 's', label: 'S', val: hsl.s, max: 100, bg: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))` },
+            { key: 'l', label: 'L', val: hsl.l, max: 100, bg: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))` },
+          ].map((ch) => (
+            <Box key={ch.key} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 14, textTransform: 'uppercase', textAlign: 'center' }}>
+                {ch.label}
+              </Typography>
+              <Slider
+                size="small"
+                value={ch.val}
+                min={0}
+                max={ch.max}
+                onChange={(_, v) => handleHslChange(ch.key as 'h' | 's' | 'l', v as number)}
+                sx={{ flex: 1, '& .MuiSlider-rail': { opacity: 1, background: ch.bg } }}
+              />
+              <TextField
+                size="small"
+                type="number"
+                value={ch.val}
+                onChange={(e) => {
+                  let n = parseInt(e.target.value, 10);
+                  if (isNaN(n)) n = 0;
+                  n = Math.max(0, Math.min(ch.max, n));
+                  handleHslChange(ch.key as 'h' | 's' | 'l', n);
+                }}
+                slotProps={{ htmlInput: { min: 0, max: ch.max, style: { padding: '4px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: '0.8125rem' } } }}
+                sx={{ width: 54, flexShrink: 0 }}
+              />
+            </Box>
+          ))}
+
+          {/* Editable HEX Field */}
+          <Box sx={{ mt: 1, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.75 }}>
+              HEX COLOR CODE
+            </Typography>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <TextField
+                size="small"
+                fullWidth
+                value={inputHex}
+                onChange={(e) => handleHexInput(e.target.value)}
+                onBlur={() => setInputHex(currentHex)}
+                error={!isValidHex(inputHex)}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.9rem' }}>#</Typography>
+                      </InputAdornment>
+                    ),
+                    style: { fontFamily: 'monospace', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '0.05em' },
+                  },
+                }}
+              />
+              <Tooltip title={copied ? 'Copied!' : 'Copy Hex'}>
+                <IconButton
+                  onClick={() => {
+                    navigator.clipboard.writeText(currentHex);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                  }}
+                  sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, p: 1 }}
+                >
+                  {copied ? <CheckRoundedIcon sx={{ fontSize: 18, color: 'success.main' }} /> : <ContentCopyRoundedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />}
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Box>
+
+          {/* Contrast Badge */}
+          <Box
+            sx={{
+              p: 1.25,
+              borderRadius: 2,
+              bgcolor: currentHex,
+              color: contrastText,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
+              Contrast Ratio
+            </Typography>
+            <Chip
+              label={`${contrastRatio.toFixed(1)}:1 (${contrastRatio >= 4.5 ? 'WCAG AA' : contrastRatio >= 3.0 ? 'Large Text' : 'Low'})`}
+              size="small"
+              sx={{
+                height: 20,
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                bgcolor: contrastText === '#FFFFFF' || contrastText === '#fff' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.4)',
+                color: contrastText,
+              }}
+            />
           </Box>
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+      <DialogActions sx={{ px: 3, py: 1.5 }}>
+        <Button onClick={onClose} variant="contained" size="small" sx={{ textTransform: "none", borderRadius: 2, px: 2.5 }}>
+          Done
+        </Button>
       </DialogActions>
     </Dialog>
   );
