@@ -79,11 +79,12 @@ export default function Sidebar() {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, minHeight: 72 }}>
         <ButtonBase
           onClick={() => {
-            router.push('/');
+            setCurrentView('home');
+            router.push('/dashboard');
             if (isMobile) setSidebarOpen(false);
           }}
           tabIndex={0}
-          aria-label="Oluwasegun Design System Brand Logo - Return to Marketing Page"
+          aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
           sx={{
             display: 'flex',
             alignItems: 'center',
