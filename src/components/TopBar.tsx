@@ -103,7 +103,22 @@ export default function TopBar() {
       >
         <Toolbar sx={{ minHeight: 64, gap: 1, px: { xs: 2, md: 3 } }}>
           {isMobile && (
-            <IconButton edge="start" onClick={toggleSidebar} sx={{ mr: 1, minWidth: 44, minHeight: 44 }}>
+            <IconButton
+              edge="start"
+              onClick={toggleSidebar}
+              tabIndex={0}
+              aria-label="Toggle navigation drawer"
+              sx={{
+                mr: 1,
+                minWidth: 44,
+                minHeight: 44,
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
+              }}
+            >
               <MenuIcon />
             </IconButton>
           )}
@@ -119,6 +134,8 @@ export default function TopBar() {
           <Tooltip title="Manage projects">
             <Button
               size="small"
+              tabIndex={0}
+              aria-label="Manage projects"
               startIcon={isMobile ? undefined : <ProjectIcon sx={{ fontSize: "1rem !important" }} />}
               onClick={() => setProjectManagerOpen(true)}
               sx={{
@@ -127,6 +144,11 @@ export default function TopBar() {
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
                 borderRadius: 2,
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
               }}
             >
               {isMobile ? (
@@ -142,6 +164,8 @@ export default function TopBar() {
           <Tooltip title="Export theme as JSON">
             <Button
               size="small"
+              tabIndex={0}
+              aria-label="Export theme as JSON"
               startIcon={isMobile ? undefined : <ExportIcon sx={{ fontSize: "1rem !important" }} />}
               onClick={handleExport}
               sx={{
@@ -150,6 +174,11 @@ export default function TopBar() {
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
                 borderRadius: 2,
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
               }}
             >
               {isMobile ? <ExportIcon fontSize="small" /> : "JSON"}
@@ -159,6 +188,8 @@ export default function TopBar() {
           <Tooltip title="Export CSS tokens">
             <Button
               size="small"
+              tabIndex={0}
+              aria-label="Export CSS tokens"
               startIcon={isMobile ? undefined : <ExportIcon sx={{ fontSize: "1rem !important" }} />}
               onClick={handleExportCss}
               sx={{
@@ -167,6 +198,11 @@ export default function TopBar() {
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
                 borderRadius: 2,
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
               }}
             >
               {isMobile ? <ExportIcon fontSize="small" /> : "CSS"}
@@ -176,6 +212,8 @@ export default function TopBar() {
           <Tooltip title="Import theme from JSON">
             <Button
               size="small"
+              tabIndex={0}
+              aria-label="Import theme from JSON"
               startIcon={isMobile ? undefined : <ImportIcon sx={{ fontSize: "1rem !important" }} />}
               onClick={handleImport}
               sx={{
@@ -184,6 +222,11 @@ export default function TopBar() {
                 minWidth: 0,
                 px: isMobile ? 1 : 1.5,
                 borderRadius: 2,
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
               }}
             >
               {isMobile ? <ImportIcon fontSize="small" /> : "Import"}
@@ -193,12 +236,19 @@ export default function TopBar() {
           <Tooltip title={`Switch theme mode (current: ${config.mode})`}>
             <IconButton
               size="small"
+              tabIndex={0}
+              aria-label={`Switch theme mode, current mode is ${config.mode}`}
               onClick={toggleMode}
               sx={{
                 color: 'text.secondary',
                 minWidth: 44,
                 minHeight: 44,
                 '&:hover': { color: 'text.primary' },
+                '&:focus-visible, &.Mui-focusVisible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  outlineOffset: '2px',
+                },
               }}
             >
               {config.mode === "light" ? (
@@ -212,6 +262,9 @@ export default function TopBar() {
           </Tooltip>
 
           <Avatar
+            tabIndex={0}
+            role="img"
+            aria-label="User profile icon for Oluwasegun"
             sx={{
               width: 34,
               height: 34,
@@ -221,6 +274,12 @@ export default function TopBar() {
               fontWeight: 700,
               ml: 0.5,
               flexShrink: 0,
+              cursor: 'pointer',
+              '&:focus-visible, &.Mui-focusVisible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                outlineOffset: '2px',
+              },
             }}
           >
             O

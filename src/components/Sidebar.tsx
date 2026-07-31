@@ -10,6 +10,7 @@ import {
   ListItemText,
   IconButton,
   Box,
+  ButtonBase,
   Typography,
   Divider,
   useTheme,
@@ -71,14 +72,34 @@ export default function Sidebar() {
         bgcolor: 'background.paper',
       }}
     >
-      <Box
+      <ButtonBase
+        onClick={() => {
+          setCurrentView('home');
+          if (isMobile) setSidebarOpen(false);
+        }}
+        tabIndex={0}
+        aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
         sx={{
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'flex-start',
           gap: 1.5,
           px: 2,
           py: 2.5,
           minHeight: 72,
+          width: '100%',
+          textAlign: 'left',
+          borderRadius: 2,
+          cursor: 'pointer',
+          transition: 'background-color 0.15s ease',
+          '&:hover': {
+            bgcolor: 'action.hover',
+          },
+          '&:focus-visible, &.Mui-focusVisible': {
+            outline: '2px solid',
+            outlineColor: 'primary.main',
+            outlineOffset: '-2px',
+          },
         }}
       >
         <Box
@@ -105,15 +126,15 @@ export default function Sidebar() {
         </Box>
         {sidebarOpen && (
           <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
               Oluwasegun
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block' }}>
               Design System
             </Typography>
           </Box>
         )}
-      </Box>
+      </ButtonBase>
 
       <Divider sx={{ mx: sidebarOpen ? 2 : 1 }} />
 
@@ -123,6 +144,10 @@ export default function Sidebar() {
           return (
             <ListItem key={item.href} disablePadding sx={{ mb: 0.25 }}>
               <ListItemButton
+                tabIndex={0}
+                role="link"
+                aria-label={`Navigate to ${item.label} section`}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => {
                   setCurrentView(item.href);
                   if (isMobile) setSidebarOpen(false);
@@ -143,6 +168,12 @@ export default function Sidebar() {
                   transition: 'all 0.15s ease',
                   '&:hover': {
                     backgroundColor: isActive ? 'background.default' : 'action.hover',
+                  },
+                  '&:focus-visible, &.Mui-focusVisible': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '-2px',
+                    zIndex: 1,
                   },
                 }}
               >
@@ -180,7 +211,20 @@ export default function Sidebar() {
 
       {!isMobile && (
         <Box sx={{ p: 1, display: 'flex', justifyContent: sidebarOpen ? 'flex-end' : 'center' }}>
-          <IconButton onClick={toggleSidebar} size="small" sx={{ color: 'text.secondary' }}>
+          <IconButton
+            onClick={toggleSidebar}
+            size="small"
+            tabIndex={0}
+            aria-label={sidebarOpen ? "Collapse navigation sidebar" : "Expand navigation sidebar"}
+            sx={{
+              color: 'text.secondary',
+              '&:focus-visible, &.Mui-focusVisible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                outlineOffset: '2px',
+              },
+            }}
+          >
             {sidebarOpen ? <ChevronLeftIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
           </IconButton>
         </Box>

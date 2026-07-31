@@ -145,6 +145,15 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
           },
         },
       },
+      MuiCssBaseline: {
+        styleOverrides: {
+          '*:focus-visible, .Mui-focusVisible': {
+            outline: `2px solid ${scheme.primary} !important`,
+            outlineOffset: '2px !important',
+            borderRadius: '4px',
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           outlined: {
