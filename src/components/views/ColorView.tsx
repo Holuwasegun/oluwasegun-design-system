@@ -543,6 +543,28 @@ function ColorAdjustPopover({
             }}
           />
         </Box>
+
+        {/* Update Button */}
+        <Button
+          fullWidth
+          variant="contained"
+          size="small"
+          onClick={() => {
+            if (onChange) onChange(currentHex);
+            onClose();
+          }}
+          sx={{
+            mt: 2,
+            borderRadius: 2.5,
+            py: 1,
+            textTransform: 'none',
+            fontWeight: 700,
+            fontSize: '0.8125rem',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          }}
+        >
+          Update Tone
+        </Button>
       </Box>
     </Popover>
   );
@@ -557,13 +579,12 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
   keyColorHex?: string;
   onKeyColorChange?: (hex: string) => void;
 }) {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const hex = keyColorHex ?? palette[40];
+  const [activeTone, setActiveTone] = useState<{ anchorEl: HTMLElement; tone: number; hex: string } | null>(null);
 
   return (
-    <Box sx={{ mb: 2.5 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.9rem' }}>
           {label}
         </Typography>
         {onRemove && !isDefault && (
@@ -572,18 +593,25 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
             color="error"
             onClick={onRemove}
             startIcon={<DeleteOutlineRoundedIcon />}
-            sx={{ textTransform: "none", minWidth: 0, fontSize: "0.7rem", px: 1 }}
+            sx={{ textTransform: "none", minWidth: 0, fontSize: "0.75rem", px: 1 }}
           >
             Remove
           </Button>
         )}
       </Box>
+
+      {/* Single Continuous Rounded Bounding Box containing Tonal Values 0 to 100 */}
       <Box
         sx={{
           display: "flex",
-          borderRadius: 2,
+          borderRadius: "24px",
           overflow: "hidden",
           bgcolor: 'divider',
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          width: '100%',
+          height: { xs: 44, sm: 54 },
         }}
       >
         {UI_TONE_LEVELS.map((tone) => (
@@ -592,16 +620,20 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
             sx={{
               flex: "1 1 0%",
               minWidth: 0,
-              height: { xs: 40, sm: 56 },
+              height: "100%",
               bgcolor: palette[tone],
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: onKeyColorChange ? "pointer" : "default",
-              transition: "transform 0.15s",
-              "&:hover": onKeyColorChange ? { transform: "scaleY(1.15)", zIndex: 1 } : {},
+              cursor: "pointer",
+              transition: "transform 0.15s, z-index 0.15s, box-shadow 0.15s",
+              "&:hover": {
+                transform: "scaleY(1.12)",
+                zIndex: 3,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+              },
             }}
-            onClick={onKeyColorChange ? (e) => setAnchorEl(e.currentTarget) : undefined}
+            onClick={(e) => setActiveTone({ anchorEl: e.currentTarget, tone, hex: palette[tone] })}
           >
             <Tooltip
               title={
@@ -618,8 +650,8 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
               <Typography
                 sx={{
                   color: getTextColor(palette[tone]),
-                  fontWeight: tone === 40 || tone === 80 ? 700 : 400,
-                  fontSize: { xs: "0.65rem", sm: "0.7rem" },
+                  fontWeight: tone === 40 || tone === 80 ? 800 : 500,
+                  fontSize: { xs: "0.6rem", sm: "0.725rem" },
                   userSelect: "none",
                 }}
               >
@@ -630,13 +662,14 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
         ))}
       </Box>
 
+      {/* Absolute-Positioned Editing Popover near Cursor */}
       <ColorAdjustPopover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        title={label}
-        subtitle="Key Color Adjust"
-        hex={hex}
+        open={Boolean(activeTone)}
+        anchorEl={activeTone?.anchorEl ?? null}
+        onClose={() => setActiveTone(null)}
+        title={`${label} — Tone ${activeTone?.tone ?? ''}`}
+        subtitle={`Adjust Tone ${activeTone?.tone ?? ''}`}
+        hex={activeTone?.hex ?? keyColorHex ?? palette[40]}
         onChange={onKeyColorChange}
       />
     </Box>
