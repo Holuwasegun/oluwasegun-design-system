@@ -84,7 +84,7 @@ function SidebarContent({
 
       <Box sx={{ px: 2, py: 1.5, }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10 }}>Theme</Typography>
           <Tooltip title={`Switch to ${config.mode === 'light' ? 'dark' : 'light'} mode`}>
             <IconButton size="small" onClick={toggleMode} sx={{ width: 28, height: 28, '&:hover': { bgcolor: 'action.hover' } }}>
               {config.mode === 'light' ? <DarkMode sx={{ fontSize: 15, color: 'text.secondary' }} /> : <LightMode sx={{ fontSize: 15, color: 'text.secondary' }} />}
@@ -94,7 +94,7 @@ function SidebarContent({
       </Box>
 
       <Box sx={{ px: 2, py: 2, }}>
-        <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25 }}>Viewport</Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1.25 }}>Viewport</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0.5 }}>
           {VIEWPORTS.map((vp) => {
             const isActive = activeViewport === vp.key;
@@ -116,12 +116,12 @@ function SidebarContent({
           })}
         </Box>
         {activeViewport !== 'desktop' && (
-          <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: 10 }}>{activeVp.width}px</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1, textAlign: 'center', fontFamily: 'monospace', fontSize: 10 }}>{activeVp.width}px</Typography>
         )}
       </Box>
 
       <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 2 }}>
-        <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1, px: 0.5 }}>Screens</Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, fontSize: 10, display: 'block', mb: 1, px: 0.5 }}>Screens</Typography>
         <Stack spacing={0.5}>
           {SCREENS.map((screen) => {
             const isActive = activeScreen === screen.type;

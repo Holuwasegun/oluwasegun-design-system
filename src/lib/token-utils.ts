@@ -14,13 +14,13 @@ export function relativeLuminance(hex: string): number {
 }
 
 export function getContrastTextColor(bgHex: string): string {
-  return relativeLuminance(bgHex) > 0.5 ? '#1D1B20' : '#FFFFFF';
+  return relativeLuminance(bgHex) > 0.179 ? '#1D1B20' : '#FFFFFF';
 }
 
 export function getGradientContrastTextColor(hex1: string, hex2: string): string {
   const l1 = relativeLuminance(hex1);
   const l2 = relativeLuminance(hex2);
-  return (l1 + l2) / 2 > 0.5 ? '#1D1B20' : '#FFFFFF';
+  return (l1 + l2) / 2 > 0.179 ? '#1D1B20' : '#FFFFFF';
 }
 
 export interface PreviewTokens {

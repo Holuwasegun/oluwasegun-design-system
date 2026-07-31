@@ -81,7 +81,7 @@ function SidebarContent({
       </Box>
 
       <Box sx={{ flex: 1, overflow: 'auto', py: 2, px: 1 }}>
-        <Typography variant="caption" sx={{ color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, fontSize: 9.5, display: 'block', mb: 1, px: 1 }}>Sections</Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, fontSize: 9.5, display: 'block', mb: 1, px: 1 }}>Sections</Typography>
         <Stack spacing={0.25}>
           {SECTIONS.map((sec) => {
             const isActive = activeSection === sec.id;

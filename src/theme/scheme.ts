@@ -140,15 +140,15 @@ export function generateColorScheme(
     onErrorContainer: t(error, 90),
 
     background: t(neutral, 6),
-    onBackground: t(neutral, 90),
+    onBackground: t(neutral, 95),
 
     surface: t(neutral, 6),
-    onSurface: t(neutral, 90),
+    onSurface: t(neutral, 95),
     surfaceVariant: t(neutralVariant, 30),
-    onSurfaceVariant: t(neutralVariant, 80),
+    onSurfaceVariant: t(neutralVariant, 87),
 
-    outline: t(neutralVariant, 60),
-    outlineVariant: t(neutralVariant, 30),
+    outline: t(neutralVariant, 70),
+    outlineVariant: t(neutralVariant, 35),
 
     inverseSurface: t(neutral, 90),
     inverseOnSurface: t(neutral, 20),

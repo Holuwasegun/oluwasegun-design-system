@@ -66,6 +66,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
       text: {
         primary: textPrimary,
         secondary: textSecondary,
+        disabled: isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.45)',
       },
       divider: scheme.outlineVariant,
       warning: {
