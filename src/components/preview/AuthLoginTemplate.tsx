@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Avatar, CssBaseline, Divider, Chip } from '@mui/material';
+import { Box, TextField, Button, Typography, Avatar, CssBaseline, Divider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';

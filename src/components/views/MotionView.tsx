@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Typography,
   Box,
@@ -12,7 +12,6 @@ import {
   Stack,
   Chip,
   TextField,
-  Divider,
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useThemeStore } from '@/store';

@@ -23,7 +23,7 @@ import {
 } from "@mui/icons-material";
 import { useThemeStore, useProjectStore, useAppStore } from "@/store";
 import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
-import { generateTonalPalette, generateNeutralPalette, UI_TONE_LEVELS } from "@/theme/tonal-palette";
+import { generateTonalPalette, UI_TONE_LEVELS } from "@/theme/tonal-palette";
 import { relativeLuminance } from "@/lib/token-utils";
 
 const sections = [

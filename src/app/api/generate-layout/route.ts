@@ -39,7 +39,7 @@ const FORMAT_DIMENSIONS: Record<string, { width: number; height: number; label: 
 
 function generateLayouts(input: LayoutInput): LayoutSuggestion[] {
   const { tokens } = input;
-  const { colors, typography, spacing } = tokens;
+  const { colors, spacing } = tokens;
   const base = spacing.baseUnit;
 
   const layouts: LayoutSuggestion[] = [

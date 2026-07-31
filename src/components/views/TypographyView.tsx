@@ -8,7 +8,6 @@ import {
   CardContent,
   Slider,
   TextField,
-  MenuItem,
   Button,
   Table,
   TableBody,
@@ -37,7 +36,6 @@ import {
   GOOGLE_FONTS,
   FONT_CATEGORIES,
   type FontCategory,
-  type GoogleFont,
   getGoogleFontUrl,
 } from '@/theme/google-fonts';
 
@@ -593,7 +591,7 @@ export default function TypographyPage() {
 
   const styles = useMemo(
     () => generateTypeScale(config.typography),
-    [config.typography.baseSize, config.typography.scale, config.typography.letterSpacingOverrides]
+    [config.typography]
   );
 
   // Load the current font on mount

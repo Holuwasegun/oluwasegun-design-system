@@ -14,7 +14,6 @@ import {
   Chip,
   Grid,
   Divider,
-  Paper,
   Stack,
   Tabs,
   Tab,
@@ -83,7 +82,6 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 /* ─── Buttons Panel ─── */
 
 function ButtonsPanel() {
-  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -458,7 +456,6 @@ function CardsPanel() {
 function FeedbackPanel() {
   const [toastOpen, setToastOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const scheme = useMemo(() => generateSchemeFromConfig(useThemeStore.getState().config), []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>

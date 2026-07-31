@@ -9,15 +9,13 @@ import {
   AutoAwesome as GenerateIcon,
   CloudUpload as UploadIcon,
   Delete as DeleteIcon,
-  FormatColorFill as ColorIcon,
   SwapHoriz as SwapIcon,
   ThumbUp as LikeIcon,
   ThumbDown as DislikeIcon,
   Download as DownloadIcon,
-  Info as InfoIcon,
 } from '@mui/icons-material';
 import { useThemeStore } from '@/store';
-import { generateSchemeFromConfig, generateTypeScale, generateSpacingScale } from '@/theme/scheme';
+import { generateSchemeFromConfig } from '@/theme/scheme';
 
 interface LayoutInput {
   heroImage?: string;
@@ -304,7 +302,7 @@ export default function LayoutLabSection() {
     } finally {
       setGenerating(false);
     }
-  }, [primaryText, secondaryText, format, heroImage, scheme, config]);
+  }, [primaryText, secondaryText, content, format, heroImage, scheme, config]);
 
   const handleSwapColor = useCallback((layoutId: string, colorKey: string, newColor: string) => {
     setTokenSwaps((prev) => ({
@@ -374,9 +372,7 @@ export default function LayoutLabSection() {
     };
   }, [tokenSwaps]);
 
-  const dims = FORMAT_OPTIONS.find((f) => f.value === format);
-  const typeScale = generateTypeScale(config.typography);
-  const spacingScale = generateSpacingScale(config.spacing.baseUnit);
+
 
   return (
     <Box>

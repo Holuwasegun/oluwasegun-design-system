@@ -86,7 +86,8 @@ export const useThemeStore = create<ThemeStore>()(
 
       removeKeyColor: (key) =>
         set((state) => {
-          const { [key]: _, ...rest } = state.config.keyColors;
+          const rest = { ...state.config.keyColors };
+          delete rest[key];
           return { config: { ...state.config, keyColors: rest } };
         }),
 
@@ -94,7 +95,8 @@ export const useThemeStore = create<ThemeStore>()(
         set((state) => {
           const hex = state.config.keyColors[oldKey];
           if (!hex) return state;
-          const { [oldKey]: _, ...rest } = state.config.keyColors;
+          const rest = { ...state.config.keyColors };
+          delete rest[oldKey];
           return {
             config: { ...state.config, keyColors: { ...rest, [newKey]: hex } },
           };

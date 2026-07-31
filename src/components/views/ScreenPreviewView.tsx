@@ -40,7 +40,7 @@ function savePreferences(s: ScreenType, v: ViewportKey) {
 
 function SidebarContent({
   config, toggleMode, activeViewport, handleSelectViewport, activeScreen, handleSelectScreen,
-  activeVp, scheme, activeMeta, iframeReady,
+  activeVp, scheme,
 }: {
   config: ThemeConfig; toggleMode: () => void; activeViewport: ViewportKey;
   handleSelectViewport: (v: ViewportKey) => void; activeScreen: ScreenType;

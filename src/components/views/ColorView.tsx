@@ -800,9 +800,7 @@ function HslDetailDialog({ open, hex, onClose, onChange }: {
     const hslNew = hexToHsl(hex);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalH(hslNew.h);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalS(hslNew.s);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHexInput(hex);
   }, [hex]);
 

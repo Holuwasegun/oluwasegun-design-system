@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  Box, Typography, TextField, Stack, IconButton, Tooltip, Chip,
+  Box, Typography, TextField, Stack, IconButton, Chip,
   Dialog, DialogContent, Divider, Snackbar, Alert, InputAdornment,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';

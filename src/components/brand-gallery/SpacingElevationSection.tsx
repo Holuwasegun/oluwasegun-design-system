@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import { Box, Typography, Stack, Snackbar, Alert, Divider, Tooltip } from '@mui/material';
+import { Box, Typography, Stack, Snackbar, Alert, Divider } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useThemeStore } from '@/store';
 import { generateSpacingScale } from '@/theme/scheme';
@@ -9,7 +9,7 @@ import { copyToClipboard } from '@/lib/brand-gallery-utils';
 
 // ---------- Spacing Section ----------
 function SpacingBar({ label, px, index }: { label: string; px: number; index: number }) {
-  const [copied, setCopied] = useState(false);
+  const [, setCopied] = useState(false);
   const [snack, setSnack] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -69,7 +69,7 @@ function SpacingBar({ label, px, index }: { label: string; px: number; index: nu
 
 // ---------- Elevation Card ----------
 function ElevationCard({ level, shadow }: { level: number; shadow: string }) {
-  const [copied, setCopied] = useState(false);
+  const [, setCopied] = useState(false);
   const [snack, setSnack] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -122,7 +122,7 @@ const MD3_ELEVATIONS = [
 
 // ---------- Radius Section ----------
 function RadiusCard({ name, value }: { name: string; value: number }) {
-  const [copied, setCopied] = useState(false);
+  const [, setCopied] = useState(false);
   const [snack, setSnack] = useState(false);
 
   const handleCopy = useCallback(async () => {

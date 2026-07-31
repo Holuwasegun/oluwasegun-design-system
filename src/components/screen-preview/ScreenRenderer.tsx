@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import {
   Box, Typography, Button, Card, CardContent, Avatar, Stack, Divider,
-  TextField, IconButton, Paper, LinearProgress, Chip, Badge,
+  TextField, Paper, Chip, Badge,
   Table, TableBody, TableCell, TableContainer, TableHead,
   TableRow, List, ListItem, ListItemIcon, ListItemText,
   Alert,
@@ -17,8 +17,7 @@ import {
 import type { ScreenType } from '@/lib/screen-templates';
 import type { PreviewTokens } from '@/lib/token-utils';
 
-// ---------- Token-to-MUI-theme adapter ----------
-function buildMuiTheme(tokens: PreviewTokens) {
+export function buildMuiTheme(tokens: PreviewTokens) {
   const s = tokens.scheme;
   return {
     palette: {

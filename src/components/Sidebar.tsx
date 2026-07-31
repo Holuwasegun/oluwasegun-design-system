@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+
 import {
   Drawer,
   List,
@@ -54,7 +54,6 @@ const navItems = [
 export default function Sidebar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const pathname = usePathname();
   const { sidebarOpen, toggleSidebar, setSidebarOpen, currentView, setCurrentView } = useAppStore();
 
   const drawerContent = (
