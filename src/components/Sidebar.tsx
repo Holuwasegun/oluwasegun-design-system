@@ -80,11 +80,11 @@ export default function Sidebar() {
         <ButtonBase
           onClick={() => {
             setCurrentView('home');
-            router.push('/dashboard');
+            router.push('/');
             if (isMobile) setSidebarOpen(false);
           }}
           tabIndex={0}
-          aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
+          aria-label="Oluwasegun Design System Brand Logo - Return to Homepage"
           sx={{
             display: 'flex',
             alignItems: 'center',
