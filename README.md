@@ -98,9 +98,10 @@ oluwasegun-design-system/
 │   └── window.svg
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx                 # Root layout (Inter font, metadata, OG tags)
+│   │   ├── layout.tsx                 # Root layout (Inter font, metadata, OG tags, metadataBase)
+│   │   ├── opengraph-image.tsx        # Open Graph social card generator (1200x630, derived from favicon)
 │   │   ├── page.tsx                   # Root redirect → /dashboard
-│   │   ├── ThemeRegistry.tsx          # Emotion cache + Neumorphic MUI ThemeProvider
+│   │   ├── ThemeRegistry.tsx          # Emotion cache + Neumorphic MUI ThemeProvider (fluid clamp typography)
 │   │   ├── globals.css                # Minimal global reset
 │   │   ├── dashboard/
 │   │   │   └── page.tsx               # SPA shell — renders 12 views via client state
@@ -204,6 +205,7 @@ The color system uses 5 key colors to generate a full Material Design 3 color sc
 2. A tonal palette of 26 levels (0–100) is generated for each
 3. Tones are mapped to 30 MD3 color roles (e.g., `primary`, `onPrimary`, `primaryContainer`)
 4. Light/dark mode swaps tone assignments
+5. **Dark Mode Contrast Optimization:** Dark mode uses high-contrast Material 3 tone mappings (`onBackground` & `onSurface` mapped to Tone 95 `#F1F0F4` for 15.2:1 WCAG AAA contrast, `onSurfaceVariant` mapped to Tone 87 `#E1E2EC` for 6.8:1 WCAG AA contrast, `outline` mapped to Tone 70). Standard WCAG 2.1 relative luminance threshold `0.179` is enforced.
 
 **Generated roles include:** `primary`, `onPrimary`, `primaryContainer`, `onPrimaryContainer`, `secondary`, `onSecondary`, `secondaryContainer`, `onSecondaryContainer`, `tertiary`, `onTertiary`, `tertiaryContainer`, `onTertiaryContainer`, `error`, `onError`, `errorContainer`, `onErrorContainer`, `background`, `onBackground`, `surface`, `onSurface`, `surfaceVariant`, `onSurfaceVariant`, `outline`, `outlineVariant`, `inverseSurface`, `inverseOnSurface`, `inversePrimary`, `surfaceDim`, `surfaceBright`, `surfaceContainerLowest`, `surfaceContainerLow`, `surfaceContainer`, `surfaceContainerHigh`, `surfaceContainerHighest`
 
@@ -252,6 +254,10 @@ Generates 15 Material Design 3 type styles from a base size and scale ratio.
 | Label Large | label | 14px |
 | Label Medium | label | 11px |
 | Label Small | label | 11px |
+
+**Fluid CSS `clamp()` & Responsive Letter Spacing:**
+
+All 13 Material Design 3 typography variants (`h1`–`h6`, `subtitle1`, `subtitle2`, `body1`, `body2`, `button`, `caption`, `overline`) utilize CSS `clamp()` for both font sizes (`fontSize: "clamp(...)"`) and responsive letter-spacing (`letterSpacing: "clamp(...)"`). As viewport width decreases on mobile screens, font sizes scale down fluidly while letter-spacing expands smoothly (e.g. from display tracking `-0.03em` on desktop to `0em` / `+0.015em` on mobile), ensuring text never feels squeezed, crowded, or unreadable.
 
 **Google Fonts:** 100+ fonts available including Inter, Roboto, Open Sans, Montserrat, Poppins, DM Sans, Plus Jakarta Sans, and many more. Custom font upload supported (.woff2, .woff, .ttf, .otf).
 
@@ -320,8 +326,9 @@ Configures animation duration and easing for the entire design system.
 The app uses a **Neumorphic-inspired design** built on MUI's `createTheme`:
 
 - **Inset shadows** on cards, inputs, and buttons (dark mode adjusts shadow colors)
-- **Frosted glass** top bar with backdrop blur
-- **Collapsible sidebar** that shrinks to icon-only mode (64px)
+- **Frosted glass** top bar with backdrop blur and mobile overflow action menu (`MoreVertIcon`)
+- **Collapsible sidebar** with 100% full-screen mobile drawer (`width: 100%`, `maxWidth: 100vw`) and top-right close icon button (`<CloseIcon />`)
+- **Accessibility & Focus Interaction**: Full keyboard tab sequence starting from the brand logo down through all navigation links and topbar controls (`tabIndex={0}`, `role`, `aria-label`)
 - **Light/Dark/System** mode toggling via `useThemeStore`
 - **CSS baseline** with Emotion cache provider
 
@@ -617,6 +624,7 @@ No environment variables are required. The app runs entirely with defaults out o
 |---|---|
 | `npm run dev` | Start development server |
 | `npm run build` | Production build |
+| `npm run vercel-build` | Vercel production build step (`next build`) |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
 
