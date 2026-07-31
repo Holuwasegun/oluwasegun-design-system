@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Container, Typography, Paper, useTheme } from '@mui/material';
-import { Layers, Brush, Download, Smartphone, Zap } from 'lucide-react';
+import { Layers, Brush, Download, Zap } from 'lucide-react';
 
 export default function Features() {
   const theme = useTheme();

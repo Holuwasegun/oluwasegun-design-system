@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography, Stack, Grid, IconButton, Divider } from '@mui/material';
+import { Box, Container, Typography, Stack, IconButton, Divider } from '@mui/material';
 import { Palette } from 'lucide-react';
 import { GitHub, Twitter, LinkedIn } from '@mui/icons-material';
 import Link from 'next/link';

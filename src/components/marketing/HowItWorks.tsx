@@ -150,7 +150,7 @@ export default function HowItWorks() {
                       <span style={{ color: '#ff7b72' }}>:root</span> {'{'}
                       <br />  <span style={{ color: '#79c0ff' }}>--md-sys-color-primary</span>: <span style={{ color: '#a5d6ff' }}>#006493</span>;
                       <br />  <span style={{ color: '#79c0ff' }}>--md-sys-color-on-primary</span>: <span style={{ color: '#a5d6ff' }}>#ffffff</span>;
-                      <br />  <span style={{ color: '#8b949e' }}>/* ... */</span>
+                      <br />  <span style={{ color: '#8b949e' }}>{'/* ... */'}</span>
                       <br />{'}'}
                     </Typography>
                   </Box>

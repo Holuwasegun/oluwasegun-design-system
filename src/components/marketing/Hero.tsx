@@ -121,7 +121,7 @@ export default function Hero() {
                 <br />  <span style={{ color: '#79c0ff' }}>--md-sys-color-on-primary</span>: <span style={{ color: '#a5d6ff' }}>#ffffff</span>;
                 <br />  <span style={{ color: '#79c0ff' }}>--md-sys-color-primary-container</span>: <span style={{ color: '#a5d6ff' }}>#cae6ff</span>;
                 <br />  <span style={{ color: '#79c0ff' }}>--md-sys-color-secondary</span>: <span style={{ color: '#a5d6ff' }}>#50606e</span>;
-                <br />  <span style={{ color: '#8b949e' }}>/* 15-tier type scale */</span>
+                <br />  <span style={{ color: '#8b949e' }}>{'/* 15-tier type scale */'}</span>
                 <br />  <span style={{ color: '#79c0ff' }}>--md-sys-typescale-display-large-size</span>: <span style={{ color: '#a5d6ff' }}>clamp(3.5rem, 3.1rem + 2vw, 4.5rem)</span>;
                 <br />{'}'}
               </Typography>
