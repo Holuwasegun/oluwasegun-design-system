@@ -17,6 +17,7 @@ import {
 } from '@mui/icons-material';
 import { useThemeStore, useAppStore } from '@/store';
 import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
+import { getGradientContrastTextColor } from '@/lib/token-utils';
 import ColorPaletteSection from '@/components/brand-gallery/ColorPaletteSection';
 import TypographySection from '@/components/brand-gallery/TypographySection';
 import IconLibrarySection from '@/components/brand-gallery/IconLibrarySection';
@@ -62,7 +63,7 @@ function SidebarContent({
             background: `linear-gradient(135deg, ${scheme.primary}, ${scheme.tertiary})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 11 }}>O</Typography>
+            <Typography sx={{ color: getGradientContrastTextColor(scheme.primary, scheme.tertiary), fontWeight: 700, fontSize: 11 }}>O</Typography>
           </Box>
           <Box>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.2, fontSize: 13 }}>Brand Gallery</Typography>

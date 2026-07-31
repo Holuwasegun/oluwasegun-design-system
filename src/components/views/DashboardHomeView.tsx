@@ -24,6 +24,7 @@ import {
 import { useThemeStore, useProjectStore, useAppStore } from "@/store";
 import { generateSchemeFromConfig, type ColorScheme } from "@/theme/scheme";
 import { generateTonalPalette, generateNeutralPalette, UI_TONE_LEVELS } from "@/theme/tonal-palette";
+import { relativeLuminance } from "@/lib/token-utils";
 
 const sections = [
   { label: "Color", icon: <PaletteIcon />, href: "color", description: "Key colors, tonal palettes, color roles" },
@@ -47,11 +48,7 @@ function MiniPalette({ colors }: { colors: string[] }) {
 }
 
 function getTextColor(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? "#000" : "#fff";
+  return relativeLuminance(hex) > 0.5 ? "#1D1B20" : "#FFFFFF";
 }
 
 export default function DashboardPage() {

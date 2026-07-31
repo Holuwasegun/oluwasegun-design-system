@@ -3,6 +3,7 @@
 import { useAppStore } from "@/store";
 import { Suspense } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
+import { getGradientContrastTextColor } from "@/lib/token-utils";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 
@@ -102,7 +103,7 @@ function DashboardContent() {
                     flexShrink: 0,
                   }}
                 >
-                  <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.5625rem', lineHeight: 1 }}>O</Typography>
+                  <Typography sx={{ color: getGradientContrastTextColor(theme.palette.primary.main, theme.palette.secondary.main), fontWeight: 700, fontSize: '0.5625rem', lineHeight: 1 }}>O</Typography>
                 </Box>
                 <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
                   &copy; 2026 Oluwasegun. All rights reserved.

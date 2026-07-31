@@ -16,7 +16,7 @@ import {
 } from '@mui/icons-material';
 import { useThemeStore, useAppStore } from '@/store';
 import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
-import { generatePreviewTokens } from '@/lib/token-utils';
+import { generatePreviewTokens, getGradientContrastTextColor } from '@/lib/token-utils';
 import { SCREENS, type ScreenType, type ScreenMeta } from '@/lib/screen-templates';
 
 const VIEWPORTS = [
@@ -65,7 +65,7 @@ function SidebarContent({
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: `0 2px 8px ${scheme.primary}33`, flexShrink: 0,
           }}>
-            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>O</Typography>
+            <Typography sx={{ color: getGradientContrastTextColor(scheme.primary, scheme.tertiary), fontWeight: 700, fontSize: 13 }}>O</Typography>
           </Box>
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, lineHeight: 1.2, fontSize: 13 }}>Screen Preview</Typography>

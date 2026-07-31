@@ -116,7 +116,7 @@ export default function AuthLoginTemplate({ scheme }: { scheme: ColorScheme }) {
             <Typography
               variant="body1"
               sx={{
-                color: `${scheme.onPrimaryContainer}CC`,
+                color: scheme.onSurface,
                 lineHeight: 1.6,
                 mb: 4,
                 maxWidth: 340,

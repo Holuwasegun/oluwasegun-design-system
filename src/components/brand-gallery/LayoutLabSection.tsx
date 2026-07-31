@@ -107,12 +107,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(6, 11 * scale), color: colorUsage.accent, textAlign: 'center', fontFamily, opacity: 0.8 }}>
+            <Typography sx={{ fontSize: Math.max(6, 11 * scale), color: colorUsage.accent, textAlign: 'center', fontFamily, opacity: 0.9 }}>
               {secondaryText}
             </Typography>
           )}
           {content && (
-            <Typography sx={{ fontSize: Math.max(5, 9 * scale), color: colorUsage.text, textAlign: 'center', fontFamily, opacity: 0.65, lineHeight: 1.4, px: 2, mt: 0.5 }}>
+            <Typography sx={{ fontSize: Math.max(5, 9 * scale), color: colorUsage.text, textAlign: 'center', fontFamily, opacity: 0.8, lineHeight: 1.4, px: 2, mt: 0.5 }}>
               {content}
             </Typography>
           )}
@@ -132,12 +132,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.85 }}>
               {secondaryText}
             </Typography>
           )}
           {content && (
-            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.5 }}>
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.8, lineHeight: 1.4, mt: 0.5 }}>
               {content}
             </Typography>
           )}
@@ -157,12 +157,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.85 }}>
               {secondaryText}
             </Typography>
           )}
           {content && (
-            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.5 }}>
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.8, lineHeight: 1.4, mt: 0.5 }}>
               {content}
             </Typography>
           )}
@@ -182,12 +182,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
             {primaryText}
           </Typography>
           {secondaryText && (
-            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.8 }}>
+            <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.9 }}>
               {secondaryText}
             </Typography>
           )}
           {content && (
-            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, mt: 0.3 }}>
+            <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.8, lineHeight: 1.4, mt: 0.3 }}>
               {content}
             </Typography>
           )}
@@ -208,12 +208,12 @@ function LayoutPreview({ suggestion, image, primaryText, secondaryText, content,
           {primaryText}
         </Typography>
         {secondaryText && (
-          <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.7, textAlign: 'right' }}>
+          <Typography sx={{ fontSize: Math.max(5, 10 * scale), color: colorUsage.accent, fontFamily, opacity: 0.85, textAlign: 'right' }}>
             {secondaryText}
           </Typography>
         )}
         {content && (
-          <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.6, lineHeight: 1.4, textAlign: 'right', mt: 0.5 }}>
+          <Typography sx={{ fontSize: Math.max(4, 8 * scale), color: colorUsage.text, fontFamily, opacity: 0.8, lineHeight: 1.4, textAlign: 'right', mt: 0.5 }}>
             {content}
           </Typography>
         )}

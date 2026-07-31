@@ -47,13 +47,13 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
                 textAlign: 'center',
               }}
             >
-              <Typography variant="overline" sx={{ color: scheme.onPrimary, letterSpacing: 4, fontWeight: 600, opacity: 0.8 }}>
+              <Typography variant="overline" sx={{ color: scheme.onPrimary, letterSpacing: 4, fontWeight: 600, opacity: 0.9 }}>
                 Limited Offer
               </Typography>
               <Typography variant="h2" sx={{ color: scheme.onPrimary, fontWeight: 900, lineHeight: 1.1, my: 2, fontSize: '2.25rem' }}>
                 50% Off Everything
               </Typography>
-              <Typography variant="body1" sx={{ color: scheme.onPrimary, opacity: 0.85, mb: 3 }}>
+              <Typography variant="body1" sx={{ color: scheme.onPrimary, opacity: 0.9, mb: 3 }}>
                 Use code DESIGN50 at checkout
               </Typography>
               <Box
@@ -122,7 +122,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
                 <Avatar sx={{ width: 40, height: 40, bgcolor: scheme.secondary, color: scheme.onSecondary }}>OA</Avatar>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 700, color: scheme.onSecondaryContainer }}>Oluwasegun Awodeyi</Typography>
-                  <Typography variant="caption" sx={{ color: scheme.onSecondaryContainer, opacity: 0.7 }}>Head of Design, Acme Inc</Typography>
+                  <Typography variant="caption" sx={{ color: scheme.onSecondaryContainer, opacity: 0.85 }}>Head of Design, Acme Inc</Typography>
                 </Box>
               </Stack>
             </Box>
@@ -181,7 +181,7 @@ export default function SocialMediaFlyerTemplate({ scheme }: { scheme: ColorSche
               <Typography variant="h4" sx={{ color: scheme.onTertiaryContainer, fontWeight: 800, my: 1.5, fontSize: '1.5rem' }}>
                 Dark Mode Support
               </Typography>
-              <Typography variant="body2" sx={{ color: scheme.onTertiaryContainer, opacity: 0.75, maxWidth: 260 }}>
+              <Typography variant="body2" sx={{ color: scheme.onSurfaceVariant, maxWidth: 260 }}>
                 Automatically adapt your designs to light and dark themes with one-click toggling.
               </Typography>
             </Box>

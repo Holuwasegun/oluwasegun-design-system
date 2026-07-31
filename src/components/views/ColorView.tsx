@@ -36,6 +36,7 @@ import {
   UI_TONE_LEVELS,
   type TonalPalette,
 } from "@/theme/tonal-palette";
+import { relativeLuminance } from "@/lib/token-utils";
 
 // ---------- HSL Utilities ----------
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
@@ -108,10 +109,7 @@ function formatName(key: string): string {
 }
 
 function getTextColor(bgHex: string): string {
-  const r = parseInt(bgHex.slice(1, 3), 16);
-  const g = parseInt(bgHex.slice(3, 5), 16);
-  const b = parseInt(bgHex.slice(5, 7), 16);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? "#1D1B20" : "#FFFFFF";
+  return relativeLuminance(bgHex) > 0.5 ? "#1D1B20" : "#FFFFFF";
 }
 
 // ---------- Tonal Palette Strip ----------
@@ -233,10 +231,17 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   };
 
   const rgb = hexToRgb(value);
+  const hsl = useMemo(() => hexToHsl(value), [value]);
+  const [format, setFormat] = useState<'rgb' | 'hsl'>('rgb');
 
   const handleRgbChange = (color: 'r'|'g'|'b', val: number) => {
     const newRgb = { ...rgb, [color]: val };
     onChange(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+  };
+
+  const handleHslChange = (component: 'h'|'s'|'l', val: number) => {
+    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [component]: val };
+    onChange(hslToHex(newHsl.h, newHsl.s, newHsl.l));
   };
 
   const open = Boolean(anchorEl);
@@ -306,7 +311,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               borderRadius: 3,
               p: 3,
               mt: 1,
-              width: 260,
+              width: 300,
               boxShadow: theme.palette.mode === 'dark'
                 ? "-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)"
                 : "-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.15)",
@@ -315,12 +320,31 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 280 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}>
             Adjust Color
           </Typography>
+
+          <Box sx={{ display: "flex", gap: 0.5, bgcolor: 'background.default', borderRadius: 2, p: 0.5 }}>
+            <Button
+              size="small"
+              variant={format === 'rgb' ? 'contained' : 'text'}
+              onClick={() => setFormat('rgb')}
+              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
+            >
+              RGB
+            </Button>
+            <Button
+              size="small"
+              variant={format === 'hsl' ? 'contained' : 'text'}
+              onClick={() => setFormat('hsl')}
+              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
+            >
+              HSL
+            </Button>
+          </Box>
           
-          {['r', 'g', 'b'].map((color) => {
+          {format === 'rgb' && ['r', 'g', 'b'].map((color) => {
             const val = rgb[color as keyof typeof rgb];
             return (
               <Box key={color} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -387,6 +411,69 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               </Box>
             );
           })}
+
+          {format === 'hsl' && (
+            <>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Hue</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.h}°</Typography>
+                </Box>
+                <Slider
+                  size="small"
+                  value={hsl.h}
+                  min={0}
+                  max={360}
+                  onChange={(_, v) => handleHslChange('h', v as number)}
+                  sx={{
+                    "& .MuiSlider-track": { background: "transparent" },
+                    "& .MuiSlider-rail": {
+                      opacity: 1,
+                      background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
+                    },
+                  }}
+                />
+              </Box>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Saturation</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.s}%</Typography>
+                </Box>
+                <Slider
+                  size="small"
+                  value={hsl.s}
+                  min={0}
+                  max={100}
+                  onChange={(_, v) => handleHslChange('s', v as number)}
+                  sx={{
+                    "& .MuiSlider-rail": {
+                      opacity: 1,
+                      background: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))`,
+                    },
+                  }}
+                />
+              </Box>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Lightness</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.l}%</Typography>
+                </Box>
+                <Slider
+                  size="small"
+                  value={hsl.l}
+                  min={0}
+                  max={100}
+                  onChange={(_, v) => handleHslChange('l', v as number)}
+                  sx={{
+                    "& .MuiSlider-rail": {
+                      opacity: 1,
+                      background: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))`,
+                    },
+                  }}
+                />
+              </Box>
+            </>
+          )}
           
           <Box
             component="input"
@@ -409,7 +496,6 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               textTransform: 'uppercase',
               boxShadow: neumorphicInset,
               outline: 'none',
-              mt: 1,
               "&:focus": {
                 boxShadow: "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.9)",
               }
