@@ -23,7 +23,7 @@ export default function FAQ() {
   ];
 
   return (
-    <Box component="section" sx={{ py: { xs: 8, md: 12 }, bgcolor: 'surfaceContainerLowest' }}>
+    <Box id="faq" component="section" sx={{ py: { xs: 8, md: 12 }, bgcolor: 'surfaceContainerLowest' }}>
       <Container maxWidth="md">
         <Typography variant="h2" component="h2" sx={{ textAlign: 'center', fontWeight: 700, mb: 8 }}>
           Frequently Asked Questions
