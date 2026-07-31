@@ -35,7 +35,7 @@ import {
 } from '@mui/icons-material';
 import { useAppStore } from '@/store';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 64;
@@ -59,6 +59,7 @@ export default function Sidebar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { sidebarOpen, toggleSidebar, setSidebarOpen, currentView, setCurrentView } = useAppStore();
+  const router = useRouter();
 
   const drawerContent = (
     <Box
@@ -77,9 +78,8 @@ export default function Sidebar() {
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, minHeight: 72 }}>
         <ButtonBase
-          component={Link}
-          href="/"
           onClick={() => {
+            router.push('/');
             if (isMobile) setSidebarOpen(false);
           }}
           tabIndex={0}
