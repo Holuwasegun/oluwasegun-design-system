@@ -84,7 +84,9 @@ function normalizeHex(hex: string): string {
 }
 
 function isValidHex(hex: string): boolean {
-  return /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex.trim());
+  let val = hex.trim();
+  if (!val.startsWith("#")) val = "#" + val;
+  return /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(val);
 }
 
 function calculateContrastRatio(hex: string): number {
@@ -705,6 +707,13 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   const [renameMode, setRenameMode] = useState(false);
   const [renameValue, setRenameValue] = useState(label);
 
+  const [typedHex, setTypedHex] = useState(value);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTypedHex(value);
+  }, [value]);
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     if (renameMode) return;
     setAnchorEl(e.currentTarget);
@@ -713,6 +722,15 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleDirectHexChange = (input: string) => {
+    setTypedHex(input);
+    let val = input.trim();
+    if (!val.startsWith('#')) val = '#' + val;
+    if (isValidHex(val)) {
+      onChange(normalizeHex(val));
+    }
   };
 
   return (
@@ -733,8 +751,9 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               width: 40,
               height: 40,
               borderRadius: 1.5,
-              bgcolor: value,
+              bgcolor: isValidHex(typedHex) ? normalizeHex(typedHex) : value,
               flexShrink: 0,
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
             }}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
@@ -813,8 +832,41 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
             </>
           )}
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
-          <Typography variant="caption" sx={{ fontFamily: "monospace", fontWeight: 600 }}>{value}</Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }} onClick={(e) => e.stopPropagation()}>
+          <TextField
+            size="small"
+            variant="outlined"
+            value={typedHex}
+            onChange={(e) => handleDirectHexChange(e.target.value)}
+            onBlur={() => setTypedHex(value)}
+            error={!isValidHex(typedHex)}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start" sx={{ mr: 0.25 }}>
+                    <Typography sx={{ fontWeight: 800, color: 'primary.main', fontFamily: 'monospace', fontSize: '0.8rem' }}>#</Typography>
+                  </InputAdornment>
+                ),
+                style: {
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  fontSize: '0.8125rem',
+                  padding: '2px 6px',
+                  letterSpacing: '0.05em',
+                },
+              },
+            }}
+            sx={{
+              width: '100%',
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                height: 32,
+                bgcolor: 'background.default',
+                '& fieldset': { borderColor: isValidHex(typedHex) ? 'divider' : 'error.main' },
+                '&:hover fieldset': { borderColor: 'primary.main' },
+              },
+            }}
+          />
         </Box>
       </CardContent>
 
