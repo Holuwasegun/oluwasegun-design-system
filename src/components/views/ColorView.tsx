@@ -788,7 +788,9 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, o
                 sx={{
                   color: getTextColor(palette[tone]),
                   fontWeight: tone === 40 || tone === 80 ? 800 : 500,
-                  fontSize: { xs: "0.6rem", sm: "0.725rem" },
+                  fontSize: { xs: "0.525rem", sm: "0.725rem" },
+                  lineHeight: 1,
+                  textAlign: "center",
                   userSelect: "none",
                 }}
               >

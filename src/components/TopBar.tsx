@@ -11,6 +11,10 @@ import {
   Box,
   Tooltip,
   Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -22,6 +26,7 @@ import {
   FileDownload as ExportIcon,
   FileUpload as ImportIcon,
   Folder as ProjectIcon,
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
@@ -42,12 +47,14 @@ const pageTitles: Record<string, string> = {
 export default function TopBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const searchParams = useSearchParams();
   const currentView = searchParams.get("view") || "home";
   const { toggleSidebar } = useAppStore();
   const { config, toggleMode, exportConfig, exportCssTokens, currentProjectId } = useThemeStore();
   const { projects } = useProjectStore();
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
 
   const title = pageTitles[currentView] || "Design System";
   const currentProject = projects.find((p) => p.id === currentProjectId);
@@ -61,6 +68,7 @@ export default function TopBar() {
     a.download = `${currentProject ? currentProject.name.replace(/\s+/g, "-").toLowerCase() : "oluwasegun-design-system"}-theme.json`;
     a.click();
     URL.revokeObjectURL(url);
+    setMobileMenuAnchor(null);
   };
 
   const handleExportCss = () => {
@@ -72,10 +80,11 @@ export default function TopBar() {
     a.download = `${currentProject ? currentProject.name.replace(/\s+/g, "-").toLowerCase() : "oluwasegun-design-system"}-tokens.css`;
     a.click();
     URL.revokeObjectURL(url);
+    setMobileMenuAnchor(null);
   };
 
-
   const handleImport = () => {
+    setMobileMenuAnchor(null);
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json";
@@ -101,7 +110,7 @@ export default function TopBar() {
           color: "text.primary",
         }}
       >
-        <Toolbar sx={{ minHeight: 64, gap: 1, px: { xs: 2, md: 3 } }}>
+        <Toolbar sx={{ minHeight: 64, gap: { xs: 0.5, sm: 1 }, px: { xs: 1.5, md: 3 } }}>
           {isMobile && (
             <IconButton
               edge="start"
@@ -109,9 +118,9 @@ export default function TopBar() {
               tabIndex={0}
               aria-label="Toggle navigation drawer"
               sx={{
-                mr: 1,
-                minWidth: 44,
-                minHeight: 44,
+                mr: 0.5,
+                minWidth: 40,
+                minHeight: 40,
                 '&:focus-visible, &.Mui-focusVisible': {
                   outline: '2px solid',
                   outlineColor: 'primary.main',
@@ -124,7 +133,7 @@ export default function TopBar() {
           )}
 
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', fontSize: { xs: '0.95rem', md: '1rem' } }}>
+            <Typography variant="h6" noWrap sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
               {title}
             </Typography>
           </Box>
@@ -136,13 +145,13 @@ export default function TopBar() {
               size="small"
               tabIndex={0}
               aria-label="Manage projects"
-              startIcon={isMobile ? undefined : <ProjectIcon sx={{ fontSize: "1rem !important" }} />}
+              startIcon={<ProjectIcon sx={{ fontSize: "1rem !important" }} />}
               onClick={() => setProjectManagerOpen(true)}
               sx={{
                 textTransform: "none",
                 color: "text.secondary",
                 minWidth: 0,
-                px: isMobile ? 1 : 1.5,
+                px: { xs: 1, sm: 1.5 },
                 borderRadius: 2,
                 '&:focus-visible, &.Mui-focusVisible': {
                   outline: '2px solid',
@@ -151,87 +160,110 @@ export default function TopBar() {
                 },
               }}
             >
-              {isMobile ? (
-                <ProjectIcon fontSize="small" />
-              ) : (
-                <Typography variant="caption" noWrap sx={{ maxWidth: 120, fontWeight: 500 }}>
-                  {currentProject?.name || "Untitled"}
-                </Typography>
-              )}
+              <Typography variant="caption" noWrap sx={{ maxWidth: { xs: 80, sm: 120 }, fontWeight: 500 }}>
+                {currentProject?.name || "Untitled"}
+              </Typography>
             </Button>
           </Tooltip>
 
-          <Tooltip title="Export theme as JSON">
-            <Button
-              size="small"
-              tabIndex={0}
-              aria-label="Export theme as JSON"
-              startIcon={isMobile ? undefined : <ExportIcon sx={{ fontSize: "1rem !important" }} />}
-              onClick={handleExport}
-              sx={{
-                textTransform: "none",
-                color: "text.secondary",
-                minWidth: 0,
-                px: isMobile ? 1 : 1.5,
-                borderRadius: 2,
-                '&:focus-visible, &.Mui-focusVisible': {
-                  outline: '2px solid',
-                  outlineColor: 'primary.main',
-                  outlineOffset: '2px',
-                },
-              }}
-            >
-              {isMobile ? <ExportIcon fontSize="small" /> : "JSON"}
-            </Button>
-          </Tooltip>
+          {/* Desktop & Tablet Export/Import Action Buttons */}
+          {!isSmallScreen && (
+            <>
+              <Tooltip title="Export theme as JSON">
+                <Button
+                  size="small"
+                  tabIndex={0}
+                  aria-label="Export theme as JSON"
+                  startIcon={<ExportIcon sx={{ fontSize: "1rem !important" }} />}
+                  onClick={handleExport}
+                  sx={{
+                    textTransform: "none",
+                    color: "text.secondary",
+                    minWidth: 0,
+                    px: 1.5,
+                    borderRadius: 2,
+                    '&:focus-visible, &.Mui-focusVisible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.main',
+                      outlineOffset: '2px',
+                    },
+                  }}
+                >
+                  JSON
+                </Button>
+              </Tooltip>
 
-          <Tooltip title="Export CSS tokens">
-            <Button
-              size="small"
-              tabIndex={0}
-              aria-label="Export CSS tokens"
-              startIcon={isMobile ? undefined : <ExportIcon sx={{ fontSize: "1rem !important" }} />}
-              onClick={handleExportCss}
-              sx={{
-                textTransform: "none",
-                color: "text.secondary",
-                minWidth: 0,
-                px: isMobile ? 1 : 1.5,
-                borderRadius: 2,
-                '&:focus-visible, &.Mui-focusVisible': {
-                  outline: '2px solid',
-                  outlineColor: 'primary.main',
-                  outlineOffset: '2px',
-                },
-              }}
-            >
-              {isMobile ? <ExportIcon fontSize="small" /> : "CSS"}
-            </Button>
-          </Tooltip>
+              <Tooltip title="Export CSS tokens">
+                <Button
+                  size="small"
+                  tabIndex={0}
+                  aria-label="Export CSS tokens"
+                  startIcon={<ExportIcon sx={{ fontSize: "1rem !important" }} />}
+                  onClick={handleExportCss}
+                  sx={{
+                    textTransform: "none",
+                    color: "text.secondary",
+                    minWidth: 0,
+                    px: 1.5,
+                    borderRadius: 2,
+                    '&:focus-visible, &.Mui-focusVisible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.main',
+                      outlineOffset: '2px',
+                    },
+                  }}
+                >
+                  CSS
+                </Button>
+              </Tooltip>
 
-          <Tooltip title="Import theme from JSON">
-            <Button
-              size="small"
-              tabIndex={0}
-              aria-label="Import theme from JSON"
-              startIcon={isMobile ? undefined : <ImportIcon sx={{ fontSize: "1rem !important" }} />}
-              onClick={handleImport}
-              sx={{
-                textTransform: "none",
-                color: "text.secondary",
-                minWidth: 0,
-                px: isMobile ? 1 : 1.5,
-                borderRadius: 2,
-                '&:focus-visible, &.Mui-focusVisible': {
-                  outline: '2px solid',
-                  outlineColor: 'primary.main',
-                  outlineOffset: '2px',
-                },
-              }}
-            >
-              {isMobile ? <ImportIcon fontSize="small" /> : "Import"}
-            </Button>
-          </Tooltip>
+              <Tooltip title="Import theme from JSON">
+                <Button
+                  size="small"
+                  tabIndex={0}
+                  aria-label="Import theme from JSON"
+                  startIcon={<ImportIcon sx={{ fontSize: "1rem !important" }} />}
+                  onClick={handleImport}
+                  sx={{
+                    textTransform: "none",
+                    color: "text.secondary",
+                    minWidth: 0,
+                    px: 1.5,
+                    borderRadius: 2,
+                    '&:focus-visible, &.Mui-focusVisible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.main',
+                      outlineOffset: '2px',
+                    },
+                  }}
+                >
+                  Import
+                </Button>
+              </Tooltip>
+            </>
+          )}
+
+          {/* Mobile Screen Overflow Menu Icon Button */}
+          {isSmallScreen && (
+            <Tooltip title="More options">
+              <IconButton
+                size="small"
+                onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
+                aria-label="More export and import options"
+                sx={{
+                  color: 'text.secondary',
+                  p: 0.75,
+                  '&:focus-visible, &.Mui-focusVisible': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '2px',
+                  },
+                }}
+              >
+                <MoreVertIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
 
           <Tooltip title={`Switch theme mode (current: ${config.mode})`}>
             <IconButton
@@ -241,8 +273,8 @@ export default function TopBar() {
               onClick={toggleMode}
               sx={{
                 color: 'text.secondary',
-                minWidth: 44,
-                minHeight: 44,
+                minWidth: 38,
+                minHeight: 38,
                 '&:hover': { color: 'text.primary' },
                 '&:focus-visible, &.Mui-focusVisible': {
                   outline: '2px solid',
@@ -266,13 +298,13 @@ export default function TopBar() {
             role="img"
             aria-label="User profile icon for Oluwasegun"
             sx={{
-              width: 34,
-              height: 34,
+              width: 32,
+              height: 32,
               bgcolor: "primary.main",
               color: "primary.contrastText",
               fontSize: "0.8125rem",
               fontWeight: 700,
-              ml: 0.5,
+              ml: 0.25,
               flexShrink: 0,
               cursor: 'pointer',
               '&:focus-visible, &.Mui-focusVisible': {
@@ -286,6 +318,31 @@ export default function TopBar() {
           </Avatar>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Overflow Menu */}
+      <Menu
+        anchorEl={mobileMenuAnchor}
+        open={Boolean(mobileMenuAnchor)}
+        onClose={() => setMobileMenuAnchor(null)}
+        slotProps={{
+          paper: {
+            sx: { borderRadius: 2.5, minWidth: 180, py: 0.5, boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }
+          }
+        }}
+      >
+        <MenuItem onClick={handleExport}>
+          <ListItemIcon><ExportIcon fontSize="small" /></ListItemIcon>
+          <ListItemText primary="Export JSON" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
+        </MenuItem>
+        <MenuItem onClick={handleExportCss}>
+          <ListItemIcon><ExportIcon fontSize="small" /></ListItemIcon>
+          <ListItemText primary="Export CSS" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
+        </MenuItem>
+        <MenuItem onClick={handleImport}>
+          <ListItemIcon><ImportIcon fontSize="small" /></ListItemIcon>
+          <ListItemText primary="Import JSON" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
+        </MenuItem>
+      </Menu>
 
       <ProjectManager open={projectManagerOpen} onClose={() => setProjectManagerOpen(false)} />
     </>
