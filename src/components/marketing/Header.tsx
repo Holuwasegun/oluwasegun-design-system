@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Container, Stack, Typography, useTheme } from '@mui/material';
 import Link from 'next/link';
-import { Palette } from 'lucide-react';
+
 
 export default function Header() {
   const theme = useTheme();
@@ -23,11 +23,37 @@ export default function Header() {
     >
       <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
-            <Palette color={theme.palette.primary.main} size={28} />
-            <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
-              Oluwasegun Design
-            </Typography>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
+            <Box
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: 2,
+                backgroundColor: 'background.default',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: (theme) => theme.palette.mode === 'dark' 
+                  ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
+                  : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
+              >
+                O
+              </Typography>
+            </Box>
+            <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
+                Oluwasegun
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block', lineHeight: 1 }}>
+                Design System
+              </Typography>
+            </Box>
           </Stack>
         </Link>
         
