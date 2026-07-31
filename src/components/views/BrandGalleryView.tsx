@@ -104,7 +104,7 @@ function SidebarContent({
 
       <Box sx={{ px: 2, py: 1.5, }}>
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Chip label={config.mode === 'light' ? 'Light' : 'Dark'} size="small" variant="outlined" sx={{ fontSize: 10, height: 20 }} />
+          <Chip label={config.mode === 'system' ? 'System' : config.mode === 'light' ? 'Light' : 'Dark'} size="small" variant="outlined" sx={{ fontSize: 10, height: 20 }} />
           <Tooltip title={presentMode ? 'Exit presentation' : 'Presentation mode'}>
             <IconButton size="small" onClick={togglePresent} sx={{ width: 28, height: 28, color: presentMode ? 'primary.main' : 'text.secondary', '&:hover': { bgcolor: 'action.hover' } }}>
               {presentMode ? <ExitPresentIcon sx={{ fontSize: 16 }} /> : <PresentIcon sx={{ fontSize: 16 }} />}

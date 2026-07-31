@@ -100,7 +100,7 @@ export default function DashboardPage() {
       {/* Quick Stats */}
       <Grid container spacing={2} sx={{ mb: 5 }}>
         {[
-          { label: "Mode", value: config.mode === "light" ? "Light" : "Dark", color: scheme.primary },
+          { label: "Mode", value: config.mode === "system" ? "System" : config.mode === "light" ? "Light" : "Dark", color: scheme.primary },
           { label: "Key Colors", value: String(keyColorCount), color: scheme.secondary },
           { label: "Base Size", value: `${config.typography.baseSize}px`, color: scheme.tertiary },
           { label: "Scale", value: `${config.typography.scale}×`, color: scheme.primary },
