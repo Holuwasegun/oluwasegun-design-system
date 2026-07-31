@@ -318,7 +318,7 @@ function CardsPanel() {
               position: 'relative',
             }}
           >
-            <Typography variant="h3" sx={{ color: '#fff', opacity: 0.4, fontWeight: 300 }}>OA</Typography>
+            <Typography variant="h3" sx={{ color: scheme.onPrimary, opacity: 0.6, fontWeight: 300 }}>OA</Typography>
             <Chip
               label="New"
               size="small"
@@ -326,8 +326,8 @@ function CardsPanel() {
                 position: 'absolute',
                 top: 12,
                 right: 12,
-                bgcolor: 'rgba(255,255,255,0.9)',
-                color: scheme.primary,
+                bgcolor: scheme.surfaceContainerHighest,
+                color: scheme.onSurface,
                 fontWeight: 600,
                 fontSize: '0.7rem',
               }}
@@ -388,8 +388,8 @@ function CardsPanel() {
                       height: 22,
                       fontSize: '0.7rem',
                       fontWeight: 600,
-                      bgcolor: stat.up ? `${scheme.primary}15` : '#B3261E15',
-                      color: stat.up ? scheme.primary : '#B3261E',
+                      bgcolor: stat.up ? `${scheme.primary}15` : `${scheme.error}15`,
+                      color: stat.up ? scheme.primary : scheme.error,
                     }}
                   />
                 </CardContent>

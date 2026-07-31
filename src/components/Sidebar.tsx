@@ -143,7 +143,7 @@ export default function Sidebar() {
                   color: isActive ? 'primary.main' : 'text.secondary',
                   transition: 'all 0.15s ease',
                   '&:hover': {
-                    backgroundColor: isActive ? 'background.default' : 'rgba(0,0,0,0.02)',
+                    backgroundColor: isActive ? 'background.default' : 'action.hover',
                   },
                 }}
               >

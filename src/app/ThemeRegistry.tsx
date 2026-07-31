@@ -22,9 +22,9 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
   const scheme = generateSchemeFromConfig(config, resolvedMode);
   
   const isDark = resolvedMode === 'dark';
-  const bgColor = isDark ? '#1A1D24' : '#E0E5EC';
-  const textPrimary = isDark ? '#F7FAFC' : '#2D3748';
-  const textSecondary = isDark ? '#A0AEC0' : '#718096';
+  const bgColor = isDark ? scheme.background : '#E0E5EC';
+  const textPrimary = isDark ? scheme.onBackground : '#2D3748';
+  const textSecondary = isDark ? scheme.onSurfaceVariant : '#718096';
   
   const shadowProtruding = isDark
     ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
@@ -67,7 +67,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
         primary: textPrimary,
         secondary: textSecondary,
       },
-      divider: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+      divider: isDark ? scheme.outlineVariant : 'rgba(0,0,0,0.05)',
       warning: {
         main: scheme.tertiary,
         light: scheme.tertiaryContainer,

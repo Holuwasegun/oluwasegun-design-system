@@ -56,7 +56,7 @@ export default function EcommerceProductCard({ scheme }: { scheme: ColorScheme }
                     borderRadius: '24px 24px 0 0',
                   }}
                 >
-                  <Typography variant="h4" sx={{ color: scheme.onPrimaryContainer, fontWeight: 800, opacity: 0.3 }}>
+                  <Typography variant="h4" sx={{ color: scheme.onPrimaryContainer, fontWeight: 800, opacity: 0.55 }}>
                     {product.name.charAt(0)}
                   </Typography>
                 </Box>

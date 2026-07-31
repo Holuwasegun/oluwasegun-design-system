@@ -90,7 +90,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
                   <Box>
                     <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 11 }}>{stat.label}</Typography>
                     <Typography variant="h6" sx={{ fontWeight: 700, fontSize: 20, my: 0.25 }}>{stat.value}</Typography>
-                    <Typography variant="caption" sx={{ color: stat.up ? '#16a34a' : s.error, fontWeight: 600, fontSize: 11 }}>{stat.change}</Typography>
+                    <Typography variant="caption" sx={{ color: stat.up ? s.primary : s.error, fontWeight: 600, fontSize: 11 }}>{stat.change}</Typography>
                   </Box>
                   <Box sx={{ bgcolor: s.primaryContainer, borderRadius: 1.5, p: 0.75, display: 'flex' }}>
                     {React.cloneElement(stat.icon, { sx: { color: s.onPrimaryContainer, fontSize: 18 } })}
@@ -132,7 +132,7 @@ const FinanceScreen = React.memo(function FinanceScreen({ tokens }: { tokens: Pr
                     <TableRow key={i}>
                       <TableCell sx={{ borderBottomColor: s.outlineVariant, fontSize: 12, py: 0.75 }}>{row.desc}</TableCell>
                       <TableCell sx={{ borderBottomColor: s.outlineVariant, py: 0.75 }}><Chip label={row.cat} size="small" sx={{ bgcolor: s.secondaryContainer, color: s.onSecondaryContainer, fontWeight: 500, fontSize: 10, height: 20 }} /></TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: row.amt.startsWith('+') ? '#16a34a' : s.onSurface, borderBottomColor: s.outlineVariant, fontSize: 12, py: 0.75 }}>{row.amt}</TableCell>
+                      <TableCell sx={{ fontWeight: 600, color: row.amt.startsWith('+') ? s.primary : s.onSurface, borderBottomColor: s.outlineVariant, fontSize: 12, py: 0.75 }}>{row.amt}</TableCell>
                       <TableCell sx={{ color: s.onSurfaceVariant, borderBottomColor: s.outlineVariant, fontSize: 12, py: 0.75 }}>{row.date}</TableCell>
                     </TableRow>
                   ))}
@@ -197,7 +197,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
                 <CardContent sx={{ p: sp * 1.5, '&:last-child': { pb: sp * 1.5 } }}>
                   <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 11 }}>{kpi.label}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 700, my: 0.25, fontSize: 20 }}>{kpi.value}</Typography>
-                  <Typography variant="caption" sx={{ color: '#16a34a', fontSize: 11 }}>{kpi.sub}</Typography>
+                  <Typography variant="caption" sx={{ color: s.primary, fontSize: 11 }}>{kpi.sub}</Typography>
                 </CardContent>
               </Card>
             ))}
@@ -232,7 +232,7 @@ const BusinessScreen = React.memo(function BusinessScreen({ tokens }: { tokens: 
                     { name: 'Alex Chen', role: 'Backend Dev', color: s.primary },
                   ].map((m) => (
                     <Stack key={m.name} direction="row" spacing={sp * 1} sx={{ alignItems: 'center' }}>
-                      <Avatar sx={{ width: 30, height: 30, bgcolor: m.color, color: '#fff', fontSize: 11 }}>{m.name.split(' ').map((n) => n[0]).join('')}</Avatar>
+                      <Avatar sx={{ width: 30, height: 30, bgcolor: m.color, color: s.onPrimary, fontSize: 11 }}>{m.name.split(' ').map((n) => n[0]).join('')}</Avatar>
                       <Box>
                         <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 12 }}>{m.name}</Typography>
                         <Typography variant="caption" sx={{ color: s.onSurfaceVariant, fontSize: 10 }}>{m.role}</Typography>
@@ -416,18 +416,26 @@ const SignupScreen = React.memo(function SignupScreen({ tokens }: { tokens: Prev
 // ---------- Error Boundary ----------
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; screenType: string },
-  { hasError: boolean; error: string }
+  { hasError: boolean; error: string; isDark: boolean }
 > {
   constructor(props: { children: React.ReactNode; screenType: string }) {
     super(props);
-    this.state = { hasError: false, error: '' };
+    this.state = { hasError: false, error: '', isDark: false };
   }
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error: error.message };
   }
+  componentDidMount() {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    this.setState({ isDark: mq.matches });
+    mq.addEventListener('change', (e) => this.setState({ isDark: e.matches }));
+  }
   render() {
     if (this.state.hasError) {
-      const s = { background: '#fafafa', onBackground: '#1c1b1f', primary: '#6750A4', error: '#B3261E', errorContainer: '#F9DEDC', onErrorContainer: '#410E0B' };
+      const isDark = this.state.isDark;
+      const s = isDark
+        ? { background: '#1A1D24', onBackground: '#E2E8F0', primary: '#D0BCFF', error: '#F2B8B5', errorContainer: '#601410', onErrorContainer: '#F9DEDC' }
+        : { background: '#FAFAFA', onBackground: '#1C1B1F', primary: '#6750A4', error: '#B3261E', errorContainer: '#F9DEDC', onErrorContainer: '#410E0B' };
       return (
         <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: s.background, fontFamily: 'Inter, sans-serif' }}>
           <Alert severity="error" sx={{ maxWidth: 400, borderRadius: 3 }}>
