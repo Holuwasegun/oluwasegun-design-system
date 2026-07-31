@@ -113,12 +113,40 @@ function getTextColor(bgHex: string): string {
 }
 
 // ---------- Tonal Palette Strip ----------
-function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
+function TonalPaletteStrip({ label, palette, onRemove, isDefault, keyColorHex, onKeyColorChange }: {
   label: string;
   palette: TonalPalette;
   onRemove?: () => void;
   isDefault: boolean;
+  keyColorHex?: string;
+  onKeyColorChange?: (hex: string) => void;
 }) {
+  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [hslFormat, setHslFormat] = useState<'rgb' | 'hsl'>('hsl');
+  const [localHex, setLocalHex] = useState<string | null>(null);
+
+  const hex = keyColorHex ?? palette[40];
+  const displayHex = localHex ?? hex;
+  const rgb = hexToRgb(hex);
+  const hsl = useMemo(() => hexToHsl(hex), [hex]);
+
+  const handleRgbChange = (color: 'r'|'g'|'b', val: number) => {
+    if (!onKeyColorChange) return;
+    const newRgb = { ...rgb, [color]: val };
+    onKeyColorChange(rgbToHex(newRgb.r, newRgb.g, newRgb.b));
+  };
+
+  const handleHslChange = (component: 'h'|'s'|'l', val: number) => {
+    if (!onKeyColorChange) return;
+    const newHsl = { h: hsl.h, s: hsl.s, l: hsl.l, [component]: val };
+    onKeyColorChange(hslToHex(newHsl.h, newHsl.s, newHsl.l));
+  };
+
+  const neumorphicInset = theme.palette.mode === 'dark' 
+    ? "inset 5px 5px 10px rgba(0,0,0,0.6), inset -5px -5px 10px rgba(255,255,255,0.05)"
+    : "inset 5px 5px 10px rgba(0,0,0,0.12), inset -5px -5px 10px rgba(255,255,255,0.9)";
+
   return (
     <Box sx={{ mb: 2.5 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.75 }}>
@@ -139,44 +167,40 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
       </Box>
       <Box
         sx={{
-          display: { xs: "grid", sm: "flex" },
-          gridTemplateColumns: { xs: "repeat(auto-fill, minmax(40px, 1fr))", sm: "none" },
+          display: "flex",
           borderRadius: 2,
-          overflow: { xs: "visible", sm: "auto" },
-          gap: { xs: 0, sm: 0 },
+          overflow: "hidden",
           bgcolor: 'divider',
-          "&::-webkit-scrollbar": { height: 4 },
-          "&::-webkit-scrollbar-thumb": { bgcolor: "action.hover", borderRadius: 2 },
         }}
       >
         {UI_TONE_LEVELS.map((tone) => (
-          <Tooltip
+          <Box
             key={tone}
-            title={
-              <Box sx={{ textAlign: "center" }}>
-                <Typography variant="caption" sx={{ fontWeight: 700, display: "block" }}>
-                  Tone {tone}
-                </Typography>
-                <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
-                  {palette[tone]}
-                </Typography>
-              </Box>
-            }
+            sx={{
+              flex: "1 1 0%",
+              minWidth: 0,
+              height: { xs: 40, sm: 56 },
+              bgcolor: palette[tone],
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: onKeyColorChange ? "pointer" : "default",
+              transition: "transform 0.15s",
+              "&:hover": onKeyColorChange ? { transform: "scaleY(1.15)", zIndex: 1 } : {},
+            }}
+            onClick={onKeyColorChange ? (e) => setAnchorEl(e.currentTarget) : undefined}
           >
-            <Box
-              sx={{
-                flex: { xs: "auto", sm: "0 0 auto" },
-                width: { xs: "auto", sm: 40 },
-                height: { xs: 40, sm: 56 },
-                bgcolor: palette[tone],
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "transform 0.15s",
-                borderRadius: 0.5,
-                "&:hover": { transform: "scaleY(1.15)", zIndex: 1 },
-              }}
+            <Tooltip
+              title={
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, display: "block" }}>
+                    Tone {tone}
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>
+                    {palette[tone]}
+                  </Typography>
+                </Box>
+              }
             >
               <Typography
                 sx={{
@@ -188,10 +212,152 @@ function TonalPaletteStrip({ label, palette, onRemove, isDefault }: {
               >
                 {tone}
               </Typography>
-            </Box>
-          </Tooltip>
+            </Tooltip>
+          </Box>
         ))}
       </Box>
+
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => { setAnchorEl(null); setLocalHex(null); }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: 'background.paper',
+              borderRadius: 3,
+              p: 3,
+              mt: 1,
+              width: 300,
+              boxShadow: theme.palette.mode === 'dark'
+                ? "-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)"
+                : "-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.15)",
+            }
+          }
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 280 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box sx={{ width: 32, height: 32, borderRadius: 1.5, bgcolor: hex, flexShrink: 0 }} />
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
+              {label} — Key Color
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 0.5, bgcolor: 'background.default', borderRadius: 2, p: 0.5 }}>
+            <Button
+              size="small"
+              variant={hslFormat === 'rgb' ? 'contained' : 'text'}
+              onClick={() => setHslFormat('rgb')}
+              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
+            >
+              RGB
+            </Button>
+            <Button
+              size="small"
+              variant={hslFormat === 'hsl' ? 'contained' : 'text'}
+              onClick={() => setHslFormat('hsl')}
+              sx={{ flex: 1, textTransform: 'none', fontSize: '0.75rem', minWidth: 0, fontWeight: 600 }}
+            >
+              HSL
+            </Button>
+          </Box>
+
+          {hslFormat === 'rgb' && ['r', 'g', 'b'].map((color) => {
+            const val = rgb[color as keyof typeof rgb];
+            return (
+              <Box key={color} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', width: 12, textTransform: 'uppercase' }}>{color}</Typography>
+                <Slider
+                  size="small"
+                  value={val}
+                  min={0}
+                  max={255}
+                  onChange={(_, v) => handleRgbChange(color as 'r'|'g'|'b', v as number)}
+                  sx={{ color: color === 'r' ? '#ff4d4d' : color === 'g' ? '#4dff4d' : '#4d4dff' }}
+                />
+                <Box
+                  component="input"
+                  type="number"
+                  value={val}
+                  onChange={(e) => {
+                    let v = parseInt(e.target.value) || 0;
+                    v = Math.max(0, Math.min(255, v));
+                    handleRgbChange(color as 'r'|'g'|'b', v);
+                  }}
+                  sx={{
+                    width: 44, height: 28, bgcolor: 'background.default', borderRadius: 1.5,
+                    textAlign: 'center', fontSize: '0.75rem', fontWeight: 600,
+                    color: 'text.primary', boxShadow: neumorphicInset, outline: 'none',
+                  }}
+                />
+              </Box>
+            );
+          })}
+
+          {hslFormat === 'hsl' && (
+            <>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Hue</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.h}°</Typography>
+                </Box>
+                <Slider size="small" value={hsl.h} min={0} max={360} onChange={(_, v) => handleHslChange('h', v as number)}
+                  sx={{
+                    "& .MuiSlider-track": { background: "transparent" },
+                    "& .MuiSlider-rail": { opacity: 1, background: "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)" },
+                  }}
+                />
+              </Box>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Saturation</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.s}%</Typography>
+                </Box>
+                <Slider size="small" value={hsl.s} min={0} max={100} onChange={(_, v) => handleHslChange('s', v as number)}
+                  sx={{
+                    "& .MuiSlider-rail": { opacity: 1, background: `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%), hsl(${hsl.h}, 100%, ${hsl.l}%))` },
+                  }}
+                />
+              </Box>
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">Lightness</Typography>
+                  <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{hsl.l}%</Typography>
+                </Box>
+                <Slider size="small" value={hsl.l} min={0} max={100} onChange={(_, v) => handleHslChange('l', v as number)}
+                  sx={{
+                    "& .MuiSlider-rail": { opacity: 1, background: `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%), hsl(${hsl.h}, ${hsl.s}%, 50%), hsl(${hsl.h}, ${hsl.s}%, 100%))` },
+                  }}
+                />
+              </Box>
+            </>
+          )}
+
+          <Box
+            component="input"
+            value={displayHex}
+            onChange={(e) => {
+              const raw = e.target.value;
+              setLocalHex(raw);
+              let val = raw;
+              if (!val.startsWith("#")) val = "#" + val;
+              if (/^#[0-9A-F]{6}$/i.test(val) && onKeyColorChange) {
+                onKeyColorChange(val.toUpperCase());
+                setLocalHex(null);
+              }
+            }}
+            onBlur={() => setLocalHex(null)}
+            sx={{
+              width: '100%', height: 36, bgcolor: 'background.default', borderRadius: 2,
+              textAlign: 'center', fontSize: '0.85rem', fontWeight: 700, color: 'text.primary',
+              fontFamily: 'monospace', textTransform: 'uppercase', boxShadow: neumorphicInset, outline: 'none',
+            }}
+          />
+        </Box>
+      </Popover>
     </Box>
   );
 }
@@ -385,9 +551,17 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
         onClick={(e) => e.stopPropagation()}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 280 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'center' }}>
-            Adjust Color
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: displayHex, flexShrink: 0, boxShadow: neumorphicInset }} />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                {label}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>
+                {displayHex}
+              </Typography>
+            </Box>
+          </Box>
 
           <Box sx={{ display: "flex", gap: 0.5, bgcolor: 'background.default', borderRadius: 2, p: 0.5 }}>
             <Button
@@ -930,6 +1104,8 @@ export default function ColorPage() {
             key={key}
             label={getKeyLabel(key)}
             palette={palettes[key]}
+            keyColorHex={config.keyColors[key]}
+            onKeyColorChange={(hex) => setKeyColor(key, hex)}
             isDefault
           />
         ))}
@@ -938,6 +1114,8 @@ export default function ColorPage() {
             key={key}
             label={getKeyLabel(key)}
             palette={palettes[key]}
+            keyColorHex={config.keyColors[key]}
+            onKeyColorChange={(hex) => setKeyColor(key, hex)}
             onRemove={() => removeKeyColor(key)}
             isDefault={false}
           />
