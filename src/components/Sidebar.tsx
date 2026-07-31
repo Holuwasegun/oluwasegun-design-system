@@ -35,6 +35,8 @@ import {
 } from '@mui/icons-material';
 import { useAppStore } from '@/store';
 
+import Link from 'next/link';
+
 const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 64;
 
@@ -75,12 +77,13 @@ export default function Sidebar() {
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, minHeight: 72 }}>
         <ButtonBase
+          component={Link}
+          href="/"
           onClick={() => {
-            setCurrentView('home');
             if (isMobile) setSidebarOpen(false);
           }}
           tabIndex={0}
-          aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
+          aria-label="Oluwasegun Design System Brand Logo - Return to Marketing Page"
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -92,6 +95,8 @@ export default function Sidebar() {
             px: 1,
             borderRadius: 2,
             cursor: 'pointer',
+            textDecoration: 'none',
+            color: 'inherit',
             transition: 'background-color 0.15s ease',
             '&:hover': {
               bgcolor: 'action.hover',
