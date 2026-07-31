@@ -255,8 +255,8 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   const open = Boolean(anchorEl);
 
   const neumorphicInset = theme.palette.mode === 'dark' 
-    ? "inset 3px 3px 6px rgba(0,0,0,0.5), inset -3px -3px 6px rgba(255,255,255,0.03)"
-    : "inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.7)";
+    ? "inset 5px 5px 10px rgba(0,0,0,0.6), inset -5px -5px 10px rgba(255,255,255,0.05)"
+    : "inset 5px 5px 10px rgba(0,0,0,0.12), inset -5px -5px 10px rgba(255,255,255,0.9)";
 
   return (
     <Card 
@@ -432,17 +432,17 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
                        boxShadow: neumorphicInset,
                     },
                     "& .MuiSlider-thumb": {
-                       width: 16,
-                       height: 16,
+                       width: 18,
+                       height: 18,
                        bgcolor: 'background.paper',
-                       borderRadius: 4,
+                       borderRadius: 5,
                        boxShadow: theme.palette.mode === 'dark'
-                         ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
-                         : '-6px -6px 14px #ffffff, 6px 6px 14px #babecc',
+                         ? '-8px -8px 18px rgba(255,255,255,0.05), 8px 8px 18px rgba(0,0,0,0.65)'
+                         : '-8px -8px 18px #ffffff, 8px 8px 18px #b0b0b8',
                        "&:hover, &.Mui-focusVisible": {
                          boxShadow: theme.palette.mode === 'dark'
-                           ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
-                           : '-6px -6px 14px #ffffff, 6px 6px 14px #babecc',
+                           ? '-8px -8px 18px rgba(255,255,255,0.05), 8px 8px 18px rgba(0,0,0,0.65)'
+                           : '-8px -8px 18px #ffffff, 8px 8px 18px #b0b0b8',
                        }
                     }
                   }}
@@ -468,7 +468,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
                     boxShadow: neumorphicInset,
                     outline: 'none',
                     "&:focus": {
-                      boxShadow: "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.9)",
+                      boxShadow: "inset 5px 5px 10px rgba(0,0,0,0.15), inset -5px -5px 10px rgba(255,255,255,0.9)",
                     }
                   }}
                 />
@@ -567,7 +567,7 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
               boxShadow: neumorphicInset,
               outline: 'none',
               "&:focus": {
-                boxShadow: "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.9)",
+                boxShadow: "inset 5px 5px 10px rgba(0,0,0,0.15), inset -5px -5px 10px rgba(255,255,255,0.9)",
               }
             }}
           />

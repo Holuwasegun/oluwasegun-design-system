@@ -27,16 +27,16 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
   const textSecondary = scheme.onSurfaceVariant;
   
   const shadowProtruding = isDark
-    ? '-6px -6px 14px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.5)'
-    : '-6px -6px 14px rgba(255,255,255,0.9), 6px 6px 14px rgba(0,0,0,0.1)';
+    ? '-10px -10px 20px rgba(255,255,255,0.05), 10px 10px 20px rgba(0,0,0,0.65)'
+    : '-10px -10px 20px #ffffff, 10px 10px 20px rgba(0,0,0,0.15)';
     
   const shadowInset = isDark
-    ? 'inset 4px 4px 8px rgba(0,0,0,0.6), inset -4px -4px 8px rgba(255,255,255,0.02)'
-    : 'inset 4px 4px 8px rgba(0,0,0,0.12), inset -4px -4px 8px rgba(255,255,255,0.85)';
+    ? 'inset 6px 6px 12px rgba(0,0,0,0.7), inset -6px -6px 12px rgba(255,255,255,0.04)'
+    : 'inset 6px 6px 12px rgba(0,0,0,0.15), inset -6px -6px 12px rgba(255,255,255,1)';
 
   const shadowButton = isDark
-    ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
-    : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)';
+    ? '-6px -6px 14px rgba(255,255,255,0.05), 6px 6px 14px rgba(0,0,0,0.65)'
+    : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)';
 
   return createTheme({
     palette: {
@@ -115,7 +115,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
         styleOverrides: {
           paper: {
             backgroundColor: bgColor,
-            boxShadow: isDark ? '6px 0px 14px rgba(0,0,0,0.5)' : '6px 0px 14px rgba(0,0,0,0.1)',
+            boxShadow: isDark ? '6px 0px 20px rgba(0,0,0,0.65)' : '6px 0px 20px rgba(0,0,0,0.15)',
             border: 'none',
           },
         },
@@ -124,7 +124,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
         styleOverrides: {
           root: {
             backgroundColor: bgColor,
-            boxShadow: isDark ? '0px 6px 14px rgba(0,0,0,0.5)' : '0px 6px 14px rgba(0,0,0,0.1)',
+            boxShadow: isDark ? '0px 6px 20px rgba(0,0,0,0.65)' : '0px 6px 20px rgba(0,0,0,0.15)',
             border: 'none',
           },
         },
