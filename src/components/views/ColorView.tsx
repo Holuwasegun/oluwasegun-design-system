@@ -196,7 +196,7 @@ function ColorFieldWithPicker({
       <TextField
         size={size}
         fullWidth={fullWidth}
-        value={typedHex}
+        value={typedHex.replace(/^#/, "")}
         onChange={(e) => handleInputChange(e.target.value)}
         onBlur={() => setTypedHex(value)}
         error={!validHex}
