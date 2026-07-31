@@ -381,9 +381,13 @@ export function applyDesignTokensToElement(element, tokenPath) {
 }
 
 export function getColorWithOpacity(hex, opacity) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
+  let hexString = hex;
+  if (hexString.length === 4) {
+    hexString = `#${hexString[1]}${hexString[1]}${hexString[2]}${hexString[2]}${hexString[3]}${hexString[3]}`;
+  }
+  const r = parseInt(hexString.slice(1, 3), 16);
+  const g = parseInt(hexString.slice(3, 5), 16);
+  const b = parseInt(hexString.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
