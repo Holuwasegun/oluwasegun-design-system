@@ -14,6 +14,7 @@ import {
   FullscreenExit as ExitPresentIcon,
   ArrowBack as BackIcon,
   Menu as MenuIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useThemeStore, useAppStore } from '@/store';
 import { generateSchemeFromConfig, type ThemeConfig, type ColorScheme } from '@/theme/scheme';
@@ -48,28 +49,35 @@ function SidebarContent({
 }) {
   return (
     <>
-      <Box sx={{ px: 2, py: 2, }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
-          <Tooltip title="Back to dashboard">
-            <IconButton onClick={() => useAppStore.getState().setCurrentView('home')} size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
-              <BackIcon sx={{ fontSize: 16 }} />
-            </IconButton>
-          </Tooltip>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 11 }}>Dashboard</Typography>
-        </Stack>
-        <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
-          <Box sx={{
-            width: 32, height: 32, borderRadius: 1.5,
-            background: `linear-gradient(135deg, ${scheme.primary}, ${scheme.tertiary})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
-            <Typography sx={{ color: getGradientContrastTextColor(scheme.primary, scheme.tertiary), fontWeight: 700, fontSize: 11 }}>O</Typography>
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.2, fontSize: 13 }}>Brand Gallery</Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 10 }}>Style guide & assets</Typography>
-          </Box>
-        </Stack>
+      <Box sx={{ px: 2, py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Box>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2 }}>
+            <Tooltip title="Back to dashboard">
+              <IconButton onClick={() => useAppStore.getState().setCurrentView('home')} size="small" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                <BackIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Tooltip>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 11 }}>Dashboard</Typography>
+          </Stack>
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+            <Box sx={{
+              width: 32, height: 32, borderRadius: 1.5,
+              background: `linear-gradient(135deg, ${scheme.primary}, ${scheme.tertiary})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Typography sx={{ color: getGradientContrastTextColor(scheme.primary, scheme.tertiary), fontWeight: 700, fontSize: 11 }}>O</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.2, fontSize: 13 }}>Brand Gallery</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: 10 }}>Style guide & assets</Typography>
+            </Box>
+          </Stack>
+        </Box>
+        {onSelect && (
+          <IconButton onClick={onSelect} size="small" aria-label="Close navigation drawer" sx={{ color: 'text.secondary' }}>
+            <CloseIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        )}
       </Box>
 
       <Box sx={{ flex: 1, overflow: 'auto', py: 2, px: 1 }}>
@@ -177,7 +185,7 @@ export default function BrandGalleryPage() {
       <Drawer
         open={isMobile && drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        slotProps={{ paper: { sx: { width: 260, bgcolor: 'background.paper' } } }}
+        slotProps={{ paper: { sx: { width: '100%', maxWidth: '100vw', bgcolor: 'background.paper' } } }}
       >
         <SidebarContent {...sidebarData} onSelect={() => setDrawerOpen(false)} />
       </Drawer>

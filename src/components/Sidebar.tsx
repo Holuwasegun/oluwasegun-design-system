@@ -31,6 +31,7 @@ import {
   Collections as BrandGalleryIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useAppStore } from '@/store';
 
@@ -63,7 +64,7 @@ export default function Sidebar() {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        width: isMobile ? DRAWER_WIDTH : sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+        width: isMobile ? '100%' : sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
         transition: theme.transitions.create('width', {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.standard,
@@ -72,73 +73,95 @@ export default function Sidebar() {
         bgcolor: 'background.paper',
       }}
     >
-      <ButtonBase
-        onClick={() => {
-          setCurrentView('home');
-          if (isMobile) setSidebarOpen(false);
-        }}
-        tabIndex={0}
-        aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          gap: 1.5,
-          px: 2,
-          py: 2.5,
-          minHeight: 72,
-          width: '100%',
-          textAlign: 'left',
-          borderRadius: 2,
-          cursor: 'pointer',
-          transition: 'background-color 0.15s ease',
-          '&:hover': {
-            bgcolor: 'action.hover',
-          },
-          '&:focus-visible, &.Mui-focusVisible': {
-            outline: '2px solid',
-            outlineColor: 'primary.main',
-            outlineOffset: '-2px',
-          },
-        }}
-      >
-        <Box
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, minHeight: 72 }}>
+        <ButtonBase
+          onClick={() => {
+            setCurrentView('home');
+            if (isMobile) setSidebarOpen(false);
+          }}
+          tabIndex={0}
+          aria-label="Oluwasegun Design System Brand Logo - Return to Dashboard"
           sx={{
-            width: 36,
-            height: 36,
-            borderRadius: 2,
-            backgroundColor: 'background.default',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: theme.palette.mode === 'dark' 
-              ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
-              : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
+            justifyContent: 'flex-start',
+            gap: 1.5,
+            flex: 1,
+            minWidth: 0,
+            py: 1,
+            px: 1,
+            borderRadius: 2,
+            cursor: 'pointer',
+            transition: 'background-color 0.15s ease',
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
+            '&:focus-visible, &.Mui-focusVisible': {
+              outline: '2px solid',
+              outlineColor: 'primary.main',
+              outlineOffset: '-2px',
+            },
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: 2,
+              backgroundColor: 'background.default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              boxShadow: theme.palette.mode === 'dark' 
+                ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
+                : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
+            }}
           >
-            O
-          </Typography>
-        </Box>
-        {sidebarOpen && (
-          <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
-              Oluwasegun
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block' }}>
-              Design System
+            <Typography
+              variant="h6"
+              sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
+            >
+              O
             </Typography>
           </Box>
+          {(sidebarOpen || isMobile) && (
+            <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
+                Oluwasegun
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block' }}>
+                Design System
+              </Typography>
+            </Box>
+          )}
+        </ButtonBase>
+
+        {isMobile && (
+          <IconButton
+            onClick={() => setSidebarOpen(false)}
+            tabIndex={0}
+            aria-label="Close navigation drawer"
+            sx={{
+              color: 'text.secondary',
+              ml: 1,
+              flexShrink: 0,
+              '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+              '&:focus-visible, &.Mui-focusVisible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                outlineOffset: '2px',
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         )}
-      </ButtonBase>
+      </Box>
 
-      <Divider sx={{ mx: sidebarOpen ? 2 : 1 }} />
+      <Divider sx={{ mx: sidebarOpen || isMobile ? 2 : 1 }} />
 
-      <List sx={{ flex: 1, px: 1, py: 1.5 }}>
+      <List sx={{ flex: 1, px: 1, py: 1.5, overflowY: 'auto' }}>
         {navItems.map((item) => {
           const isActive = currentView === item.href;
           return (
@@ -155,8 +178,8 @@ export default function Sidebar() {
                 sx={{
                   borderRadius: 2,
                   minHeight: 44,
-                  justifyContent: sidebarOpen ? 'initial' : 'center',
-                  px: sidebarOpen ? 2 : 1.5,
+                  justifyContent: sidebarOpen || isMobile ? 'initial' : 'center',
+                  px: sidebarOpen || isMobile ? 2 : 1.5,
                   position: 'relative',
                   backgroundColor: isActive ? 'background.default' : 'transparent',
                   boxShadow: isActive 
@@ -180,14 +203,14 @@ export default function Sidebar() {
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: sidebarOpen ? 1.5 : 0,
+                    mr: sidebarOpen || isMobile ? 1.5 : 0,
                     justifyContent: 'center',
                     color: 'inherit',
                   }}
                 >
                   {item.icon}
                 </ListItemIcon>
-                {sidebarOpen && (
+                {(sidebarOpen || isMobile) && (
                   <ListItemText
                     primary={item.label}
                     slotProps={{
@@ -207,7 +230,7 @@ export default function Sidebar() {
         })}
       </List>
 
-      <Divider sx={{ mx: sidebarOpen ? 2 : 1 }} />
+      <Divider sx={{ mx: sidebarOpen || isMobile ? 2 : 1 }} />
 
       {!isMobile && (
         <Box sx={{ p: 1, display: 'flex', justifyContent: sidebarOpen ? 'flex-end' : 'center' }}>
@@ -241,7 +264,8 @@ export default function Sidebar() {
         ModalProps={{ keepMounted: true }}
         sx={{
           '& .MuiDrawer-paper': {
-            width: DRAWER_WIDTH,
+            width: '100%',
+            maxWidth: '100vw',
             boxSizing: 'border-box',
           },
         }}
