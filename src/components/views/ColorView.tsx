@@ -26,6 +26,7 @@ import {
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
@@ -823,7 +824,6 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
   onRename?: (newKey: string) => void;
   onColorClick?: () => void;
 }) {
-  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [renameMode, setRenameMode] = useState(false);
   const [renameValue, setRenameValue] = useState(label);
@@ -845,99 +845,132 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
         height: "100%", 
         cursor: "pointer", 
         transition: "transform 0.15s, box-shadow 0.15s",
-        "&:hover": { transform: "scale(1.02)", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }
+        borderRadius: 3,
+        "&:hover": { transform: "translateY(-2px)", boxShadow: "0 4px 16px rgba(0,0,0,0.08)", borderColor: "primary.main" }
       }}
       onClick={handleClick}
     >
       <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1 }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: 1.5,
-              bgcolor: isValidHex(value) ? normalizeHex(value) : value,
-              flexShrink: 0,
-              boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-            }}
-          />
-          <Box sx={{ minWidth: 0, flex: 1 }}>
-            {renameMode ? (
-              <Box
-                component="input"
-                value={renameValue}
-                onChange={(e) => setRenameValue(e.target.value)}
-                onBlur={() => {
-                  const trimmed = renameValue.trim().replace(/\s+/g, "");
-                  if (trimmed && trimmed !== label && onRename) onRename(trimmed);
-                  setRenameMode(false);
-                }}
-                onKeyDown={(e: React.KeyboardEvent) => {
-                  if (e.key === "Enter") {
-                    (e.target as HTMLElement).blur();
-                  }
-                  if (e.key === "Escape") {
-                    setRenameValue(label);
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1, mb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: 1 }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: isValidHex(value) ? normalizeHex(value) : value,
+                flexShrink: 0,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                border: '2px solid',
+                borderColor: 'background.paper',
+              }}
+            />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              {renameMode ? (
+                <Box
+                  component="input"
+                  value={renameValue}
+                  onChange={(e) => setRenameValue(e.target.value)}
+                  onBlur={() => {
+                    const trimmed = renameValue.trim().replace(/\s+/g, "");
+                    if (trimmed && trimmed !== label && onRename) onRename(trimmed);
                     setRenameMode(false);
-                  }
-                }}
-                autoFocus
-                onClick={(e) => e.stopPropagation()}
-                sx={{
-                  width: '100%',
-                  height: 28,
-                  bgcolor: 'background.default',
-                  borderRadius: 1,
-                  textAlign: 'left',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: 'text.primary',
-                  fontFamily: 'inherit',
-                  outline: 'none',
-                  border: 'none',
-                  boxShadow: theme.palette.mode === 'dark'
-                    ? 'inset 2px 2px 4px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(255,255,255,0.03)'
-                    : 'inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.7)',
-                  px: 1,
-                }}
-              />
-            ) : (
-              <>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  {label}
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                  {description}
-                </Typography>
-              </>
-            )}
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === "Enter") {
+                      (e.target as HTMLElement).blur();
+                    }
+                    if (e.key === "Escape") {
+                      setRenameValue(label);
+                      setRenameMode(false);
+                    }
+                  }}
+                  autoFocus
+                  onClick={(e) => e.stopPropagation()}
+                  sx={{
+                    width: '100%',
+                    height: 30,
+                    bgcolor: 'background.default',
+                    borderRadius: 1.5,
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    color: 'text.primary',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    border: '1px solid',
+                    borderColor: 'primary.main',
+                    px: 1,
+                  }}
+                />
+              ) : (
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography
+                    variant="subtitle2"
+                    noWrap
+                    sx={{ fontWeight: 700, fontSize: '0.875rem', lineHeight: 1.2, color: 'text.primary' }}
+                  >
+                    {label}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    noWrap
+                    sx={{ color: 'text.secondary', fontSize: '0.725rem', mt: 0.25, display: 'flex', alignItems: 'center' }}
+                  >
+                    {isDefault ? (
+                      description
+                    ) : (
+                      <Box
+                        component="span"
+                        sx={{
+                          display: 'inline-block',
+                          px: 0.75,
+                          py: 0.1,
+                          borderRadius: 1,
+                          bgcolor: 'action.hover',
+                          color: 'primary.main',
+                          fontWeight: 700,
+                          fontSize: '0.625rem',
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        Custom key color
+                      </Box>
+                    )}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
           </Box>
+
           {!isDefault && (
-            <>
+            <Stack direction="row" spacing={0.25} sx={{ alignItems: 'center', flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
               {onRename && !renameMode && (
-                <Button
-                  size="small"
-                  onClick={(e) => { e.stopPropagation(); setRenameValue(label); setRenameMode(true); }}
-                  sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.65rem", px: 0.75, mr: 0.5, color: 'text.secondary' }}
-                >
-                  Rename
-                </Button>
+                <Tooltip title="Rename color">
+                  <IconButton
+                    size="small"
+                    onClick={() => { setRenameValue(label); setRenameMode(true); }}
+                    sx={{ color: 'text.secondary', p: 0.5, '&:hover': { color: 'primary.main', bgcolor: 'action.hover' } }}
+                  >
+                    <EditRoundedIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </Tooltip>
               )}
               {onRemove && (
-                <Button
-                  size="small"
-                  color="error"
-                  onClick={(e) => { e.stopPropagation(); onRemove(); }}
-                  startIcon={<DeleteOutlineRoundedIcon />}
-                  sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.7rem", px: 1 }}
-                >
-                  Delete
-                </Button>
+                <Tooltip title="Delete custom color">
+                  <IconButton
+                    size="small"
+                    onClick={onRemove}
+                    sx={{ color: 'error.main', p: 0.5, '&:hover': { bgcolor: 'action.hover' } }}
+                  >
+                    <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </Tooltip>
               )}
-            </>
+            </Stack>
           )}
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }} onClick={(e) => e.stopPropagation()}>
+
+        <Box sx={{ mt: 1.5 }} onClick={(e) => e.stopPropagation()}>
           <ColorFieldWithPicker
             value={value}
             onChange={onChange}
