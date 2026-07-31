@@ -1,0 +1,398 @@
+:root {
+  color-scheme: light dark;
+  /* Effects */
+  --shadow-hard: 4px 6px 8px 0 #00000052;
+  --shadow-medium: 2px 4px 6px 0 #00000052;
+  --shadow-soft: 2px 2px 20px 0 #0000001f;
+
+  /* Primitive Colors - Key Colors */
+  --color-primary-key: #6750A4;
+  --color-secondary-key: #625B71;
+  --color-tertiary-key: #7D5260;
+  --color-neutral-key: #79747E;
+  --color-neutral-variant-key: #CAC4D0;
+  --color-error-key: #B3261E;
+
+  /* Primary Palette */
+  --color-primary-0: #000000;
+  --color-primary-10: #21005D;
+  --color-primary-20: #381E72;
+  --color-primary-30: #4F378B;
+  --color-primary-40: #6750A4;
+  --color-primary-50: #7F67BE;
+  --color-primary-60: #9A82DB;
+  --color-primary-70: #B69DF8;
+  --color-primary-80: #D0BCFF;
+  --color-primary-90: #EADDFF;
+  --color-primary-95: #F6EDFF;
+  --color-primary-98: #FDF7FF;
+  --color-primary-99: #FFFBFF;
+  --color-primary-100: #FFFFFF;
+
+  /* Secondary Palette */
+  --color-secondary-0: #000000;
+  --color-secondary-10: #1D192B;
+  --color-secondary-20: #332D41;
+  --color-secondary-30: #4A4458;
+  --color-secondary-40: #625B71;
+  --color-secondary-50: #7A7289;
+  --color-secondary-60: #958DA5;
+  --color-secondary-70: #B0A7C0;
+  --color-secondary-80: #CCC2DC;
+  --color-secondary-90: #E8DEF8;
+  --color-secondary-95: #F6EDFF;
+  --color-secondary-98: #FDF7FF;
+  --color-secondary-99: #FFFBFF;
+  --color-secondary-100: #FFFFFF;
+
+  /* Tertiary Palette */
+  --color-tertiary-0: #000000;
+  --color-tertiary-10: #31111D;
+  --color-tertiary-20: #492532;
+  --color-tertiary-30: #633B48;
+  --color-tertiary-40: #7D5260;
+  --color-tertiary-50: #986977;
+  --color-tertiary-60: #B58392;
+  --color-tertiary-70: #D29DAC;
+  --color-tertiary-80: #EFB8C8;
+  --color-tertiary-90: #FFD8E4;
+  --color-tertiary-95: #FFECF1;
+  --color-tertiary-98: #FDF7FF;
+  --color-tertiary-99: #FFFBFF;
+  --color-tertiary-100: #FFFFFF;
+
+  /* Neutral Palette */
+  --color-neutral-0: #000000;
+  --color-neutral-10: #1C1B1F;
+  --color-neutral-20: #313033;
+  --color-neutral-30: #484649;
+  --color-neutral-40: #605D62;
+  --color-neutral-50: #79747E;
+  --color-neutral-60: #938F99;
+  --color-neutral-70: #AEA9B4;
+  --color-neutral-80: #C9C5D0;
+  --color-neutral-90: #E6E1E5;
+  --color-neutral-95: #F4EFF4;
+  --color-neutral-98: #FEF7FF;
+  --color-neutral-99: #FFFBFF;
+  --color-neutral-100: #FFFFFF;
+
+  /* Neutral Variant Palette */
+  --color-neutral-variant-0: #000000;
+  --color-neutral-variant-10: #1D1A22;
+  --color-neutral-variant-20: #322F37;
+  --color-neutral-variant-30: #49454F;
+  --color-neutral-variant-40: #605D66;
+  --color-neutral-variant-50: #79747E;
+  --color-neutral-variant-60: #938F99;
+  --color-neutral-variant-70: #AEA9B4;
+  --color-neutral-variant-80: #CAC4D0;
+  --color-neutral-variant-90: #E7E0EC;
+  --color-neutral-variant-95: #F5EEFA;
+  --color-neutral-variant-98: #FEF7FF;
+  --color-neutral-variant-99: #FFFBFF;
+  --color-neutral-variant-100: #FFFFFF;
+
+  /* Error Palette */
+  --color-error-0: #000000;
+  --color-error-10: #410E0B;
+  --color-error-20: #601410;
+  --color-error-30: #8C1D18;
+  --color-error-40: #B3261E;
+  --color-error-50: #DC362E;
+  --color-error-60: #E46962;
+  --color-error-70: #EC928E;
+  --color-error-80: #F2B8B5;
+  --color-error-90: #F9DEDC;
+  --color-error-95: #FCEEEE;
+  --color-error-98: #FFF9F9;
+  --color-error-99: #FFFBFF;
+  --color-error-100: #FFFFFF;
+
+  /* Color Roles - Light Mode */
+  --color-primary: var(--color-primary-40);
+  --color-on-primary: var(--color-primary-100);
+  --color-primary-container: var(--color-primary-90);
+  --color-on-primary-container: var(--color-primary-10);
+  
+  --color-secondary: var(--color-secondary-40);
+  --color-on-secondary: var(--color-secondary-100);
+  --color-secondary-container: var(--color-secondary-90);
+  --color-on-secondary-container: var(--color-secondary-10);
+  
+  --color-tertiary: var(--color-tertiary-40);
+  --color-on-tertiary: var(--color-tertiary-100);
+  --color-tertiary-container: var(--color-tertiary-90);
+  --color-on-tertiary-container: var(--color-tertiary-10);
+
+  /* Surface and background roles */
+  --color-surface: var(--color-neutral-99);
+  --color-on-surface: var(--color-neutral-10);
+  --color-surface-container: var(--color-neutral-95);
+  --color-surface-container-high: var(--color-neutral-90);
+  --color-on-surface-variant: var(--color-neutral-variant-30);
+  --color-outline: var(--color-neutral-variant-50);
+  --color-outline-variant: var(--color-neutral-variant-80);
+
+  /* Error roles */
+  --color-error: var(--color-error-40);
+  --color-on-error: var(--color-error-100);
+  --color-error-container: var(--color-error-90);
+  --color-on-error-container: var(--color-error-10);
+
+  /* Spacing */
+  --spacing-0: 0px;
+  --spacing-0-5: 1px;
+  --spacing-1: 2px;
+  --spacing-1-5: 3px;
+  --spacing-2: 4px;
+  --spacing-3: 6px;
+  --spacing-4: 8px;
+  --spacing-5: 10px;
+  --spacing-6: 12px;
+  --spacing-8: 16px;
+  --spacing-10: 20px;
+  --spacing-12: 24px;
+  --spacing-16: 32px;
+
+  /* Typography */
+  --font-family-primary: "Inter", sans-serif;
+  --font-family-secondary: "Inter", sans-serif;
+
+  /* Display */
+  --typography-display-large-font-size: 3.5rem; /* 56px */
+  --typography-display-large-line-height: 4rem; /* 64px */
+  --typography-display-large-letter-spacing: -0.04rem;
+  --typography-display-large-font-weight: 500;
+
+  --typography-display-medium-font-size: 2.8125rem; /* 45px */
+  --typography-display-medium-line-height: 3.25rem; /* 52px */
+  --typography-display-medium-letter-spacing: -0.03rem;
+  --typography-display-medium-font-weight: 500;
+
+  --typography-display-small-font-size: 2.25rem; /* 36px */
+  --typography-display-small-line-height: 2.75rem; /* 44px */
+  --typography-display-small-letter-spacing: -0.02rem;
+  --typography-display-small-font-weight: 500;
+
+  /* Headline */
+  --typography-headline-large-font-size: 2rem; /* 32px */
+  --typography-headline-large-line-height: 2.5rem; /* 40px */
+  --typography-headline-large-letter-spacing: 0rem;
+  --typography-headline-large-font-weight: 600;
+
+  --typography-headline-medium-font-size: 1.75rem; /* 28px */
+  --typography-headline-medium-line-height: 2.25rem; /* 36px */
+  --typography-headline-medium-letter-spacing: 0rem;
+  --typography-headline-medium-font-weight: 600;
+
+  --typography-headline-small-font-size: 1.5rem; /* 24px */
+  --typography-headline-small-line-height: 2rem; /* 32px */
+  --typography-headline-small-letter-spacing: 0rem;
+  --typography-headline-small-font-weight: 600;
+
+  /* Title */
+  --typography-title-large-font-size: 1.375rem; /* 22px */
+  --typography-title-large-line-height: 1.75rem; /* 28px */
+  --typography-title-large-letter-spacing: 0rem;
+  --typography-title-large-font-weight: 500;
+
+  --typography-title-medium-font-size: 1rem; /* 16px */
+  --typography-title-medium-line-height: 1.5rem; /* 24px */
+  --typography-title-medium-letter-spacing: 0.01rem;
+  --typography-title-medium-font-weight: 600;
+
+  --typography-title-small-font-size: 0.875rem; /* 14px */
+  --typography-title-small-line-height: 1.25rem; /* 20px */
+  --typography-title-small-letter-spacing: 0.01rem;
+  --typography-title-small-font-weight: 500;
+
+  /* Body */
+  --typography-body-large-font-size: 1rem; /* 16px */
+  --typography-body-large-line-height: 1.5rem; /* 24px */
+  --typography-body-large-letter-spacing: 0.02rem;
+  --typography-body-large-font-weight: 400;
+
+  --typography-body-medium-font-size: 0.875rem; /* 14px */
+  --typography-body-medium-line-height: 1.25rem; /* 20px */
+  --typography-body-medium-letter-spacing: 0.015rem;
+  --typography-body-medium-font-weight: 400;
+
+  --typography-body-small-font-size: 0.75rem; /* 12px */
+  --typography-body-small-line-height: 1rem; /* 16px */
+  --typography-body-small-letter-spacing: 0.025rem;
+  --typography-body-small-font-weight: 400;
+
+  /* Label */
+  --typography-label-large-font-size: 0.875rem; /* 14px */
+  --typography-label-large-line-height: 1.25rem; /* 20px */
+  --typography-label-large-letter-spacing: 0.01rem;
+  --typography-label-large-font-weight: 500;
+
+  --typography-label-medium-font-size: 0.6875rem; /* 11px */
+  --typography-label-medium-line-height: 1rem; /* 16px */
+  --typography-label-medium-letter-spacing: 0.03rem;
+  --typography-label-medium-font-weight: 500;
+
+  --typography-label-small-font-size: 0.6875rem; /* 11px */
+  --typography-label-small-line-height: 1rem; /* 16px */
+  --typography-label-small-letter-spacing: 0.03rem;
+  --typography-label-small-font-weight: 500;
+}
+
+/* Typography Utility Classes */
+.display-large {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-display-large-font-size);
+  line-height: var(--typography-display-large-line-height);
+  letter-spacing: var(--typography-display-large-letter-spacing);
+  font-weight: var(--typography-display-large-font-weight);
+}
+
+.display-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-display-medium-font-size);
+  line-height: var(--typography-display-medium-line-height);
+  letter-spacing: var(--typography-display-medium-letter-spacing);
+  font-weight: var(--typography-display-medium-font-weight);
+}
+
+.display-small {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-display-small-font-size);
+  line-height: var(--typography-display-small-line-height);
+  letter-spacing: var(--typography-display-small-letter-spacing);
+  font-weight: var(--typography-display-small-font-weight);
+}
+
+.headline-large {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-headline-large-font-size);
+  line-height: var(--typography-headline-large-line-height);
+  letter-spacing: var(--typography-headline-large-letter-spacing);
+  font-weight: var(--typography-headline-large-font-weight);
+}
+
+.headline-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-headline-medium-font-size);
+  line-height: var(--typography-headline-medium-line-height);
+  letter-spacing: var(--typography-headline-medium-letter-spacing);
+  font-weight: var(--typography-headline-medium-font-weight);
+}
+
+.headline-small {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-headline-small-font-size);
+  line-height: var(--typography-headline-small-line-height);
+  letter-spacing: var(--typography-headline-small-letter-spacing);
+  font-weight: var(--typography-headline-small-font-weight);
+}
+
+.title-large {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-title-large-font-size);
+  line-height: var(--typography-title-large-line-height);
+  letter-spacing: var(--typography-title-large-letter-spacing);
+  font-weight: var(--typography-title-large-font-weight);
+}
+
+.title-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-title-medium-font-size);
+  line-height: var(--typography-title-medium-line-height);
+  letter-spacing: var(--typography-title-medium-letter-spacing);
+  font-weight: var(--typography-title-medium-font-weight);
+}
+
+.title-small {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-title-small-font-size);
+  line-height: var(--typography-title-small-line-height);
+  letter-spacing: var(--typography-title-small-letter-spacing);
+  font-weight: var(--typography-title-small-font-weight);
+}
+
+.body-large {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-body-large-font-size);
+  line-height: var(--typography-body-large-line-height);
+  letter-spacing: var(--typography-body-large-letter-spacing);
+  font-weight: var(--typography-body-large-font-weight);
+}
+
+.body-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  letter-spacing: var(--typography-body-medium-letter-spacing);
+  font-weight: var(--typography-body-medium-font-weight);
+}
+
+.body-small {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  letter-spacing: var(--typography-body-small-letter-spacing);
+  font-weight: var(--typography-body-small-font-weight);
+}
+
+.label-large {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-label-large-font-size);
+  line-height: var(--typography-label-large-line-height);
+  letter-spacing: var(--typography-label-large-letter-spacing);
+  font-weight: var(--typography-label-large-font-weight);
+}
+
+.label-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  letter-spacing: var(--typography-label-medium-letter-spacing);
+  font-weight: var(--typography-label-medium-font-weight);
+}
+
+.label-small {
+  font-family: var(--font-family-primary);
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  letter-spacing: var(--typography-label-small-letter-spacing);
+  font-weight: var(--typography-label-small-font-weight);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Color Roles */
+    --color-primary: var(--color-primary-80);
+    --color-on-primary: var(--color-primary-20);
+    --color-primary-container: var(--color-primary-30);
+    --color-on-primary-container: var(--color-primary-90);
+    
+    --color-secondary: var(--color-secondary-80);
+    --color-on-secondary: var(--color-secondary-20);
+    --color-secondary-container: var(--color-secondary-30);
+    --color-on-secondary-container: var(--color-secondary-90);
+    
+    --color-tertiary: var(--color-tertiary-80);
+    --color-on-tertiary: var(--color-tertiary-20);
+    --color-tertiary-container: var(--color-tertiary-30);
+    --color-on-tertiary-container: var(--color-tertiary-90);
+
+    /* Surface and background roles */
+    --color-surface: var(--color-neutral-10);
+    --color-on-surface: var(--color-neutral-90);
+    --color-surface-container: var(--color-neutral-20);
+    --color-surface-container-high: var(--color-neutral-30);
+    --color-on-surface-variant: var(--color-neutral-variant-80);
+    
+    --color-outline: var(--color-neutral-variant-60);
+    --color-outline-variant: var(--color-neutral-variant-30);
+
+    /* Error roles */
+    --color-error: var(--color-error-80);
+    --color-on-error: var(--color-error-20);
+    --color-error-container: var(--color-error-30);
+    --color-on-error-container: var(--color-error-90);
+  }
+}
