@@ -12,7 +12,7 @@ A comprehensive Material Design 3 design system reference and configuration tool
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
-- [Routes & Pages](#routes--pages)
+- [Views & Pages](#views--pages)
 - [Design Token System](#design-token-system)
   - [Color System](#color-system)
   - [Typography System](#typography-system)
@@ -42,11 +42,11 @@ The Oluwasegun Design System is a reference tool and configuration assistant for
 - **Spacing & elevation** — interactive scale builders with copy-ready CSS
 - **Motion configuration** — duration and easing token overrides
 - **Component demos** — buttons, forms, cards, and feedback components using live tokens
-- **Screen Preview** — isolated iframe previews of 4 screen templates with live token injection
+- **Screen Preview** — device-framed previews of 4 screen templates with live token injection
 - **Brand Gallery** — a curated showcase of colors, typography, icons, spacing, and layout generation
 - **Layout Lab** — generate on-brand marketing layout suggestions from content inputs
 - **Project management** — save, load, and switch between named configurations
-- **Export/Import** — download or upload theme configurations as JSON
+- **Export/Import** — download or upload theme configurations as JSON or CSS custom properties
 
 ---
 
@@ -90,36 +90,39 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 oluwasegun-design-system/
 ├── public/
-│   └── favicon.svg                    # Purple gradient "O" monogram
+│   ├── favicon.svg                    # Purple gradient "O" monogram
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx                 # Root layout (Inter font, metadata)
+│   │   ├── layout.tsx                 # Root layout (Inter font, metadata, OG tags)
 │   │   ├── page.tsx                   # Root redirect → /dashboard
-│   │   ├── ThemeRegistry.tsx          # Emotion cache + MUI ThemeProvider
+│   │   ├── ThemeRegistry.tsx          # Emotion cache + Neumorphic MUI ThemeProvider
 │   │   ├── globals.css                # Minimal global reset
-│   │   ├── (tabs)/
-│   │   │   ├── layout.tsx             # Tab layout (Sidebar + TopBar + content)
-│   │   │   ├── dashboard/page.tsx     # Dashboard overview
-│   │   │   ├── color/page.tsx         # Color system editor
-│   │   │   ├── typography/page.tsx    # Typography scale editor
-│   │   │   ├── spacing/page.tsx       # Spacing scale editor
-│   │   │   ├── shadows/page.tsx       # Shadow tokens + builder
-│   │   │   ├── elevation/page.tsx     # Elevation demos
-│   │   │   ├── radius/page.tsx        # Border radius scale + builder
-│   │   │   ├── motion/page.tsx        # Motion/duration/easing editor
-│   │   │   ├── components/page.tsx    # Component demos (4 tabs)
-│   │   │   └── preview/page.tsx       # Preset preview templates
-│   │   ├── screen-preview/
-│   │   │   ├── page.tsx               # Screen preview controller
-│   │   │   └── preview/page.tsx       # Iframe receiver
-│   │   ├── brand-gallery/
-│   │   │   └── page.tsx               # Brand Gallery (5 sections)
+│   │   ├── dashboard/
+│   │   │   └── page.tsx               # SPA shell — renders 12 views via client state
 │   │   └── api/
 │   │       └── generate-layout/route.ts  # Layout generation API
 │   ├── components/
-│   │   ├── Sidebar.tsx                # Main navigation sidebar
-│   │   ├── TopBar.tsx                 # Frosted glass top bar
-│   │   ├── ProjectManager.tsx         # Save/load/import/export projects
+│   │   ├── Sidebar.tsx                # Collapsible navigation sidebar (collapsible to icons)
+│   │   ├── TopBar.tsx                 # Frosted glass top bar (project, export, import, mode)
+│   │   ├── ProjectManager.tsx         # Create/save/load/rename/delete projects dialog
+│   │   ├── views/                     # 12 single-page-application view components
+│   │   │   ├── DashboardHomeView.tsx  # Overview with stats, color/type/surface previews
+│   │   │   ├── ColorView.tsx          # Color system editor
+│   │   │   ├── TypographyView.tsx     # Typography scale editor
+│   │   │   ├── SpacingView.tsx        # Spacing scale editor
+│   │   │   ├── ShadowsView.tsx        # Shadow tokens + builder
+│   │   │   ├── ElevationView.tsx      # Elevation demos
+│   │   │   ├── RadiusView.tsx         # Border radius scale + builder
+│   │   │   ├── MotionView.tsx         # Duration & easing editor
+│   │   │   ├── ComponentsView.tsx     # Component demos (4 tabs)
+│   │   │   ├── PreviewView.tsx        # 5 preset preview templates
+│   │   │   ├── ScreenPreviewView.tsx  # Device-frame screen previews
+│   │   │   └── BrandGalleryView.tsx   # Curated brand showcase
 │   │   ├── brand-gallery/
 │   │   │   ├── ColorPaletteSection.tsx
 │   │   │   ├── TypographySection.tsx
@@ -140,38 +143,42 @@ oluwasegun-design-system/
 │   │   ├── screen-templates.ts       # Screen type definitions
 │   │   └── token-utils.ts            # PreviewTokens generator
 │   ├── store/
-│   │   └── index.ts                  # Zustand stores (theme, projects, sidebar)
+│   │   └── index.ts                  # Zustand stores (theme, projects, app/sidebar)
 │   └── theme/
-│       ├── scheme.ts                 # Color scheme, type scale, spacing generators
-│       ├── tonal-palette.ts          # HSL tonal palette generator
+│       ├── scheme.ts                 # Color scheme, type scale, spacing generators + types
+│       ├── tonal-palette.ts          # HSL → tonal palette generator
 │       └── google-fonts.ts           # Google Fonts catalog (100+ fonts)
 ├── package.json
 ├── tsconfig.json
 ├── next.config.ts
 ├── postcss.config.mjs
-└── tailwind.config.ts
+├── eslint.config.mjs
+├── .gitignore
+└── next-env.d.ts
 ```
 
 ---
 
-## Routes & Pages
+## Views & Pages
 
-| Route | Description |
-|---|---|
-| `/` | Redirects to `/dashboard` |
-| `/dashboard` | Overview with gradient hero, stat cards, color palette preview, type/surface summaries |
-| `/color` | Full color system editor — key colors, tonal palettes, generated scheme, light/dark toggle |
-| `/typography` | Typography scale editor — base size, scale ratio, letter spacing overrides, font family |
-| `/spacing` | Spacing scale editor — base unit slider, responsive grid visualization |
-| `/shadows` | Shadow tokens (0–5) + Shadow Builder with custom offset/blur/spread |
-| `/elevation` | Interactive elevation demos (hover/tap to toggle), component mapping, z-index reference |
-| `/radius` | Border radius scale (None → Full) + Radius Builder with copy button padding fix |
-| `/motion` | Duration & easing tokens, interactive animation playground, per-token overrides |
-| `/components` | Component demos in 4 tabs: Buttons, Forms, Cards, Feedback |
-| `/preview` | 5 isolated preview templates (Auth, SaaS, Marketing, E-commerce, Social) |
-| `/screen-preview` | Device-frame preview with 4 screen templates, viewport selector, live token injection |
-| `/brand-gallery` | Curated showcase with 5 sections: Colors, Typography, Icon Library, Spacing & Elevation, Layout Lab |
-| `/api/generate-layout` | POST endpoint for layout generation (returns 5 layout suggestions) |
+The application uses a **Single Page Application (SPA)** architecture — all views render inside `/dashboard` via client-side `currentView` state:
+
+| View | Route | Description |
+|---|---|---|
+| `home` | `/dashboard` (default) | Overview with gradient hero, stat cards, color/type/surface previews |
+| `color` | `/dashboard?view=color` | Full color system editor — key colors, tonal palettes, light/dark toggle |
+| `typography` | `/dashboard?view=typography` | Typography scale editor — base size, scale ratio, letter spacing, font family |
+| `spacing` | `/dashboard?view=spacing` | Spacing scale editor — base unit slider, responsive grid visualization |
+| `shadows` | `/dashboard?view=shadows` | Shadow tokens (0–5) + Shadow Builder with custom offset/blur/spread |
+| `elevation` | `/dashboard?view=elevation` | Interactive elevation demos, component mapping, z-index reference |
+| `radius` | `/dashboard?view=radius` | Border radius scale (None → Full) + Radius Builder |
+| `motion` | `/dashboard?view=motion` | Duration & easing tokens, interactive animation playground |
+| `components` | `/dashboard?view=components` | Component demos in 4 tabs: Buttons, Forms, Cards, Feedback |
+| `preview` | `/dashboard?view=preview` | 5 preset preview templates (Auth, SaaS, Marketing, E-commerce, Social) |
+| `screen-preview` | `/dashboard?view=screen-preview` | Device-framed previews with 4 screen templates, viewport selector, live tokens |
+| `brand-gallery` | `/dashboard?view=brand-gallery` | Curated showcase with 5 sections: Colors, Typography, Icon Library, Spacing & Elevation, Layout Lab |
+
+**API endpoint:** `/api/generate-layout` — POST endpoint for layout generation (returns 5 layout suggestions)
 
 ---
 
@@ -308,6 +315,24 @@ Configures animation duration and easing for the entire design system.
 
 ---
 
+## Theme & Styling
+
+The app uses a **Neumorphic-inspired design** built on MUI's `createTheme`:
+
+- **Inset shadows** on cards, inputs, and buttons (dark mode adjusts shadow colors)
+- **Frosted glass** top bar with backdrop blur
+- **Collapsible sidebar** that shrinks to icon-only mode (64px)
+- **Light/Dark/System** mode toggling via `useThemeStore`
+- **CSS baseline** with Emotion cache provider
+
+`ThemeRegistry.tsx` handles:
+- MUI `ThemeProvider` creation using dynamically generated color schemes
+- Emotion cache setup with `@emotion/cache`
+- System color scheme detection via `prefers-color-scheme` media query
+- Server-side rendering fallback theme
+
+---
+
 ## State Management
 
 Three Zustand stores with localStorage persistence:
@@ -323,18 +348,21 @@ interface ThemeStore {
   setKeyColor: (key: string, color: string) => void;
   addKeyColor: (key: string, color: string) => void;
   removeKeyColor: (key: string) => void;
-  setMode: (mode: 'light' | 'dark') => void;
+  setMode: (mode: 'light' | 'dark' | 'system') => void;
   toggleMode: () => void;
   setTypography: (typography: Partial<TypographyScale>) => void;
   setSpacing: (spacing: Partial<SpacingConfig>) => void;
   setMotion: (motion: Partial<MotionConfig>) => void;
   resetConfig: () => void;
   exportConfig: () => string;
+  exportCssTokens: () => string;
   importConfig: (json: string) => boolean;
 }
 ```
 
 **Deep merge:** Custom `mergeConfig()` function handles schema evolution — new fields are added with defaults without overwriting user customizations.
+
+**CSS Export:** Generates `--md-sys-color-*` custom properties for both light and dark modes with media query scoping.
 
 ### `useProjectStore`
 
@@ -363,13 +391,15 @@ interface ProjectStore {
 
 ### `useAppStore`
 
-Simple sidebar toggle state (no persistence).
+Manages sidebar toggle state and current view routing (no persistence).
 
 ```typescript
-interface SidebarStore {
+interface AppStore {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  currentView: string;
+  setCurrentView: (view: string) => void;
 }
 ```
 
@@ -423,34 +453,28 @@ A curated showcase at `/brand-gallery` with 5 sections, left sidebar navigation,
 
 ## Screen Preview
 
-An isolated iframe preview system at `/screen-preview`.
-
-**Architecture:**
-- Parent page sends tokens via `postMessage` protocol (uses `window.origin` — no wildcard `*`)
-- Iframe receives tokens and renders templates in isolation
-- Each template has its own MUI ThemeProvider using received tokens
+A device-framed preview system within `/dashboard?view=screen-preview`. Templates receive design tokens directly via props and render with their own MUI ThemeProvider.
 
 **Templates:**
 
-| Template | Description |
-|---|---|
-| Finance | Banking dashboard with balance, transactions, quick actions |
-| Business | SaaS analytics with KPIs, charts, team overview |
-| Education | Learning platform with courses, progress, schedule |
-| Signup | Multi-step registration with validation, social login |
+| Template | Type | Description |
+|---|---|---|
+| Finance | `finance` | Banking dashboard with balance, transactions, quick actions |
+| Business | `business` | SaaS analytics with KPIs, charts, team overview |
+| Education | `education` | Learning platform with courses, progress, schedule |
+| Signup | `signup` | Multi-step registration with validation, social login |
 
 **Features:**
 - Device frame with traffic light dots
 - Viewport selector (Desktop, Tablet, Mobile)
-- Light/Dark mode toggle
+- Light/Dark mode tied to parent theme store
 - Connection status indicator
 - Mobile responsive with hamburger menu + Drawer sidebar
+- **ScreenRenderer** component handles all template rendering with MUI ThemeProvider
 
 ---
 
 ## Smart Layouts (Layout Lab)
-
-**Feature flag:** `NEXT_PUBLIC_ENABLE_SMART_LAYOUTS` (enabled by default, set to `'false'` to disable)
 
 A generation assistant that creates on-brand layout suggestions using the active design tokens.
 
@@ -549,15 +573,15 @@ Navigation, Actions, Communication, Commerce, Media, Social, Shapes, Files, Devi
 
 ## Component Preview Templates
 
-Five isolated preview templates, each with its own MUI ThemeProvider:
+Five preset preview templates rendered within `/dashboard?view=preview`. Each receives color scheme via props and renders with its own local MUI ThemeProvider:
 
 | Template | File | Description |
 |---|---|---|
-| Auth Login | `AuthLoginTemplate.tsx` | Login form with hero, fixed 580px |
-| SaaS Dashboard | `SaaSDashboardTemplate.tsx` | Analytics dashboard with permanent drawer, fixed 640px |
-| Marketing Hero | `MarketingHeroTemplate.tsx` | Landing page with static nav, fixed 640px |
-| E-commerce Card | `EcommerceProductCard.tsx` | Product card grid, 3-column layout, fixed 640px |
-| Social Media Flyer | `SocialMediaFlyerTemplate.tsx` | 3 flyer variations, fixed 640px |
+| Auth Login | `AuthLoginTemplate.tsx` | Sign-in page with hero panel, form fields, and action buttons |
+| SaaS Dashboard | `SaaSDashboardTemplate.tsx` | Analytics dashboard with sidebar, stat cards, theme colors |
+| Marketing Hero | `MarketingHeroTemplate.tsx` | Landing page with headline, CTA buttons, and preview card |
+| E-commerce Card | `EcommerceProductCard.tsx` | Product cards with ratings, descriptions, and add-to-cart |
+| Social Media Flyer | `SocialMediaFlyerTemplate.tsx` | Instagram-style posts with gradient hero, testimonial, and feature announcement |
 
 All templates read `fontFamily` from the global theme store and apply it in their local theme.
 
@@ -583,9 +607,7 @@ vercel --prod --yes
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `NEXT_PUBLIC_ENABLE_SMART_LAYOUTS` | `true` | Enable/disable the Layout Lab feature. Set to `'false'` to hide the section. |
+No environment variables are required. The app runs entirely with defaults out of the box.
 
 ---
 
@@ -604,10 +626,10 @@ vercel --prod --yes
 
 1. **Token-driven** — every component reads from the same global state
 2. **Live preview** — all changes are reflected instantly across the entire system
-3. **Exportable** — configurations can be saved as JSON and shared
+3. **Exportable** — configurations can be saved as JSON or CSS custom properties
 4. **Accessible** — WCAG contrast information provided for color choices
 5. **Responsive** — all pages work on mobile, tablet, and desktop
-6. **Isolated previews** — screen templates run in iframes to prevent style bleed
+6. **Neumorphic design** — neumorphic shadows and inset styling for a tactile UI
 7. **Consistent branding** — all currency uses ₦ (Naira), all avatar initials use OA (Oluwasegun Awodeyi)
 
 ---
