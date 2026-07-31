@@ -30,6 +30,7 @@ interface ThemeStore {
   setKeyColor: (key: string, color: string) => void;
   addKeyColor: (key: string, color: string) => void;
   removeKeyColor: (key: string) => void;
+  renameKeyColor: (oldKey: string, newKey: string) => void;
   setMode: (mode: SchemeMode) => void;
   toggleMode: () => void;
   setTypography: (typography: Partial<TypographyScale>) => void;
@@ -87,6 +88,16 @@ export const useThemeStore = create<ThemeStore>()(
         set((state) => {
           const { [key]: _, ...rest } = state.config.keyColors;
           return { config: { ...state.config, keyColors: rest } };
+        }),
+
+      renameKeyColor: (oldKey, newKey) =>
+        set((state) => {
+          const hex = state.config.keyColors[oldKey];
+          if (!hex) return state;
+          const { [oldKey]: _, ...rest } = state.config.keyColors;
+          return {
+            config: { ...state.config, keyColors: { ...rest, [newKey]: hex } },
+          };
         }),
 
       setMode: (mode) =>

@@ -209,25 +209,33 @@ function rgbToHex(r: number, g: number, b: number) {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
-function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault, onColorClick }: {
+function KeyColorPicker({ label, description, value, onChange, onRemove, isDefault, onRename, onColorClick }: {
   label: string;
   description: string;
   value: string;
   onChange: (hex: string) => void;
   onRemove?: () => void;
   isDefault: boolean;
+  onRename?: (newKey: string) => void;
   onColorClick?: () => void;
 }) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  
+  const [renameMode, setRenameMode] = useState(false);
+  const [renameValue, setRenameValue] = useState(label);
+  const [localHex, setLocalHex] = useState<string | null>(null);
+
+  const displayHex = localHex ?? value;
+
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    if (renameMode) return;
     setAnchorEl(e.currentTarget);
     if (onColorClick) onColorClick();
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setLocalHex(null);
   };
 
   const rgb = hexToRgb(value);
@@ -273,23 +281,79 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
             }}
           />
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              {label}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-              {description}
-            </Typography>
+            {renameMode ? (
+              <Box
+                component="input"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onBlur={() => {
+                  const trimmed = renameValue.trim().replace(/\s+/g, "");
+                  if (trimmed && trimmed !== label && onRename) onRename(trimmed);
+                  setRenameMode(false);
+                }}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter") {
+                    (e.target as HTMLElement).blur();
+                  }
+                  if (e.key === "Escape") {
+                    setRenameValue(label);
+                    setRenameMode(false);
+                  }
+                }}
+                autoFocus
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  width: '100%',
+                  height: 28,
+                  bgcolor: 'background.default',
+                  borderRadius: 1,
+                  textAlign: 'left',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  fontFamily: 'inherit',
+                  outline: 'none',
+                  border: 'none',
+                  boxShadow: theme.palette.mode === 'dark'
+                    ? 'inset 2px 2px 4px rgba(0,0,0,0.5), inset -2px -2px 4px rgba(255,255,255,0.03)'
+                    : 'inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.7)',
+                  px: 1,
+                }}
+              />
+            ) : (
+              <>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                  {label}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                  {description}
+                </Typography>
+              </>
+            )}
           </Box>
-          {!isDefault && onRemove && (
-            <Button
-              size="small"
-              color="error"
-              onClick={(e) => { e.stopPropagation(); onRemove(); }}
-              startIcon={<DeleteOutlineRoundedIcon />}
-              sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.7rem", px: 1 }}
-            >
-              Delete
-            </Button>
+          {!isDefault && (
+            <>
+              {onRename && !renameMode && (
+                <Button
+                  size="small"
+                  onClick={(e) => { e.stopPropagation(); setRenameValue(label); setRenameMode(true); }}
+                  sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.65rem", px: 0.75, mr: 0.5, color: 'text.secondary' }}
+                >
+                  Rename
+                </Button>
+              )}
+              {onRemove && (
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={(e) => { e.stopPropagation(); onRemove(); }}
+                  startIcon={<DeleteOutlineRoundedIcon />}
+                  sx={{ textTransform: "none", minWidth: 0, flexShrink: 0, fontSize: "0.7rem", px: 1 }}
+                >
+                  Delete
+                </Button>
+              )}
+            </>
           )}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
@@ -477,12 +541,18 @@ function KeyColorPicker({ label, description, value, onChange, onRemove, isDefau
           
           <Box
             component="input"
-            value={value}
+            value={displayHex}
             onChange={(e) => {
-              let val = e.target.value;
+              const raw = e.target.value;
+              setLocalHex(raw);
+              let val = raw;
               if (!val.startsWith("#")) val = "#" + val;
-              if (/^#[0-9A-F]{6}$/i.test(val)) onChange(val.toUpperCase());
+              if (/^#[0-9A-F]{6}$/i.test(val)) {
+                onChange(val.toUpperCase());
+                setLocalHex(null);
+              }
             }}
+            onBlur={() => setLocalHex(null)}
             sx={{
               width: '100%',
               height: 36,
@@ -757,7 +827,7 @@ function AddKeyColorDialog({ open, onClose, onAdd }: {
 
 // ---------- Main Page ----------
 export default function ColorPage() {
-  const { config, setKeyColor, addKeyColor, removeKeyColor, resetConfig } = useThemeStore();
+  const { config, setKeyColor, addKeyColor, removeKeyColor, renameKeyColor, resetConfig } = useThemeStore();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [hslDialog, setHslDialog] = useState<{ open: boolean; hex: string; label: string }>({
     open: false, hex: "#000000", label: "",
@@ -839,6 +909,11 @@ export default function ColorPage() {
               value={config.keyColors[key]}
               onChange={(hex) => setKeyColor(key, hex)}
               onRemove={() => removeKeyColor(key)}
+              onRename={(newKey) => {
+                if (newKey !== key && !config.keyColors[newKey]) {
+                  renameKeyColor(key, newKey);
+                }
+              }}
               isDefault={false}
             />
           </Grid>
