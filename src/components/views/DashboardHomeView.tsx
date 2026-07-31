@@ -88,10 +88,10 @@ export default function DashboardPage() {
           }}
         />
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, letterSpacing: '-0.02em', fontSize: { xs: '1.375rem', md: '1.5rem' } }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, letterSpacing: '-0.02em', fontSize: 'clamp(1.25rem, 1rem + 1vw, 1.625rem)' }}>
             Oluwasegun Design System
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.6, fontSize: { xs: '0.9375rem', md: '1rem' } }}>
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.6, fontSize: 'clamp(0.9rem, 0.825rem + 0.35vw, 1.05rem)' }}>
             Material Design 3 tokens, scales, and components — all configurable and exportable
           </Typography>
         </Box>
