@@ -54,14 +54,15 @@ The Oluwasegun Design System is a reference tool and configuration assistant for
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 16.2.10 (Turbopack) |
+| Framework | Next.js 16.2.10 (Turbopack, Static Export) |
+| Mobile Wrapper | Capacitor (iOS & Android) |
 | UI Library | React 19.2.4 |
 | Component Library | MUI v9 (Material UI) |
 | Styling | Emotion (`@emotion/react`, `@emotion/styled`) |
-| State Management | Zustand 5 with `persist` middleware |
+| State Management | Zustand 5 with `@capacitor/preferences` persistence |
 | CSS (dev only) | Tailwind CSS 4 |
 | Language | TypeScript 5 |
-| Deployment | Vercel |
+| Deployment | Vercel (Web), Ionic Appflow (Mobile OTA) |
 | Icons | MUI Icons, Lucide React, React Icons (Font Awesome), Flaticon (inline SVG) |
 | Canvas Export | html2canvas |
 

@@ -8,7 +8,7 @@ This is version 1.0 of the PRD for the Oluwasegun Design System, outlining the c
 ---
 
 ## 1. Product Summary
-A web-based Material Design 3 design system reference and configuration tool. It enables designers, engineers, and brand managers to build, visualize, and export complete design tokens instantly. By defining 5 key colors and a few typography base variables, the system extrapolates a complete 30+ role color scheme, 15-tier responsive type scale, spacing grid, and UI components. The tool features interactive UI rendering, multi-screen previews, a layout generator, and project state persistence.
+A cross-platform (Web, iOS, Android) Material Design 3 design system reference and configuration tool. It enables designers, engineers, and brand managers to build, visualize, and export complete design tokens instantly. By defining 5 key colors and a few typography base variables, the system extrapolates a complete 30+ role color scheme, 15-tier responsive type scale, spacing grid, and UI components. The tool features interactive UI rendering, multi-screen previews, a layout generator, and project state persistence wrapped in Capacitor for native mobile delivery.
 
 ## 2. Problem Statement
 Design systems often live in static Figma files or fragmented CSS files, creating a disconnect between design intention and engineering implementation. When a brand color changes, calculating accessibility-compliant variations (hover states, dark mode, high-contrast borders) is a tedious manual task. Furthermore, demonstrating how those tokens apply to real, responsive marketing assets or dashboard UI requires hours of manual mockups. Teams need a single, dynamic source of truth where tokens can be adjusted and visualized in real-time across UI components and marketing layouts.
@@ -62,11 +62,12 @@ Needs to quickly generate social media flyers, hero banners, and ad creative tha
 *   **R15.** The system supports importing existing JSON configurations to override the current state.
 
 ## 6. Technical Requirements & Architecture
-*   **Framework:** Next.js 16.2.10 (App Router, Turbopack).
+*   **Framework:** Next.js 16.2.10 (App Router, Turbopack) configured for static export (`output: 'export'`).
+*   **Mobile Wrapper:** Capacitor for native iOS and Android deployment.
 *   **Styling:** Emotion (`@emotion/react`) combined with Material UI (MUI v9) ThemeProvider. Tailwind CSS 4 for utility styling during development.
-*   **State Management:** Zustand 5 with `persist` middleware for local storage. Deep merging is utilized to handle config schema evolution gracefully.
+*   **State Management:** Zustand 5 with `persist` middleware. Uses Capacitor `@capacitor/preferences` on mobile to prevent OS-level data wiping.
 *   **Design Paradigm:** Neumorphic-inspired, leveraging frosted glass, inset shadows, and strict WCAG contrast computations.
-*   **Deployment:** Vercel (Edge network).
+*   **Deployment:** Vercel (Edge network) for Web, Appflow for OTA mobile updates.
 
 ## 7. Data Model / State Management
 The core state resides entirely on the client, managed by Zustand:
@@ -92,7 +93,7 @@ While currently a free-to-use SPA, the system drives significant workflow effici
 *   **Project Saves:** Number of saved themes per user, indicating value as a recurring workspace rather than a one-time toy.
 
 ## 11. Assumptions
-*   **[ASSUMPTION]** The application operates as a client-side SPA with no backend database; all persistence relies on the user's browser `localStorage`.
+*   **[ASSUMPTION]** The application operates as a Capacitor-wrapped cross-platform app; all persistence relies on the device's native Preferences API (`@capacitor/preferences`), falling back to `localStorage` on pure web.
 *   **[ASSUMPTION]** Fluid typography via `clamp()` is supported by all target browsers (modern evergreen browsers).
 *   **[ASSUMPTION]** Icons are bundled client-side and dynamically loaded (Lucide, MUI, FA, Flaticon).
 
