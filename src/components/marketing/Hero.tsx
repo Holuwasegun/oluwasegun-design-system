@@ -75,18 +75,16 @@ export default function Hero() {
                 Launch Dashboard
               </Button>
             </Link>
-            <Button 
-              variant="outlined" 
-              color="inherit" 
-              size="large"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('documentation')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              sx={{ px: 4, py: 1.5, borderRadius: 8, textTransform: 'none', fontWeight: 600, fontSize: '1.1rem' }}
-            >
-              Read Documentation
-            </Button>
+            <Link href="#documentation" passHref legacyBehavior>
+              <Button 
+                variant="outlined" 
+                color="inherit" 
+                size="large"
+                sx={{ px: 4, py: 1.5, borderRadius: 8, textTransform: 'none', fontWeight: 600, fontSize: '1.1rem' }}
+              >
+                Read Documentation
+              </Button>
+            </Link>
           </Stack>
         </Box>
 
