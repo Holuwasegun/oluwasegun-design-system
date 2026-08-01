@@ -1,12 +1,20 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Stack, Typography, Paper, useTheme } from '@mui/material';
 import Link from 'next/link';
 import { ArrowRight, Code2 } from 'lucide-react';
+import AndroidIcon from '@mui/icons-material/Android';
+import AppleIcon from '@mui/icons-material/Apple';
+import { Capacitor } from '@capacitor/core';
 
 export default function Hero() {
   const theme = useTheme();
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
 
   return (
     <Box 
@@ -86,6 +94,31 @@ export default function Hero() {
               </Button>
             </Link>
           </Stack>
+          
+          {!isNative && (
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center', mt: 3, animation: 'fadeUp 0.8s ease-out 0.2s', animationFillMode: 'both' }}>
+              <Button 
+                component="a"
+                href="/downloads/oluwasegun-design-system.apk"
+                download
+                variant="text" 
+                color="inherit" 
+                startIcon={<AndroidIcon />}
+                sx={{ textTransform: 'none', opacity: 0.8, '&:hover': { opacity: 1 } }}
+              >
+                Download for Android (.apk)
+              </Button>
+              <Button 
+                onClick={() => alert("iOS apps cannot be sideloaded directly from websites. They must be downloaded from the official App Store. This link will be updated once published.")}
+                variant="text" 
+                color="inherit" 
+                startIcon={<AppleIcon />}
+                sx={{ textTransform: 'none', opacity: 0.8, '&:hover': { opacity: 1 } }}
+              >
+                Download on the App Store
+              </Button>
+            </Stack>
+          )}
         </Box>
 
         {/* Hero Visual Mockup */}
