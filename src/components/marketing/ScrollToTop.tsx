@@ -45,14 +45,14 @@ export default function ScrollToTop() {
             right: { xs: 24, md: 32 },
             zIndex: 1200,
             boxShadow: theme.palette.mode === 'dark'
-              ? '0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-              : '0 8px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-            transition: 'transform 0.2s ease-in-out, background-color 0.2s, box-shadow 0.2s',
+              ? '-8px -8px 20px rgba(255, 255, 255, 0.08), 8px 8px 20px rgba(0, 0, 0, 0.75)'
+              : '-8px -8px 20px #ffffff, 8px 8px 20px rgba(0, 0, 0, 0.18)',
+            transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, box-shadow 0.25s ease-in-out',
             '&:hover': {
-              transform: 'translateY(-4px) scale(1.05)',
+              transform: 'translateY(-4px) scale(1.06)',
               boxShadow: theme.palette.mode === 'dark'
-                ? '0 12px 28px rgba(0, 0, 0, 0.6)'
-                : '0 12px 28px rgba(0, 0, 0, 0.25)',
+                ? '-12px -12px 28px rgba(255, 255, 255, 0.12), 12px 12px 28px rgba(0, 0, 0, 0.85)'
+                : '-12px -12px 28px #ffffff, 12px 12px 28px rgba(0, 0, 0, 0.25)',
             },
           }}
         >

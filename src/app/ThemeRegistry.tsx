@@ -26,17 +26,22 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
   const textPrimary = scheme.onBackground;
   const textSecondary = scheme.onSurfaceVariant;
   
+  // Enhanced Neumorphism Shadows (Extruded & Sunken dual light/dark shadows)
   const shadowProtruding = isDark
-    ? '-10px -10px 20px rgba(255,255,255,0.05), 10px 10px 20px rgba(0,0,0,0.65)'
-    : '-10px -10px 20px #ffffff, 10px 10px 20px rgba(0,0,0,0.15)';
-    
+    ? '-12px -12px 24px rgba(255,255,255,0.06), 12px 12px 24px rgba(0,0,0,0.75)'
+    : '-12px -12px 24px #ffffff, 12px 12px 24px rgba(0,0,0,0.14)';
+
   const shadowInset = isDark
-    ? 'inset 6px 6px 12px rgba(0,0,0,0.7), inset -6px -6px 12px rgba(255,255,255,0.04)'
-    : 'inset 6px 6px 12px rgba(0,0,0,0.15), inset -6px -6px 12px rgba(255,255,255,1)';
+    ? 'inset 6px 6px 14px rgba(0,0,0,0.8), inset -6px -6px 14px rgba(255,255,255,0.05)'
+    : 'inset 6px 6px 14px rgba(0,0,0,0.14), inset -6px -6px 14px rgba(255,255,255,0.95)';
 
   const shadowButton = isDark
-    ? '-6px -6px 14px rgba(255,255,255,0.05), 6px 6px 14px rgba(0,0,0,0.65)'
-    : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)';
+    ? '-8px -8px 18px rgba(255,255,255,0.06), 8px 8px 18px rgba(0,0,0,0.75)'
+    : '-8px -8px 18px #ffffff, 8px 8px 18px rgba(0,0,0,0.14)';
+
+  const shadowButtonActive = isDark
+    ? 'inset 4px 4px 10px rgba(0,0,0,0.8), inset -4px -4px 10px rgba(255,255,255,0.05)'
+    : 'inset 4px 4px 10px rgba(0,0,0,0.15), inset -4px -4px 10px rgba(255,255,255,0.9)';
 
   return createTheme({
     palette: {
@@ -92,7 +97,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
       caption: { fontSize: "clamp(0.7rem, 0.67rem + 0.12vw, 0.75rem)", fontWeight: 400, lineHeight: 1.3333, letterSpacing: "clamp(0.02em, 0.015em + 0.02vw, 0.035em)" },
       overline: { fontSize: "clamp(0.65rem, 0.62rem + 0.1vw, 0.7rem)", fontWeight: 500, lineHeight: 1.4545, letterSpacing: "clamp(0.06em, 0.04em + 0.05vw, 0.09em)" },
     },
-    shape: { borderRadius: 12 },
+    shape: { borderRadius: 14 },
     components: {
       MuiPaper: {
         styleOverrides: {
@@ -100,6 +105,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
             boxShadow: shadowProtruding,
             backgroundImage: 'none',
             border: 'none',
+            transition: 'box-shadow 0.25s ease-in-out, transform 0.25s ease-in-out',
           },
         },
       },
@@ -109,6 +115,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
             boxShadow: shadowProtruding,
             backgroundImage: 'none',
             border: 'none',
+            transition: 'box-shadow 0.25s ease-in-out, transform 0.25s ease-in-out',
           },
         },
       },
@@ -116,7 +123,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
         styleOverrides: {
           paper: {
             backgroundColor: bgColor,
-            boxShadow: isDark ? '6px 0px 20px rgba(0,0,0,0.65)' : '6px 0px 20px rgba(0,0,0,0.15)',
+            boxShadow: isDark ? '8px 0px 24px rgba(0,0,0,0.75)' : '8px 0px 24px rgba(0,0,0,0.12)',
             border: 'none',
           },
         },
@@ -125,7 +132,7 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
         styleOverrides: {
           root: {
             backgroundColor: bgColor,
-            boxShadow: isDark ? '0px 6px 20px rgba(0,0,0,0.65)' : '0px 6px 20px rgba(0,0,0,0.15)',
+            boxShadow: isDark ? '0px 8px 24px rgba(0,0,0,0.75)' : '0px 8px 24px rgba(0,0,0,0.12)',
             border: 'none',
           },
         },
@@ -135,7 +142,13 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
           root: {
             boxShadow: shadowInset,
             backgroundColor: bgColor,
-            borderRadius: 8,
+            borderRadius: 10,
+            transition: 'box-shadow 0.2s ease-in-out',
+            '&.Mui-focused': {
+              boxShadow: isDark
+                ? 'inset 4px 4px 8px rgba(0,0,0,0.9), inset -4px -4px 8px rgba(255,255,255,0.08)'
+                : 'inset 4px 4px 8px rgba(0,0,0,0.2), inset -4px -4px 8px rgba(255,255,255,1)',
+            },
           },
         },
       },
@@ -151,19 +164,26 @@ function makeTheme(config: ReturnType<typeof useThemeStore.getState>["config"], 
           '*:focus-visible, .Mui-focusVisible': {
             outline: `2px solid ${scheme.primary} !important`,
             outlineOffset: '2px !important',
-            borderRadius: '4px',
+            borderRadius: '6px',
           },
         },
       },
       MuiButton: {
         styleOverrides: {
+          root: {
+            borderRadius: 10,
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          },
           outlined: {
             border: 'none',
             boxShadow: shadowButton,
             '&:hover': {
               border: 'none',
               boxShadow: shadowInset,
-            }
+            },
+            '&:active': {
+              boxShadow: shadowButtonActive,
+            },
           },
         },
       },

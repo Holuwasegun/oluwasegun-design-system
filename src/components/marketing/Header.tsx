@@ -35,8 +35,8 @@ export default function Header() {
                 justifyContent: 'center',
                 flexShrink: 0,
                 boxShadow: (theme) => theme.palette.mode === 'dark' 
-                  ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
-                  : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
+                  ? '-6px -6px 14px rgba(255,255,255,0.06), 6px 6px 14px rgba(0,0,0,0.75)'
+                  : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)',
               }}
             >
               <Typography
@@ -75,12 +75,28 @@ export default function Header() {
           </Link>
         </Stack>
 
-        <Link href="/dashboard" passHref>
+        <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
           <Button 
             variant="contained" 
             color="primary"
             disableElevation
-            sx={{ borderRadius: 8, px: 3, fontWeight: 600, textTransform: 'none' }}
+            sx={{
+              borderRadius: 8,
+              px: 3,
+              py: 1,
+              fontWeight: 700,
+              textTransform: 'none',
+              boxShadow: (theme) => theme.palette.mode === 'dark'
+                ? '-6px -6px 14px rgba(255,255,255,0.08), 6px 6px 14px rgba(0,0,0,0.6)'
+                : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)',
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                boxShadow: (theme) => theme.palette.mode === 'dark'
+                  ? '-8px -8px 18px rgba(255,255,255,0.12), 8px 8px 18px rgba(0,0,0,0.75)'
+                  : '-8px -8px 18px #ffffff, 8px 8px 18px rgba(0,0,0,0.22)',
+                transform: 'translateY(-2px)',
+              },
+            }}
           >
             Open Dashboard
           </Button>

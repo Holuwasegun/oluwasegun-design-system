@@ -272,10 +272,20 @@ export default function TopBar() {
               aria-label={`Switch theme mode, current mode is ${config.mode}`}
               onClick={toggleMode}
               sx={{
-                color: 'text.secondary',
+                color: 'text.primary',
                 minWidth: 38,
                 minHeight: 38,
-                '&:hover': { color: 'text.primary' },
+                borderRadius: 2.5,
+                boxShadow: (theme) => theme.palette.mode === 'dark'
+                  ? '-4px -4px 10px rgba(255,255,255,0.06), 4px 4px 10px rgba(0,0,0,0.7)'
+                  : '-4px -4px 10px #ffffff, 4px 4px 10px rgba(0,0,0,0.12)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  boxShadow: (theme) => theme.palette.mode === 'dark'
+                    ? '-6px -6px 14px rgba(255,255,255,0.08), 6px 6px 14px rgba(0,0,0,0.8)'
+                    : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.18)',
+                  transform: 'scale(1.05)',
+                },
                 '&:focus-visible, &.Mui-focusVisible': {
                   outline: '2px solid',
                   outlineColor: 'primary.main',
@@ -298,12 +308,15 @@ export default function TopBar() {
             role="img"
             aria-label="User profile icon for Oluwasegun"
             sx={{
-              width: 32,
-              height: 32,
-              bgcolor: "primary.main",
-              color: "primary.contrastText",
-              fontSize: "0.8125rem",
+              width: 34,
+              height: 34,
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              fontSize: '0.875rem',
               fontWeight: 700,
+              boxShadow: (theme) => theme.palette.mode === 'dark'
+                ? '-4px -4px 10px rgba(255,255,255,0.06), 4px 4px 10px rgba(0,0,0,0.7)'
+                : '-4px -4px 10px #ffffff, 4px 4px 10px rgba(0,0,0,0.15)',
               ml: 0.25,
               flexShrink: 0,
               cursor: 'pointer',
