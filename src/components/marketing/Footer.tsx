@@ -23,7 +23,7 @@ export default function Footer() {
             <Stack direction="row" spacing={1}>
               <IconButton size="small" sx={{ color: 'text.secondary' }}><GitHub fontSize="small" /></IconButton>
               <IconButton size="small" sx={{ color: 'text.secondary' }}><Twitter fontSize="small" /></IconButton>
-              <IconButton size="small" sx={{ color: 'text.secondary' }}><LinkedIn fontSize="small" /></IconButton>
+              <IconButton size="small" component="a" href="https://www.linkedin.com/in/oluwasegunawodeyi/" target="_blank" rel="noopener noreferrer" sx={{ color: 'text.secondary' }}><LinkedIn fontSize="small" /></IconButton>
             </Stack>
           </Box>
 
