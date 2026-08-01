@@ -11,6 +11,7 @@ import FAQ from '@/components/marketing/FAQ';
 import DocumentationSection from '@/components/marketing/DocumentationSection';
 import CtaSection from '@/components/marketing/CtaSection';
 import Footer from '@/components/marketing/Footer';
+import ScrollToTop from '@/components/marketing/ScrollToTop';
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
         <CtaSection />
       </Box>
       <Footer />
+      <ScrollToTop />
     </Box>
   );
 }
