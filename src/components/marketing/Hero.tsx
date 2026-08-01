@@ -96,26 +96,74 @@ export default function Hero() {
           </Stack>
           
           {!isNative && (
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center', mt: 3, animation: 'fadeUp 0.8s ease-out 0.2s', animationFillMode: 'both' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center', mt: 4, animation: 'fadeUp 0.8s ease-out 0.3s', animationFillMode: 'both' }}>
               <Button 
                 component="a"
                 href="/downloads/oluwasegun-design-system.apk"
                 download
-                variant="text" 
-                color="inherit" 
-                startIcon={<AndroidIcon />}
-                sx={{ textTransform: 'none', opacity: 0.8, '&:hover': { opacity: 1 } }}
+                sx={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: '#000000',
+                  color: '#FFFFFF',
+                  border: '1px solid',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  padding: '8px 20px',
+                  textTransform: 'none',
+                  justifyContent: 'flex-start',
+                  minWidth: '220px',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    backgroundColor: '#111111',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.5)',
+                    borderColor: 'rgba(255,255,255,0.2)'
+                  }
+                }}
               >
-                Download for Android (.apk)
+                <AndroidIcon sx={{ fontSize: 36, mr: 2, color: '#3DDC84' }} />
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography variant="caption" sx={{ fontSize: '0.65rem', lineHeight: 1, mb: 0.5, opacity: 0.7, letterSpacing: '0.05em' }}>
+                    DOWNLOAD FOR
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ fontSize: '1.15rem', fontWeight: 600, lineHeight: 1, fontFamily: 'inherit' }}>
+                    Android
+                  </Typography>
+                </Box>
               </Button>
               <Button 
                 onClick={() => alert("iOS apps cannot be sideloaded directly from websites. They must be downloaded from the official App Store. This link will be updated once published.")}
-                variant="text" 
-                color="inherit" 
-                startIcon={<AppleIcon />}
-                sx={{ textTransform: 'none', opacity: 0.8, '&:hover': { opacity: 1 } }}
+                sx={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: '#000000',
+                  color: '#FFFFFF',
+                  border: '1px solid',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  padding: '8px 20px',
+                  textTransform: 'none',
+                  justifyContent: 'flex-start',
+                  minWidth: '220px',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    backgroundColor: '#111111',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.5)',
+                    borderColor: 'rgba(255,255,255,0.2)'
+                  }
+                }}
               >
-                Download on the App Store
+                <AppleIcon sx={{ fontSize: 36, mr: 2 }} />
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography variant="caption" sx={{ fontSize: '0.65rem', lineHeight: 1, mb: 0.5, opacity: 0.7, letterSpacing: '0.05em' }}>
+                    DOWNLOAD ON THE
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ fontSize: '1.15rem', fontWeight: 600, lineHeight: 1, fontFamily: 'inherit' }}>
+                    App Store
+                  </Typography>
+                </Box>
               </Button>
             </Stack>
           )}
