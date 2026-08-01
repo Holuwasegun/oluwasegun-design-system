@@ -12,11 +12,37 @@ export default function Footer() {
           {/* Brand Column */}
           <Box sx={{ gridColumn: { xs: 'span 1', sm: 'span 2', md: 'span 6' } }}>
             <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2, transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
-                <Palette color="currentColor" size={24} />
-                <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
-                  Oluwasegun Design
-                </Typography>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2, transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 2,
+                    backgroundColor: 'background.default',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    boxShadow: (theme) => theme.palette.mode === 'dark' 
+                      ? '-4px -4px 10px rgba(255,255,255,0.03), 4px 4px 10px rgba(0,0,0,0.5)'
+                      : '-4px -4px 10px rgba(255,255,255,0.9), 4px 4px 10px rgba(0,0,0,0.1)',
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1, fontSize: '1rem' }}
+                  >
+                    O
+                  </Typography>
+                </Box>
+                <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
+                    Oluwasegun
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block', lineHeight: 1 }}>
+                    Design System
+                  </Typography>
+                </Box>
               </Stack>
             </a>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 300 }}>
