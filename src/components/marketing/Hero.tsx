@@ -32,7 +32,7 @@ export default function Hero() {
             sx={{ 
               fontWeight: 800, 
               mb: 4,
-              fontSize: { xs: '3rem', md: '5rem' },
+              fontSize: { xs: '2.5rem', sm: '3.5rem', md: '5rem' },
               lineHeight: 1.1,
               letterSpacing: '-0.03em',
               background: (theme) => `linear-gradient(135deg, ${theme.palette.text.primary} 30%, ${theme.palette.primary.main} 100%)`,
@@ -46,7 +46,7 @@ export default function Hero() {
           <Typography 
             variant="h5" 
             color="text.secondary" 
-            sx={{ mb: 6, maxWidth: '700px', mx: 'auto', lineHeight: 1.6, fontWeight: 400 }}
+            sx={{ mb: 6, maxWidth: '700px', mx: 'auto', lineHeight: 1.6, fontWeight: 400, fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }}
           >
             Stop guessing hex codes. Build, visualize, and export a complete Material Design 3 token system in seconds. From 5 key colors to a fully robust CSS architecture.
           </Typography>

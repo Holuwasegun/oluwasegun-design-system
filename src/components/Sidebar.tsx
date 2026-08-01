@@ -270,8 +270,8 @@ export default function Sidebar() {
         ModalProps={{ keepMounted: true }}
         sx={{
           '& .MuiDrawer-paper': {
-            width: '100%',
-            maxWidth: '100vw',
+            width: 280,
+            maxWidth: '85vw',
             boxSizing: 'border-box',
           },
         }}
