@@ -24,8 +24,8 @@ export default function FAQ() {
 
   return (
     <Box id="faq" component="section" sx={{ py: { xs: 8, md: 12 }, bgcolor: 'surfaceContainerLowest' }}>
-      <Container maxWidth="md">
-        <Typography variant="h2" component="h2" sx={{ textAlign: 'center', fontWeight: 700, mb: 8 }}>
+      <Container maxWidth="sm">
+        <Typography variant="h2" component="h2" sx={{ textAlign: 'left', fontWeight: 700, mb: 8 }}>
           Frequently Asked Questions
         </Typography>
         
@@ -47,12 +47,12 @@ export default function FAQ() {
                 expandIcon={<ChevronDown />}
                 sx={{ px: 0, '& .MuiAccordionSummary-content': { my: 2 } }}
               >
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
                   {faq.question}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ px: 0, pb: 4 }}>
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+              <AccordionDetails sx={{ px: 0, pb: 4, pr: { xs: 2, sm: 8 } }}>
+                <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.7 }}>
                   {faq.answer}
                 </Typography>
               </AccordionDetails>
