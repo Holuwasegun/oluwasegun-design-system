@@ -19,9 +19,10 @@ import type { PreviewTokens } from '@/lib/token-utils';
 
 export function buildMuiTheme(tokens: PreviewTokens) {
   const s = tokens.scheme;
+  const mode: 'light' | 'dark' = tokens.mode === 'dark' ? 'dark' : 'light';
   return {
     palette: {
-      mode: tokens.mode,
+      mode,
       primary: { main: s.primary, light: s.primaryContainer, dark: s.onPrimaryContainer, contrastText: s.onPrimary },
       secondary: { main: s.secondary, light: s.secondaryContainer, dark: s.onSecondaryContainer, contrastText: s.onSecondary },
       error: { main: s.error, light: s.errorContainer, dark: s.onErrorContainer, contrastText: s.onError },

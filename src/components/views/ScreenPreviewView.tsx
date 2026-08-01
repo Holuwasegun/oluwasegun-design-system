@@ -187,7 +187,11 @@ export default function ScreenPreviewPage() {
   useEffect(() => {
     const h = (e: MessageEvent) => { if (e.data?.type === 'IFRAME_READY') setIframeReady(true); };
     window.addEventListener('message', h);
-    return () => window.removeEventListener('message', h);
+    const fallbackTimer = setTimeout(() => setIframeReady(true), 600);
+    return () => {
+      window.removeEventListener('message', h);
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   const handleSelectScreen = useCallback((type: ScreenType) => {
@@ -325,7 +329,11 @@ export default function ScreenPreviewPage() {
               ref={iframeRef}
               src="/screen-preview/preview"
               title="Screen Preview"
-              style={{ width: '100%', height: 'calc(100% - 32px)', }}
+              onLoad={() => {
+                setIframeReady(true);
+                sendToIframe(activeScreen, debouncedTokens);
+              }}
+              style={{ width: '100%', height: 'calc(100% - 32px)', border: 'none' }}
             />
           </Box>
         </Box>
