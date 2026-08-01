@@ -130,12 +130,14 @@ export default function Footer() {
                     fontSize: '0.875rem',
                   },
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Code fontSize="small" sx={{ color: 'text.secondary' }} />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Code fontSize="small" sx={{ color: 'text.secondary' }} />
+                      </InputAdornment>
+                    ),
+                  },
                 }}
               />
               <Button
