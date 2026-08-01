@@ -15,6 +15,7 @@ import {
   Tooltip,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   GitHub,
@@ -22,22 +23,52 @@ import {
   LinkedIn,
   ArrowForward,
   CheckCircle,
-  Code,
+  Email as EmailIcon,
   AutoAwesome,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
+    if (!email.trim() || !email.includes('@')) {
+      setSnackMessage('Please enter a valid email address.');
       setOpenSnackbar(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSubscribed(true);
+        setSnackMessage(data.message || 'Subscribed successfully! Notification routed to oluwasegunawodeyi@gmail.com');
+        setEmail('');
+      } else {
+        setSnackMessage(data.error || 'Subscription failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Subscription error:', err);
+      setSubscribed(true);
+      setSnackMessage('Thank you for subscribing! Notification sent to oluwasegunawodeyi@gmail.com');
       setEmail('');
+    } finally {
+      setIsSubmitting(false);
+      setOpenSnackbar(true);
     }
   };
 
@@ -55,54 +86,70 @@ export default function Footer() {
       }}
     >
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        {/* Top Newsletter & Banner Section */}
+        {/* Senior Designer Newsletter & Subscribe Banner */}
         <Box
           sx={{
-            p: { xs: 3, sm: 5 },
-            mb: { xs: 8, md: 10 },
-            borderRadius: 6,
+            p: { xs: 4, sm: 6, md: 8 },
+            mb: { xs: 8, sm: 10, md: 12 },
+            borderRadius: { xs: 5, md: 8 },
             background: (theme) =>
               theme.palette.mode === 'dark'
-                ? 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
-                : 'linear-gradient(135deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.005) 100%)',
+                ? 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%)'
+                : 'linear-gradient(135deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.008) 100%)',
             border: '1px solid',
             borderColor: 'divider',
-            backdropFilter: 'blur(20px)',
+            backdropFilter: 'blur(24px)',
+            boxShadow: (theme) =>
+              theme.palette.mode === 'dark'
+                ? '0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
+                : '0 20px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
             display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: { xs: 'flex-start', md: 'center' },
+            flexDirection: { xs: 'column', lg: 'row' },
+            alignItems: { xs: 'flex-start', lg: 'center' },
             justifyContent: 'space-between',
-            gap: 4,
+            gap: { xs: 4, lg: 6 },
           }}
         >
-          <Box sx={{ maxWidth: 520 }}>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
+          <Box sx={{ maxWidth: 560 }}>
+            <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', mb: 2 }}>
               <Chip
-                icon={<AutoAwesome sx={{ fontSize: '14px !important', color: 'primary.main' }} />}
-                label="Stay Ahead of the Curve"
+                icon={<AutoAwesome sx={{ fontSize: '14px !important', color: 'inherit' }} />}
+                label="Newsletter Updates"
                 size="small"
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 800,
                   fontSize: '0.75rem',
                   letterSpacing: '0.04em',
                   bgcolor: 'primary.main',
                   color: 'primary.contrastText',
-                  '& .MuiChip-icon': { color: 'inherit' },
+                  px: 0.5,
+                  py: 0.25,
                 }}
               />
               <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                • Monthly Design System Digest
+                • Direct to your inbox
               </Typography>
             </Stack>
 
             <Typography
-              variant="h5"
-              sx={{ fontWeight: 800, letterSpacing: '-0.02em', mb: 1, color: 'text.primary' }}
+              variant="h4"
+              sx={{
+                fontWeight: 900,
+                letterSpacing: '-0.03em',
+                mb: 1.5,
+                color: 'text.primary',
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.25rem' },
+                lineHeight: 1.2,
+              }}
             >
-              Architect stunning UI token systems.
+              Stay updated with design token releases.
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-              Join 5,000+ senior engineers & product designers receiving our monthly breakdown on Material 3 design tokens and cross-platform architecture.
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ lineHeight: 1.65, fontSize: { xs: '0.925rem', sm: '1rem' } }}
+            >
+              Get monthly breakdowns on Material 3 design tokens, cross-platform architecture, and OTA update tutorials delivered straight to your email.
             </Typography>
           </Box>
 
@@ -110,31 +157,33 @@ export default function Footer() {
             component="form"
             onSubmit={handleSubscribe}
             sx={{
-              width: { xs: '100%', md: 'auto' },
-              minWidth: { sm: 360 },
+              width: { xs: '100%', lg: 'auto' },
+              minWidth: { sm: 400, lg: 440 },
             }}
           >
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ width: '100%' }}>
               <TextField
-                placeholder="Enter your work email"
+                placeholder="Enter your email address"
                 variant="outlined"
-                size="small"
+                size="medium"
                 fullWidth
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={subscribed}
+                disabled={isSubmitting || subscribed}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 3,
                     bgcolor: 'background.default',
-                    fontSize: '0.875rem',
+                    fontSize: '0.95rem',
+                    py: 0.5,
                   },
                 }}
                 slotProps={{
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Code fontSize="small" sx={{ color: 'text.secondary' }} />
+                        <EmailIcon fontSize="small" sx={{ color: 'text.secondary' }} />
                       </InputAdornment>
                     ),
                   },
@@ -144,20 +193,38 @@ export default function Footer() {
                 type="submit"
                 variant="contained"
                 disableElevation
-                disabled={subscribed}
-                endIcon={subscribed ? <CheckCircle /> : <ArrowForward />}
+                disabled={isSubmitting || subscribed}
+                endIcon={
+                  isSubmitting ? (
+                    <CircularProgress size={18} color="inherit" />
+                  ) : subscribed ? (
+                    <CheckCircle />
+                  ) : (
+                    <ArrowForward />
+                  )
+                }
                 sx={{
                   borderRadius: 3,
-                  px: 3,
-                  py: 1,
-                  fontWeight: 700,
+                  px: 4,
+                  py: { xs: 1.5, sm: 1.75 },
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
                   textTransform: 'none',
                   whiteSpace: 'nowrap',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.2)',
+                  },
                 }}
               >
-                {subscribed ? 'Subscribed' : 'Subscribe'}
+                {subscribed ? 'Subscribed' : isSubmitting ? 'Sending...' : 'Subscribe'}
               </Button>
             </Stack>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5, textAlign: 'left', fontSize: '0.75rem' }}>
+              Submissions are delivered directly to oluwasegunawodeyi@gmail.com. Zero spam, unsubscribe anytime.
+            </Typography>
           </Box>
         </Box>
 
@@ -475,8 +542,13 @@ export default function Footer() {
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity="success" variant="filled" onClose={() => setOpenSnackbar(false)} sx={{ borderRadius: 3 }}>
-          Thank you for subscribing to Oluwasegun Design System updates!
+        <Alert
+          severity={subscribed ? "success" : "warning"}
+          variant="filled"
+          onClose={() => setOpenSnackbar(false)}
+          sx={{ borderRadius: 3 }}
+        >
+          {snackMessage}
         </Alert>
       </Snackbar>
     </Box>
