@@ -152,19 +152,19 @@ function FontControls() {
   const currentFontFamily = `'${currentFont}', sans-serif`;
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+    <Card sx={{ mb: 4, borderRadius: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 1.5, mb: 3 }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
               Font Family
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Choose from Google Fonts or upload your own
+              Choose from Google Fonts or upload your own font files
             </Typography>
           </Box>
           {currentFont !== DEFAULT_FONT && (
-            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleReset} sx={{ textTransform: 'none' }}>
+            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleReset} sx={{ textTransform: 'none', borderRadius: 2 }}>
               Reset
             </Button>
           )}
@@ -172,14 +172,14 @@ function FontControls() {
 
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '280px 1fr' }, gap: 3, alignItems: 'start' }}>
           {/* Left: Font preview */}
-          <Box sx={{ bgcolor: 'grey.100', borderRadius: 2, p: 3, textAlign: 'center', minHeight: 200, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Typography sx={{ fontFamily: currentFontFamily, fontSize: '2.5rem', fontWeight: 700, mb: 1, lineHeight: 1.2 }}>
+          <Box sx={{ bgcolor: 'grey.100', borderRadius: 3, p: { xs: 2.5, md: 3 }, textAlign: 'center', minHeight: { xs: 150, md: 200 }, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography sx={{ fontFamily: currentFontFamily, fontSize: { xs: '2rem', sm: '2.5rem' }, fontWeight: 700, mb: 1, lineHeight: 1.2, wordBreak: 'break-word' }}>
               Aa
             </Typography>
-            <Typography sx={{ fontFamily: currentFontFamily, fontSize: '0.875rem', fontWeight: 400, color: 'text.secondary', mb: 0.5 }}>
+            <Typography sx={{ fontFamily: currentFontFamily, fontSize: '0.875rem', fontWeight: 600, color: 'text.secondary', mb: 0.5, wordBreak: 'break-word' }}>
               {currentFont}
             </Typography>
-            <Typography sx={{ fontFamily: currentFontFamily, fontSize: '0.75rem', color: 'text.disabled' }}>
+            <Typography sx={{ fontFamily: currentFontFamily, fontSize: '0.75rem', color: 'text.disabled', wordBreak: 'break-word' }}>
               The quick brown fox jumps over the lazy dog
             </Typography>
           </Box>
@@ -187,7 +187,7 @@ function FontControls() {
           {/* Right: Controls */}
           <Box>
             {/* Category filter chips */}
-            <Box sx={{ display: 'flex', gap: 0.5, mb: 2, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', gap: 0.75, mb: 2, flexWrap: 'wrap' }}>
               {FONT_CATEGORIES.map((cat) => (
                 <Chip
                   key={cat}
@@ -196,7 +196,7 @@ function FontControls() {
                   onClick={() => setCategory(cat)}
                   color={category === cat ? 'primary' : 'default'}
                   variant={category === cat ? 'filled' : 'outlined'}
-                  sx={{ textTransform: 'capitalize' }}
+                  sx={{ textTransform: 'capitalize', fontWeight: 600 }}
                 />
               ))}
             </Box>
@@ -208,7 +208,7 @@ function FontControls() {
               placeholder="Search fonts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              sx={{ mb: 2 }}
+              sx={{ mb: 2, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
 
             {/* Font selector */}
@@ -227,19 +227,19 @@ function FontControls() {
                 </li>
               )}
               renderInput={(params) => (
-                <TextField {...params} placeholder="Select a font..." size="small" />
+                <TextField {...params} placeholder="Select a font..." size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
               )}
-              slotProps={{ paper: { sx: { maxHeight: 300 } } }}
+              slotProps={{ paper: { sx: { maxHeight: 300, borderRadius: 2 } } }}
             />
 
             {/* Custom font upload */}
-            <Box sx={{ mt: 2, display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Box sx={{ mt: 2.5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5, alignItems: { xs: 'stretch', sm: 'center' } }}>
               <Button
                 variant="outlined"
                 size="small"
                 startIcon={<CloudUploadIcon />}
                 onClick={() => fileInputRef.current?.click()}
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', borderRadius: 2, width: { xs: '100%', sm: 'auto' }, py: 0.75 }}
               >
                 Upload Font File
               </Button>
@@ -250,22 +250,28 @@ function FontControls() {
                 onChange={handleCustomFontUpload}
                 style={{ display: 'none' }}
               />
-              <Typography variant="caption" color="text.disabled">or</Typography>
-              <TextField
-                size="small"
-                placeholder="Font name"
-                value={customFontName}
-                onChange={(e) => setCustomFontName(e.target.value)}
-                sx={{ width: 140 }}
-              />
-              <Tooltip title="Load font from URL">
-                <IconButton size="small" onClick={handleUrlUpload} disabled={!customFontName.trim()}>
-                  <LinkIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <Typography variant="caption" color="text.disabled" sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+                or
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flex: 1 }}>
+                <TextField
+                  size="small"
+                  placeholder="Font name"
+                  value={customFontName}
+                  onChange={(e) => setCustomFontName(e.target.value)}
+                  sx={{ flex: 1, minWidth: 100, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                />
+                <Tooltip title="Load font from URL">
+                  <span>
+                    <IconButton size="small" onClick={handleUrlUpload} disabled={!customFontName.trim()} sx={{ bgcolor: 'action.hover' }}>
+                      <LinkIcon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
             </Box>
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-              Upload .woff2, .woff, .ttf, or .otf files, or load from a URL
+              Upload .woff2, .woff, .ttf, or .otf files, or load from a direct URL
             </Typography>
           </Box>
         </Box>
@@ -298,11 +304,11 @@ function TrackingControls({ styles }: { styles: TypeStyle[] }) {
   const hasAnyOverride = Object.keys(overrides).length > 0;
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+    <Card sx={{ mb: 4, borderRadius: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 1.5, mb: 3 }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
               Letter Spacing (Tracking)
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -310,37 +316,60 @@ function TrackingControls({ styles }: { styles: TypeStyle[] }) {
             </Typography>
           </Box>
           {hasAnyOverride && (
-            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none' }}>
+            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none', borderRadius: 2 }}>
               Reset All
             </Button>
           )}
         </Box>
 
-        <Stack spacing={2.5}>
+        <Stack spacing={2}>
           {styles.map((style) => {
             const defaultVal = LETTER_SPACING_DEFAULTS[style.name] ?? 0;
             const currentVal = overrides[style.name] ?? defaultVal;
             const isOverridden = style.name in overrides;
 
             return (
-              <Box key={style.name}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Chip label={FAMILY_LABELS[style.family]} size="small" color={FAMILY_COLORS[style.family]} variant="outlined" sx={{ minWidth: 72, fontWeight: 500 }} />
-                    <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>{style.size}</Typography>
-                    {isOverridden && <Chip label="custom" size="small" color="warning" variant="filled" sx={{ height: 20, fontSize: 10 }} />}
+              <Box
+                key={style.name}
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  borderRadius: 2.5,
+                  bgcolor: 'background.default',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 1, mb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                    <Chip label={FAMILY_LABELS[style.family]} size="small" color={FAMILY_COLORS[style.family]} variant="outlined" sx={{ minWidth: 64, fontWeight: 600, fontSize: 11 }} />
+                    <Typography variant="body2" sx={{ fontWeight: 700, textTransform: 'capitalize' }}>{style.name}</Typography>
+                    {isOverridden && <Chip label="custom" size="small" color="warning" variant="filled" sx={{ height: 18, fontSize: 10 }} />}
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant="caption" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums', minWidth: 60, textAlign: 'right' }}>{currentVal.toFixed(2)}em</Typography>
+                    <Typography variant="caption" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums', fontWeight: 700, bgcolor: 'action.hover', px: 1, py: 0.25, borderRadius: 1 }}>
+                      {currentVal.toFixed(2)}em
+                    </Typography>
                     {isOverridden && (
-                      <Button size="small" onClick={() => handleReset(style.name)} sx={{ minWidth: 0, px: 1, textTransform: 'none' }}>Reset</Button>
+                      <Button size="small" onClick={() => handleReset(style.name)} sx={{ minWidth: 0, px: 1, py: 0.25, textTransform: 'none', fontSize: 11 }}>
+                        Reset
+                      </Button>
                     )}
                   </Box>
                 </Box>
-                <Slider value={currentVal} min={-0.5} max={1.5} step={0.01} onChange={(_e, val) => handleChange(style.name, val as number)} valueLabelDisplay="auto" valueLabelFormat={(v) => `${v.toFixed(2)}em`} size="small" sx={{ py: 0.5 }} />
+                <Slider
+                  value={currentVal}
+                  min={-0.5}
+                  max={1.5}
+                  step={0.01}
+                  onChange={(_e, val) => handleChange(style.name, val as number)}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(v) => `${v.toFixed(2)}em`}
+                  size="small"
+                  sx={{ py: 0.5 }}
+                />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="caption" color="text.secondary">-0.5em</Typography>
-                  <Typography variant="caption" color="text.secondary">1.5em</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>-0.5em</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>1.5em</Typography>
                 </Box>
               </Box>
             );
@@ -405,17 +434,21 @@ function ScaleControls() {
   };
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>Scale Generator</Typography>
-          <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleReset} sx={{ textTransform: 'none' }}>Reset</Button>
+    <Card sx={{ mb: 4, borderRadius: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 1.5, mb: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+            Scale Generator
+          </Typography>
+          <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleReset} sx={{ textTransform: 'none', borderRadius: 2 }}>
+            Reset
+          </Button>
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: { xs: 3, md: 4 }, alignItems: 'start' }}>
-          <Box>
-            <Typography variant="body2" sx={{ fontWeight: 500, mb: 1.5, color: 'text.secondary' }}>Base Size</Typography>
-            <Typography variant="h5" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', mb: 1 }}>{baseSize}px</Typography>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: { xs: 2.5, sm: 3, md: 4 }, alignItems: 'start' }}>
+          <Box sx={{ p: 2, borderRadius: 2.5, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.secondary' }}>Base Size</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums', mb: 1 }}>{baseSize}px</Typography>
             <Slider value={baseSize} min={10} max={24} step={1} onChange={(_e, val) => setTypography({ baseSize: val as number })} valueLabelDisplay="auto" valueLabelFormat={(v) => `${v}px`} />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">10px</Typography>
@@ -423,15 +456,15 @@ function ScaleControls() {
             </Box>
           </Box>
 
-          <Box>
-            <Typography variant="body2" sx={{ fontWeight: 500, mb: 1.5, color: 'text.secondary' }}>Scale Factor Preset</Typography>
-            <Autocomplete options={SCALE_PRESETS} value={matchedPreset ?? null} onChange={handlePresetChange} getOptionLabel={(opt) => opt.label} isOptionEqualToValue={(opt, val) => opt.value === val.value} renderInput={(params) => <TextField {...params} placeholder="Select a scale..." size="small" />} slotProps={{ paper: { sx: { maxHeight: 300 } } }} />
+          <Box sx={{ p: 2, borderRadius: 2.5, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.secondary' }}>Scale Factor Preset</Typography>
+            <Autocomplete options={SCALE_PRESETS} value={matchedPreset ?? null} onChange={handlePresetChange} getOptionLabel={(opt) => opt.label} isOptionEqualToValue={(opt, val) => opt.value === val.value} renderInput={(params) => <TextField {...params} placeholder="Select a scale..." size="small" sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />} slotProps={{ paper: { sx: { maxHeight: 300, borderRadius: 2 } } }} />
             <Typography variant="body2" sx={{ mt: 1, fontVariantNumeric: 'tabular-nums', color: 'text.secondary' }}>Current: <strong>{scale}</strong>x</Typography>
           </Box>
 
-          <Box>
-            <Typography variant="body2" sx={{ fontWeight: 500, mb: 1.5, color: 'text.secondary' }}>Custom Scale Factor</Typography>
-            <TextField fullWidth size="small" placeholder="e.g. 1.414" value={customScale} onChange={handleCustomScaleChange} slotProps={{ htmlInput: { type: 'number', min: '0.5', max: '3', step: '0.001' } }} />
+          <Box sx={{ p: 2, borderRadius: 2.5, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider', gridColumn: { xs: 'span 1', sm: 'span 2', md: 'span 1' } }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.secondary' }}>Custom Scale Factor</Typography>
+            <TextField fullWidth size="small" placeholder="e.g. 1.414" value={customScale} onChange={handleCustomScaleChange} slotProps={{ htmlInput: { type: 'number', min: '0.5', max: '3', step: '0.001' } }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
             <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>Enter any positive number to override the preset</Typography>
           </Box>
         </Box>
@@ -440,10 +473,10 @@ function ScaleControls() {
   );
 }
 
-// ---------- Scale Table ----------
+// ---------- Scale Table (Desktop) ----------
 function ScaleTable({ styles, fontFamily }: { styles: TypeStyle[]; fontFamily: string }) {
   return (
-    <TableContainer component={Paper} variant="outlined">
+    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 3 }}>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -493,28 +526,45 @@ function ScaleTable({ styles, fontFamily }: { styles: TypeStyle[]; fontFamily: s
   );
 }
 
-// ---------- Scale Cards ----------
+// ---------- Scale Cards (Mobile) ----------
 function ScaleCards({ styles, fontFamily }: { styles: TypeStyle[]; fontFamily: string }) {
   return (
     <Box>
       <Stack spacing={2}>
         {styles.map((style) => {
-          const displaySize = Math.min(style.fontSize, 28);
+          const displaySize = Math.min(style.fontSize, 24);
           return (
-            <Card key={style.name} variant="outlined">
-              <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                  <Chip label={FAMILY_LABELS[style.family]} size="small" color={FAMILY_COLORS[style.family]} variant="outlined" sx={{ fontWeight: 500 }} />
-                  <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'capitalize' }}>{style.size}</Typography>
+            <Card key={style.name} variant="outlined" sx={{ borderRadius: 3 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, mb: 1, flexWrap: 'wrap' }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <Chip label={FAMILY_LABELS[style.family]} size="small" color={FAMILY_COLORS[style.family]} variant="outlined" sx={{ fontWeight: 600, fontSize: 11 }} />
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, textTransform: 'capitalize' }}>{style.name}</Typography>
+                  </Stack>
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary', fontWeight: 600 }}>
+                    {style.fontSize.toFixed(1)}px / lh {style.lineHeight}px
+                  </Typography>
                 </Box>
-                <Typography gutterBottom noWrap sx={{ fontFamily: `'${fontFamily}', sans-serif`, fontSize: displaySize, fontWeight: style.fontWeight, lineHeight: 1.4, letterSpacing: `${style.letterSpacing}em`, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Typography
+                  noWrap
+                  sx={{
+                    fontFamily: `'${fontFamily}', sans-serif`,
+                    fontSize: displaySize,
+                    fontWeight: style.fontWeight,
+                    lineHeight: 1.3,
+                    letterSpacing: `${style.letterSpacing}em`,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    my: 1,
+                  }}
+                >
                   {PREVIEW_TEXT}
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mt: 1 }}>
-                  <Chip label={`${style.fontSize.toFixed(1)}px`} size="small" variant="outlined" />
-                  <Chip label={`${style.lineHeight}px lh`} size="small" variant="outlined" />
-                  <Chip label={`w${style.fontWeight}`} size="small" variant="outlined" />
-                  <Chip label={`${style.letterSpacing}em`} size="small" variant="outlined" />
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mt: 1.5 }}>
+                  <Chip label={`Size: ${style.fontSize.toFixed(1)}px`} size="small" variant="outlined" sx={{ fontSize: 10, height: 22, fontFamily: 'monospace' }} />
+                  <Chip label={`LH: ${style.lineHeight}px`} size="small" variant="outlined" sx={{ fontSize: 10, height: 22, fontFamily: 'monospace' }} />
+                  <Chip label={`Weight: ${style.fontWeight}`} size="small" variant="outlined" sx={{ fontSize: 10, height: 22, fontFamily: 'monospace' }} />
+                  <Chip label={`Tracking: ${style.letterSpacing}em`} size="small" variant="outlined" sx={{ fontSize: 10, height: 22, fontFamily: 'monospace' }} />
                 </Box>
               </CardContent>
             </Card>
@@ -542,21 +592,47 @@ function LivePreview({ styles, fontFamily }: { styles: TypeStyle[]; fontFamily: 
   const ff = `'${fontFamily}', sans-serif`;
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>Live Preview</Typography>
+    <Card sx={{ mb: 4, borderRadius: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, mb: 3, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+          Live Preview
+        </Typography>
 
-        <Box sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: 'grey.100', px: 4, py: 5, }}>
-            <Typography noWrap sx={{ fontFamily: ff, fontSize: Math.min(displayLarge?.fontSize ?? 57, 57), fontWeight: displayLarge?.fontWeight ?? 400, lineHeight: 1.2, letterSpacing: `${displayLarge?.letterSpacing ?? -0.25}em`, mb: 2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Box sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+          <Box sx={{ bgcolor: 'grey.100', px: { xs: 2, sm: 3, md: 4 }, py: { xs: 3, sm: 4, md: 5 } }}>
+            <Typography
+              noWrap
+              sx={{
+                fontFamily: ff,
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: `${Math.min(displayLarge?.fontSize ?? 57, 57)}px` },
+                fontWeight: displayLarge?.fontWeight ?? 400,
+                lineHeight: 1.2,
+                letterSpacing: `${displayLarge?.letterSpacing ?? -0.25}em`,
+                mb: 2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               Typography Scale
             </Typography>
-            <Typography noWrap sx={{ fontFamily: ff, fontSize: titleMedium?.fontSize ?? 16, fontWeight: titleMedium?.fontWeight ?? 500, lineHeight: 1.4, letterSpacing: `${titleMedium?.letterSpacing ?? 0.15}em`, color: 'text.secondary', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Typography
+              noWrap
+              sx={{
+                fontFamily: ff,
+                fontSize: { xs: '0.875rem', sm: '1rem', md: `${titleMedium?.fontSize ?? 16}px` },
+                fontWeight: titleMedium?.fontWeight ?? 500,
+                lineHeight: 1.4,
+                letterSpacing: `${titleMedium?.letterSpacing ?? 0.15}em`,
+                color: 'text.secondary',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               Material Design 3 · Type Scale Generator
             </Typography>
           </Box>
 
-          <Box sx={{ px: 4, py: 3, overflow: 'hidden' }}>
+          <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: { xs: 2.5, sm: 3 }, overflow: 'hidden' }}>
             <Typography sx={{ fontFamily: ff, fontSize: bodyLarge?.fontSize ?? 16, fontWeight: bodyLarge?.fontWeight ?? 400, lineHeight: 1.6, letterSpacing: `${bodyLarge?.letterSpacing ?? 0.5}em`, mb: 2 }}>
               Material Design 3 provides a comprehensive type scale system that helps establish visual hierarchy and readability across your application. Each style is carefully crafted for specific use cases.
             </Typography>
@@ -601,19 +677,25 @@ export default function TypographyPage() {
   }, [fontFamily]);
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>Typography</Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Material Design 3 type scale with live generator
+    <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' } }}>
+        Typography
+      </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+        Material Design 3 type scale with live generator and custom font support
       </Typography>
 
       <FontControls />
       <ScaleControls />
 
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Letter Spacing Overrides</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+        Letter Spacing Overrides
+      </Typography>
       <TrackingControls styles={styles} />
 
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Type Scale Preview</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+        Type Scale Preview
+      </Typography>
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <ScaleTable styles={styles} fontFamily={fontFamily} />
