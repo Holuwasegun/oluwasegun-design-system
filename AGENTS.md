@@ -30,10 +30,11 @@ You must never change, swap, upgrade, or "improve" anything in this section. If 
 
 Do not introduce a second framework, a different state management library (like Redux or Recoil), or a completely different styling architecture that breaks the Emotion/MUI integration.
 
-### 2.2 Locked Architecture (Client-Side SPA)
+### 2.2 Locked Architecture (Cross-Platform SPA)
 
+- **Capacitor Mobile Wrapper:** This is a cross-platform app (Web, iOS, Android) utilizing Capacitor. Do NOT write Next.js server-side code (SSR), API routes relying on Node backends, or use `next/image` optimization. The app must compile strictly to a static export (`output: 'export'`).
 - **No Backend Database:** There is NO PostgreSQL, NO Prisma, NO Supabase, and NO MongoDB. This is a client-side SPA. 
-- **Persistence:** All configurations and themes are saved in the user's browser using `localStorage` via Zustand's persist middleware. Do not attempt to add API routes for saving project state to a database.
+- **Persistence:** All configurations and themes are saved on the user's device. For cross-platform persistence, you must use Capacitor's `@capacitor/preferences` inside Zustand's persist middleware, NOT standard `localStorage`.
 - **Single Page Application:** The core application renders inside `/dashboard` relying on client-side `currentView` routing via the `useAppStore`.
 
 ---
@@ -49,7 +50,7 @@ Every line here is an order. Breaking any one of them means the task failed, eve
 ### Infrastructure & Scope
 - **No Backend Creep:** Never write API routes that attempt to connect to a database or perform heavy server-side processing, except for the clearly defined `/api/generate-layout` which serves as the Layout Lab backend.
 - **No Heavy Asset Storage:** Never store large base64 image strings from the Layout Lab directly in the global `useThemeStore`. The store is for tokens and configuration data only to prevent hitting the 5MB `localStorage` limit.
-- **Stay in v1 Scope:** Do not attempt to build Figma sync plugins, native mobile apps, or multi-user authentication (NextAuth/Clerk) yet. Those are v2 and v3 features.
+- **Stay in v1 Scope:** Do not attempt to build Figma sync plugins or multi-user authentication (NextAuth/Clerk) yet. Those are v2 and v3 features.
 
 ---
 
