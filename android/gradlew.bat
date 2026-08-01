@@ -39,6 +39,8 @@ for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
 
 @rem Find java.exe
+@rem Override JAVA_HOME to the correct nested JDK path
+if exist "%JAVA_HOME%\jdk-21.0.6+7\bin\java.exe" set "JAVA_HOME=%JAVA_HOME%\jdk-21.0.6+7"
 if defined JAVA_HOME goto findJavaFromJavaHome
 
 set JAVA_EXE=java.exe
