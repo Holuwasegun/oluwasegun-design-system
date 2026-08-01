@@ -56,7 +56,7 @@ export default function Footer() {
 
       if (data.success) {
         setSubscribed(true);
-        setSnackMessage(data.message || 'Subscribed successfully! Notification routed to oluwasegunawodeyi@gmail.com');
+        setSnackMessage('Thank you for subscribing to Oluwasegun Design System updates!');
         setEmail('');
       } else {
         setSnackMessage(data.error || 'Subscription failed. Please try again.');
@@ -64,7 +64,7 @@ export default function Footer() {
     } catch (err) {
       console.error('Subscription error:', err);
       setSubscribed(true);
-      setSnackMessage('Thank you for subscribing! Notification sent to oluwasegunawodeyi@gmail.com');
+      setSnackMessage('Thank you for subscribing to Oluwasegun Design System updates!');
       setEmail('');
     } finally {
       setIsSubmitting(false);
@@ -223,7 +223,7 @@ export default function Footer() {
               </Button>
             </Stack>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5, textAlign: 'left', fontSize: '0.75rem' }}>
-              Submissions are delivered directly to oluwasegunawodeyi@gmail.com. Zero spam, unsubscribe anytime.
+              Zero spam. Unsubscribe at any time.
             </Typography>
           </Box>
         </Box>
