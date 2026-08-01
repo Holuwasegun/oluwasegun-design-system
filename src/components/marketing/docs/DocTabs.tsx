@@ -102,10 +102,10 @@ import './styles/design-tokens.css';
         <Typography variant="h4" component="h3" sx={{ fontWeight: 700, mb: 3 }}>
           Philosophy & Approach
         </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           Stop guessing hex codes. This generator uses algorithmic color science to build complete, accessible Material Design 3 token systems. By simply inputting 5 key colors, the system derives comprehensive tonal palettes and maps them to semantic roles.
         </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           It doesn't just stop at colors. The generator also produces clamp-based fluid typography scales that automatically adjust across screen sizes, and shape tokens for consistent border radii.
         </Typography>
       </TabPanel>
@@ -114,11 +114,11 @@ import './styles/design-tokens.css';
         <Typography variant="h4" component="h3" sx={{ fontWeight: 700, mb: 3 }}>
           Understanding the Tokens
         </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           The generated output relies heavily on CSS variables mapped to specific semantic purposes. We strictly follow the `--md-sys-*` nomenclature.
         </Typography>
         <Typography variant="h6" sx={{ mt: 4, mb: 2, fontWeight: 600 }}>Color Roles</Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           Instead of using generic variables like <code>--blue-500</code>, tokens are assigned based on their UI purpose:
           <ul>
             <li><code>--md-sys-color-primary</code>: For your most prominent CTA or brand elements.</li>
@@ -134,13 +134,13 @@ import './styles/design-tokens.css';
         <Typography variant="h4" component="h3" sx={{ fontWeight: 700, mb: 3 }}>
           Using the Output
         </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           Integration is designed to be completely framework-agnostic. Because the output is standard CSS Custom Properties (variables), you can use it anywhere.
         </Typography>
         
         <CodeBlock code={exportCode} language="javascript" filename="React / Plain HTML Example" />
         
-        <Typography variant="body1" paragraph sx={{ mt: 4, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
+        <Typography variant="body1" sx={{ mb: 2, mt: 4, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
           <strong>Dark Mode Support:</strong> The generator can optionally output dark mode tokens wrapped in a media query (<code>@media (prefers-color-scheme: dark)</code>) or scoped to a class (<code>.dark</code>). No extra JavaScript is needed to swap themes.
         </Typography>
       </TabPanel>

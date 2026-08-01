@@ -29,7 +29,7 @@ export default function DocumentationSection() {
           right: '-10%', 
           width: '50%', 
           height: '600px', 
-          background: \`radial-gradient(circle, \${theme.palette.primary.main}1A 0%, rgba(0,0,0,0) 70%)\`, 
+          background: `radial-gradient(circle, ${theme.palette.primary.main}1A 0%, rgba(0,0,0,0) 70%)`, 
           zIndex: 0, 
           pointerEvents: 'none' 
         }} 
@@ -74,7 +74,7 @@ export default function DocumentationSection() {
             background: 'background.paper',
             p: { xs: 2, md: 4 },
             minHeight: '500px',
-            boxShadow: \`0 24px 64px \${theme.palette.background.default}\`
+            boxShadow: `0 24px 64px ${theme.palette.background.default}`
           }}
         >
           <DocTabs />
