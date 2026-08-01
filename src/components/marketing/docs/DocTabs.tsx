@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, Tabs, Tab, Typography, useTheme, alpha } from '@mui/material';
+import { Box, Tabs, Tab, Typography } from '@mui/material';
 import CodeBlock from './CodeBlock';
 
 interface TabPanelProps {
@@ -40,8 +40,6 @@ function a11yProps(index: number) {
 
 export default function DocTabs() {
   const [value, setValue] = useState(0);
-  const theme = useTheme();
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -106,7 +104,7 @@ import './styles/design-tokens.css';
           Stop guessing hex codes. This generator uses algorithmic color science to build complete, accessible Material Design 3 token systems. By simply inputting 5 key colors, the system derives comprehensive tonal palettes and maps them to semantic roles.
         </Typography>
         <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', lineHeight: 1.7, fontSize: '1.1rem' }}>
-          It doesn't just stop at colors. The generator also produces clamp-based fluid typography scales that automatically adjust across screen sizes, and shape tokens for consistent border radii.
+          It doesn&apos;t just stop at colors. The generator also produces clamp-based fluid typography scales that automatically adjust across screen sizes, and shape tokens for consistent border radii.
         </Typography>
       </TabPanel>
       

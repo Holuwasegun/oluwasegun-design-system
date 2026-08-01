@@ -22,7 +22,7 @@ export default function Header() {
       }}
     >
       <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
             <Box
               sx={{
@@ -55,7 +55,7 @@ export default function Header() {
               </Typography>
             </Box>
           </Stack>
-        </a>
+        </Link>
         
         <Stack direction="row" spacing={4} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
           <Link href="#features" style={{ textDecoration: 'none' }}>

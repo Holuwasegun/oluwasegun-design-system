@@ -13,6 +13,7 @@ export default function Hero() {
   const [isNative, setIsNative] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsNative(Capacitor.isNativePlatform());
   }, []);
 

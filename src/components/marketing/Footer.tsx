@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Stack, IconButton, Divider } from '@mui/material';
-import { Palette } from 'lucide-react';
+
 import { GitHub, Twitter, LinkedIn } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ export default function Footer() {
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(12, 1fr)' }, gap: 8, mb: 8 }}>
           {/* Brand Column */}
           <Box sx={{ gridColumn: { xs: 'span 1', sm: 'span 2', md: 'span 6' } }}>
-            <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2, transition: 'opacity 0.2s', '&:hover': { opacity: 0.8 } }}>
                 <Box
                   sx={{
@@ -44,7 +44,7 @@ export default function Footer() {
                   </Typography>
                 </Box>
               </Stack>
-            </a>
+            </Link>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 300 }}>
               The ultimate open-source tool for generating, visualizing, and exporting Material Design 3 token systems in seconds.
             </Typography>
