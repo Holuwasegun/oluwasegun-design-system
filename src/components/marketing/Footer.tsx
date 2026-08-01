@@ -37,7 +37,7 @@ export default function Footer() {
 
           <Box sx={{ gridColumn: { xs: 'span 1', sm: 'span 1', md: 'span 2' }, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Resources</Typography>
-            <Link href="#" style={{ textDecoration: 'none' }}><Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>Documentation</Typography></Link>
+            <Link href="#documentation" style={{ textDecoration: 'none' }}><Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>Documentation</Typography></Link>
             <Link href="#" style={{ textDecoration: 'none' }}><Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>Material Design 3</Typography></Link>
             <Link href="#" style={{ textDecoration: 'none' }}><Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>CSS Variables Guide</Typography></Link>
           </Box>

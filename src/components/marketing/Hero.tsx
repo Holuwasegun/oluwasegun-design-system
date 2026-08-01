@@ -79,6 +79,7 @@ export default function Hero() {
               variant="outlined" 
               color="inherit" 
               size="large"
+              href="#documentation"
               sx={{ px: 4, py: 1.5, borderRadius: 8, textTransform: 'none', fontWeight: 600, fontSize: '1.1rem' }}
             >
               Read Documentation

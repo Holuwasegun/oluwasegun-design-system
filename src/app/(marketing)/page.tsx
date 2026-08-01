@@ -8,6 +8,7 @@ import Hero from '@/components/marketing/Hero';
 import Features from '@/components/marketing/Features';
 import HowItWorks from '@/components/marketing/HowItWorks';
 import FAQ from '@/components/marketing/FAQ';
+import DocumentationSection from '@/components/marketing/DocumentationSection';
 import CtaSection from '@/components/marketing/CtaSection';
 import Footer from '@/components/marketing/Footer';
 
@@ -19,6 +20,7 @@ export default function Home() {
         <Hero />
         <Features />
         <HowItWorks />
+        <DocumentationSection />
         <FAQ />
         <CtaSection />
       </Box>
