@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
+import { Preferences } from '@capacitor/preferences';
 import {
   type ThemeConfig,
   type SchemeMode,
@@ -9,6 +10,19 @@ import {
   DEFAULT_THEME_CONFIG,
   generateSchemeFromConfig,
 } from "@/theme/scheme";
+
+const capacitorStorage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    const { value } = await Preferences.get({ key: name });
+    return value;
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    await Preferences.set({ key: name, value });
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await Preferences.remove({ key: name });
+  },
+};
 
 // ---------- Project ----------
 export interface Project {
@@ -199,7 +213,11 @@ export const useThemeStore = create<ThemeStore>()(
         }
       },
     }),
-    { name: "oluwasegun-design-system-theme", merge: (p, c) => mergeConfig(p, c as ThemeStore) }
+    { 
+      name: "oluwasegun-design-system-theme", 
+      storage: createJSONStorage(() => capacitorStorage),
+      merge: (p, c) => mergeConfig(p, c as ThemeStore) 
+    }
   )
 );
 
@@ -287,7 +305,10 @@ export const useProjectStore = create<ProjectStore>()(
         return get().projects.find((p) => p.id === id) ?? null;
       },
     }),
-    { name: "oluwasegun-design-system-projects" }
+    { 
+      name: "oluwasegun-design-system-projects",
+      storage: createJSONStorage(() => capacitorStorage)
+    }
   )
 );
 

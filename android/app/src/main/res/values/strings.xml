@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Oluwasegun Design System</string>
+    <string name="title_activity_main">Oluwasegun Design System</string>
+    <string name="package_name">com.oluwasegun.designsystem</string>
+    <string name="custom_url_scheme">com.oluwasegun.designsystem</string>
+</resources>
