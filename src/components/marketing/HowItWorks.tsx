@@ -101,7 +101,7 @@ export default function HowItWorks() {
                 overflow: 'hidden',
                 border: '1px solid',
                 borderColor: 'divider',
-                background: 'background.paper',
+                bgcolor: 'background.paper',
                 aspectRatio: '4/3',
                 position: 'relative'
               }}
