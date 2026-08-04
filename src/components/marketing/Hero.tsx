@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Grid, Stack, Typography, Paper, useTheme } from '@mui/material';
 import Link from 'next/link';
-import { ArrowRight, Code2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Code2, Layers, Palette } from 'lucide-react';
 import AndroidIcon from '@mui/icons-material/Android';
 import AppleIcon from '@mui/icons-material/Apple';
 import { Capacitor } from '@capacitor/core';
@@ -11,6 +11,15 @@ import { Capacitor } from '@capacitor/core';
 export default function Hero() {
   const theme = useTheme();
   const [isNative, setIsNative] = useState(false);
+
+  // Live MD3 seed palette pulled straight from the generated tokens (5 key colors -> full system)
+  const paletteSwatches = [
+    theme.palette.primary.main,
+    theme.palette.primary.light,
+    theme.palette.secondary.main,
+    theme.palette.warning.main,
+    theme.palette.error.main,
+  ];
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -38,6 +47,26 @@ export default function Hero() {
           {/* Copy column */}
           <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ textAlign: { xs: 'center', md: 'left' }, animation: 'fadeUp 0.8s ease-out' }}>
+              <Box
+                component="span"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 0.75,
+                  borderRadius: 999,
+                  mb: 3,
+                  backgroundColor: theme.palette.primary.light,
+                  color: theme.palette.primary.dark,
+                  fontWeight: 600,
+                  fontSize: '0.8rem',
+                  letterSpacing: '0.02em',
+                }}
+              >
+                <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main' }} />
+                Material Design 3 · Token System
+              </Box>
               <Typography 
                 variant="h1" 
                 component="h1" 
@@ -174,12 +203,16 @@ export default function Hero() {
             </Box>
           </Grid>
 
-          {/* Portrait column */}
+          {/* Visual column — designer using the product, with live generated tokens floating on top */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Box sx={{ animation: 'fadeUp 0.9s ease-out 0.15s', animationFillMode: 'both', display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' } }}>
+            <Box sx={{ position: 'relative', animation: 'fadeUp 0.9s ease-out 0.15s', animationFillMode: 'both', display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' } }}>
+              {/* Secondary glow behind the visual */}
+              <Box sx={{ position: 'absolute', top: '8%', right: '-20%', width: '70%', height: '70%', borderRadius: '50%', background: `radial-gradient(circle, ${theme.palette.warning.main}1F 0%, rgba(0,0,0,0) 70%)`, zIndex: -1, pointerEvents: 'none' }} />
+
               <Paper 
                 elevation={24}
                 sx={{ 
+                  position: 'relative',
                   borderRadius: 4,
                   overflow: 'hidden',
                   border: '1px solid',
@@ -192,9 +225,103 @@ export default function Hero() {
                 <Box 
                   component="img" 
                   src="/images/hero-woman.jpg" 
-                  alt="Black African woman in traditional attire smiling in a vibrant market" 
+                  alt="Black African woman designer working on a laptop in a modern studio" 
                   sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
+                {/* Bottom scrim seats the photo in the composition */}
+                <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.45), rgba(0,0,0,0))', pointerEvents: 'none' }} />
+              </Paper>
+
+              {/* Floating card: live MD3 color tokens */}
+              <Paper 
+                elevation={12}
+                sx={{ 
+                  position: 'absolute',
+                  top: { xs: -20, md: -28 },
+                  left: { xs: 4, md: -32 },
+                  zIndex: 2,
+                  p: 2,
+                  borderRadius: 3,
+                  bgcolor: 'background.paper',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <Palette size={16} />
+                  <Typography variant="caption" sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
+                    Live MD3 palette
+                  </Typography>
+                </Box>
+                <Stack direction="row" spacing={0.75}>
+                  {paletteSwatches.map((c) => (
+                    <Box
+                      key={c}
+                      sx={{ width: 28, height: 28, borderRadius: 1.5, bgcolor: c, border: '1px solid', borderColor: 'divider' }}
+                    />
+                  ))}
+                </Stack>
+              </Paper>
+
+              {/* Floating chip: exported tokens */}
+              <Paper 
+                elevation={12}
+                sx={{ 
+                  position: 'absolute',
+                  bottom: { xs: 24, md: 36 },
+                  right: { xs: 8, md: -28 },
+                  zIndex: 2,
+                  px: 2,
+                  py: 1.5,
+                  borderRadius: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  bgcolor: 'background.paper',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: '50%', bgcolor: 'success.main', color: 'success.contrastText' }}>
+                  <CheckCircle2 size={16} />
+                </Box>
+                <Box>
+                  <Typography variant="caption" sx={{ opacity: 0.7, display: 'block', lineHeight: 1.2 }}>
+                    Exported
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: 'monospace', lineHeight: 1.2 }}>
+                    design-tokens.css
+                  </Typography>
+                </Box>
+              </Paper>
+
+              {/* Floating chip: token count */}
+              <Paper 
+                elevation={12}
+                sx={{ 
+                  position: 'absolute',
+                  bottom: { xs: 24, md: 32 },
+                  left: { xs: 8, md: -24 },
+                  zIndex: 2,
+                  px: 2,
+                  py: 1.5,
+                  borderRadius: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  bgcolor: 'background.paper',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: '50%', bgcolor: 'primary.light', color: 'primary.dark' }}>
+                  <Layers size={16} />
+                </Box>
+                <Box>
+                  <Typography variant="caption" sx={{ opacity: 0.7, display: 'block', lineHeight: 1.2 }}>
+                    From 5 key colors
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
+                    800+ tokens
+                  </Typography>
+                </Box>
               </Paper>
             </Box>
           </Grid>
