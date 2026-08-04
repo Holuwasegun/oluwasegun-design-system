@@ -2,5 +2,5 @@
 
 These rules strictly govern the architecture of the Oluwasegun Design System to maintain compatibility across Web, iOS, and Android.
 
-- **Capacitor Mobile Wrapper:** This is a cross-platform app utilizing Capacitor. Do NOT write Next.js server-side code (SSR), API routes relying on Node backends, or use `next/image` optimization. The app must compile strictly to a static export (`output: 'export'`).
-- **Persistence:** All configurations and themes are saved on the user's device. For cross-platform persistence, you must use Capacitor's `@capacitor/preferences` inside Zustand's persist middleware, NOT standard `localStorage` (as iOS/Android WebViews may clear standard localStorage unpredictably).
+- **Capacitor Mobile Wrapper:** This is a cross-platform app utilizing Capacitor. The web frontend compiles to a static export (`output: 'export'`) for native iOS and Android webview distribution.
+- **Offline-First Persistence & Background Sync:** Configurations and themes load instantly from the user's device using Capacitor's `@capacitor/preferences` inside Zustand's persist middleware. Background synchronization syncs projects, layouts, and exports to PostgreSQL via Prisma and stores image assets in Cloudflare R2 when connected to the network.
