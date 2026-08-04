@@ -16,7 +16,7 @@ How to change the database safely for **Oluwasegun Design System**. The laws liv
 5. Run: `npx prisma migrate dev --name <short_snake_case_name>`
 6. Inspect the generated SQL. Search for `DROP` and `ALTER COLUMN`. Finding either on an additive task indicates unintended destructive edits. Do not apply.
 7. Run `npx prisma generate` and verify `npx tsc --noEmit` passes cleanly.
-8. Update repository access helpers in `src/lib/db` or `src/services/db`.
+8. Update database access helpers in `src/lib/prisma.ts`.
 9. Commit schema and migration together.
 
 ## Skeletons

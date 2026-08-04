@@ -4,7 +4,7 @@ trigger: always_on
 
 # uploads-and-storage.md
 
-Rules for asset intake, Cloudflare R2 object storage, and batch behavior for **Oluwasegun Design System**. Storage is Cloudflare R2, reached through storage service helpers (`src/lib/storage` / `src/services/storage`).
+Rules for asset intake, Cloudflare R2 object storage, and batch behavior for **Oluwasegun Design System**. Storage is Cloudflare R2, reached through storage helpers (`src/lib/storage.ts`).
 
 ## Intake
 
