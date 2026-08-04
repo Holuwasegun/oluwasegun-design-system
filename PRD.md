@@ -65,15 +65,22 @@ Needs to quickly generate social media flyers, hero banners, and ad creative tha
 *   **Framework:** Next.js 16.2.10 (App Router, Turbopack) configured for static export (`output: 'export'`).
 *   **Mobile Wrapper:** Capacitor for native iOS and Android deployment.
 *   **Styling:** Emotion (`@emotion/react`) combined with Material UI (MUI v9) ThemeProvider. Tailwind CSS 4 for utility styling during development.
-*   **State Management:** Zustand 5 with `persist` middleware. Uses Capacitor `@capacitor/preferences` on mobile to prevent OS-level data wiping.
+*   **State Management & Offline Sync:** Offline-first architecture using Zustand 5 with `persist` middleware (`@capacitor/preferences` on mobile). Background sync engine serializes projects and layout exports to PostgreSQL via Prisma.
+*   **Object Storage:** Cloudflare R2 for Layout Lab image uploads, generated PNG layout banners, and exported tokens. PostgreSQL stores only metadata and short-lived `storageKey` references.
 *   **Design Paradigm:** Neumorphic-inspired, leveraging frosted glass, inset shadows, and strict WCAG contrast computations.
 *   **Deployment:** Vercel (Edge network) for Web, Appflow for OTA mobile updates.
 
-## 7. Data Model / State Management
-The core state resides entirely on the client, managed by Zustand:
-*   `useThemeStore`: Holds `config` (Colors, Typography, Spacing, Motion) and active project reference. Handles JSON/CSS exports and deeply-merged imports.
-*   `useProjectStore`: Maintains an array of `Project` objects (id, name, config, timestamps) for versioning and switching themes.
-*   `useAppStore`: Manages volatile UI states like the sidebar toggle and active SPA view.
+## 7. Data Model / State Management & Backend Schema
+The application features an offline-first state architecture with backend synchronization:
+*   **Client State (Zustand Stores):**
+    *   `useThemeStore`: Holds active `config` (Colors, Typography, Spacing, Motion) and project reference.
+    *   `useProjectStore`: Maintains local array of `Project` objects for rapid offline switching.
+    *   `useAppStore`: Manages UI state, current SPA view, and network sync state.
+*   **Backend Database Models (Prisma / PostgreSQL):**
+    *   `User`: `id`, `email`, `name`, `createdAt`, `updatedAt`
+    *   `Project`: `id`, `name`, `description`, `userId`, `config` (JSON token specs), timestamps
+    *   `Layout`: `id`, `projectId`, `userId`, `templateId`, `headline`, `subtitle`, `body`, `imageStorageKey` (R2), `exportStorageKey` (R2), timestamps
+    *   `ExportHistory`: `id`, `projectId`, `userId`, `format` (JSON, CSS, PDF), `exportStorageKey` (R2), `createdAt`
 
 ## 8. Business Value (Internal & External)
 While currently a free-to-use SPA, the system drives significant workflow efficiency:
@@ -84,7 +91,7 @@ While currently a free-to-use SPA, the system drives significant workflow effici
 ## 9. Risks & Mitigations
 *   **Performance with Live Generation:** Rapidly dragging scale sliders triggers massive Emotion CSS recalculations. *Mitigation:* Zustand state batching and debounced inputs where necessary.
 *   **Color Math Edge Cases:** Certain extremely saturated or extremely dark base colors can cause the tonal palette generation to fail WCAG AAA standards. *Mitigation:* Hardcoded luminance overrides for critical roles like `onPrimary` and `onBackground` to force legibility.
-*   **Local Storage Limits:** Storing heavy base64 images in Layout Lab could exceed the 5MB localStorage limit. *Mitigation:* The `useThemeStore` strictly stores tokens, not user image uploads from the Layout Lab.
+*   **Local Storage Limits:** Storing heavy images locally can exceed storage limits. *Mitigation:* Raw image bytes live in Cloudflare R2, while PostgreSQL holds short-lived signed URL keys.
 
 ## 10. Success Metrics (Target KPIs)
 *   **Session Duration:** High engagement time per user, indicating active usage of the token sliders and layout lab.

@@ -30,11 +30,11 @@ You must never change, swap, upgrade, or "improve" anything in this section. If 
 
 Do not introduce a second framework, a different state management library (like Redux or Recoil), or a completely different styling architecture that breaks the Emotion/MUI integration.
 
-### 2.2 Locked Architecture (Cross-Platform SPA)
+### 2.2 Locked Architecture (Cross-Platform SPA with Offline-First DB & Storage)
 
-- **Capacitor Mobile Wrapper:** This is a cross-platform app (Web, iOS, Android) utilizing Capacitor. Do NOT write Next.js server-side code (SSR), API routes relying on Node backends, or use `next/image` optimization. The app must compile strictly to a static export (`output: 'export'`).
-- **No Backend Database:** There is NO PostgreSQL, NO Prisma, NO Supabase, and NO MongoDB. This is a client-side SPA. 
-- **Persistence:** All configurations and themes are saved on the user's device. For cross-platform persistence, you must use Capacitor's `@capacitor/preferences` inside Zustand's persist middleware, NOT standard `localStorage`.
+- **Capacitor Mobile Wrapper:** This is a cross-platform app (Web, iOS, Android) utilizing Capacitor. The app compiles to a static export (`output: 'export'`) for cross-platform mobile delivery.
+- **Offline-First Persistence & Sync:** Primary runtime persistence uses Capacitor's `@capacitor/preferences` inside Zustand's persist middleware for instant local state access. Background synchronization syncs saved projects, user configurations, and exports to a PostgreSQL database via Prisma client/services when network connection is available.
+- **Object Storage (Cloudflare R2):** PostgreSQL stores only metadata and storage keys (`storageKey`). All raw image bytes (Layout Lab uploads, generated PNG previews, PDF exports) live in Cloudflare R2, accessed via short-lived signed URLs as specified in `.agents/rules/uploads-and-storage.md` and `.agents/skills/r2-storage-handler`.
 - **Single Page Application:** The core application renders inside `/dashboard` relying on client-side `currentView` routing via the `useAppStore`.
 
 ---
@@ -48,8 +48,8 @@ Every line here is an order. Breaking any one of them means the task failed, eve
 - **Enforce Contrast (Accessibility):** Never bypass WCAG relative luminance checks. If generating a text color (like `onPrimary` or `onBackground`), always adhere to the contrast logic ensuring at least AA compliance. Dark mode requires AAA compliance for background text.
 
 ### Infrastructure & Scope
-- **No Backend Creep:** Never write API routes that attempt to connect to a database or perform heavy server-side processing, except for the clearly defined `/api/generate-layout` which serves as the Layout Lab backend.
-- **No Heavy Asset Storage:** Never store large base64 image strings from the Layout Lab directly in the global `useThemeStore`. The store is for tokens and configuration data only to prevent hitting the 5MB `localStorage` limit.
+- **No Direct Blob Storage in Database:** Never store image bytes, PDFs, or base64 strings inside PostgreSQL database columns. Only store Cloudflare R2 `storageKey` references and metadata.
+- **No Heavy Asset Storage in Zustand:** Never store large base64 image strings from the Layout Lab directly in the global `useThemeStore`. The Zustand store is for tokens and configuration metadata to ensure offline fast loading.
 - **Stay in v1 Scope:** Do not attempt to build Figma sync plugins or multi-user authentication (NextAuth/Clerk) yet. Those are v2 and v3 features.
 
 ---

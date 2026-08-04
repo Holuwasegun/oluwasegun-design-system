@@ -59,7 +59,9 @@ The Oluwasegun Design System is a reference tool and configuration assistant for
 | UI Library | React 19.2.4 |
 | Component Library | MUI v9 (Material UI) |
 | Styling | Emotion (`@emotion/react`, `@emotion/styled`) |
-| State Management | Zustand 5 with `@capacitor/preferences` persistence |
+| State Management | Zustand 5 with `@capacitor/preferences` persistence & background sync |
+| Database & ORM | PostgreSQL with Prisma 6 ORM (`User`, `Project`, `Layout`, `ExportHistory`) |
+| Object Storage | Cloudflare R2 (Layout Lab images, rendered PNG banners, export bundles) |
 | CSS (dev only) | Tailwind CSS 4 |
 | Language | TypeScript 5 |
 | Deployment | Vercel (Web), Ionic Appflow (Mobile OTA) |

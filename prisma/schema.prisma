@@ -1,0 +1,78 @@
+// This is your Prisma schema file for Oluwasegun Design System.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects Project[]
+  layouts  Layout[]
+  exports  ExportHistory[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  config      Json     // Design token specs: colors, typography, spacing, motion, border-radius
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  layouts Layout[]
+  exports ExportHistory[]
+
+  @@index([userId])
+}
+
+model Layout {
+  id               String   @id @default(uuid())
+  projectId        String
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templateId       String
+  headline         String
+  subtitle         String?
+  body             String?
+  imageStorageKey  String?  // Cloudflare R2 key for uploaded brand graphic
+  exportStorageKey String?  // Cloudflare R2 key for generated PNG layout banner
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+enum ExportFormat {
+  JSON
+  CSS
+  PDF
+}
+
+model ExportHistory {
+  id               String       @id @default(uuid())
+  projectId        String
+  project          Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  format           ExportFormat
+  exportStorageKey String?      // Cloudflare R2 key for exported file bundle
+  createdAt        DateTime     @default(now())
+
+  @@index([projectId])
+  @@index([userId])
+}
