@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Container, Grid, Stack, Typography, Paper, useTheme } from '@mui/material';
+import { Box, Button, Container, Grid, Stack, Typography, Paper, useTheme, Tooltip } from '@mui/material';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Code2, Palette, Type } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Code2, Palette, Type, Sparkles } from 'lucide-react';
 import AndroidIcon from '@mui/icons-material/Android';
 import AppleIcon from '@mui/icons-material/Apple';
 import { Capacitor } from '@capacitor/core';
@@ -12,7 +12,7 @@ export default function Hero() {
   const theme = useTheme();
   const [isNative, setIsNative] = useState(false);
 
-  // Live MD3 seed palette rendered straight from the generated tokens (5 key colors -> full system)
+  // Live MD3 seed palette rendered straight from generated tokens
   const paletteSwatches = [
     { color: theme.palette.primary.main, label: 'Primary' },
     { color: theme.palette.primary.light, label: 'Container' },
@@ -26,7 +26,6 @@ export default function Hero() {
     setIsNative(Capacitor.isNativePlatform());
   }, []);
 
-  // Mobile-first: CTAs stack and stretch to full width, then go inline on larger screens
   const buttonWidth = { xs: '100%', sm: 'auto' };
 
   return (
@@ -51,6 +50,8 @@ export default function Hero() {
           {/* Copy column */}
           <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ textAlign: { xs: 'center', md: 'left' }, animation: 'fadeUp 0.8s ease-out' }}>
+              
+              {/* Badge Pill */}
               <Box
                 component="span"
                 sx={{
@@ -68,84 +69,90 @@ export default function Hero() {
                   letterSpacing: '0.02em',
                 }}
               >
-                <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main' }} />
+                <Sparkles size={14} style={{ color: theme.palette.primary.dark }} />
                 Material Design 3 · Token System
               </Box>
 
+              {/* Headline */}
               <Typography 
                 variant="h1" 
                 component="h1" 
                 sx={{ 
                   fontWeight: 800, 
-                  mb: 4,
-                  fontSize: { xs: '2.25rem', sm: '3rem', md: '4rem' },
-                  lineHeight: 1.12,
+                  mb: 3,
+                  fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
+                  lineHeight: 1.1,
                   letterSpacing: '-0.03em'
                 }}
               >
-                Five colors in.
+                Design Systems,
                 <Box 
                   component="span" 
                   sx={{ 
                     display: 'block',
                     background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.warning.main} 100%)`,
                     WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
+                    WebkitTextFillColor: 'transparent',
+                    mt: 0.5,
                   }}
                 >
-                  Every token out.
+                  Instantly Generated.
                 </Box>
               </Typography>
               
+              {/* Subtext */}
               <Typography 
                 variant="h5" 
                 color="text.secondary" 
-                sx={{ mb: 6, maxWidth: '640px', mx: { xs: 'auto', md: 0 }, lineHeight: 1.6, fontWeight: 400, fontSize: { xs: '1rem', sm: '1.2rem', md: '1.35rem' } }}
+                sx={{ mb: 5, maxWidth: '640px', mx: { xs: 'auto', md: 0 }, lineHeight: 1.6, fontWeight: 400, fontSize: { xs: '1.05rem', sm: '1.2rem', md: '1.3rem' } }}
               >
-                Stop hand-assembling token files. Drop in 5 brand colors and get a complete Material Design 3 system — color, type, spacing, and shadows — exported in seconds.
+                Stop guessing hex codes. Build, visualize, and export a complete Material Design 3 token system in seconds. From 5 key colors to a fully robust CSS architecture.
               </Typography>
               
+              {/* Action Buttons */}
               <Stack 
                 direction={{ xs: 'column', sm: 'row' }} 
                 spacing={2} 
                 sx={{ justifyContent: { xs: 'center', md: 'flex-start' }, alignItems: { xs: 'stretch', sm: 'center' } }}
               >
-                <Link href="/dashboard" passHref>
+                <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
                   <Button 
                     variant="contained" 
                     color="primary" 
                     size="large"
-                    endIcon={<ArrowRight />}
+                    endIcon={<ArrowRight size={18} />}
                     disableElevation
                     sx={{ 
                       width: buttonWidth,
                       px: 4, 
                       py: 1.5, 
-                      borderRadius: 8, 
+                      borderRadius: 2.5, 
                       textTransform: 'none', 
                       fontWeight: 600,
                       fontSize: '1.1rem',
                       boxShadow: `0 8px 24px ${theme.palette.primary.main}40`,
                       '&:hover': {
                         boxShadow: `0 12px 32px ${theme.palette.primary.main}60`,
+                        transform: 'translateY(-1px)',
                       }
                     }}
                   >
                     Launch Dashboard
                   </Button>
                 </Link>
-                <Link href="#documentation" passHref legacyBehavior>
+                <Link href="#documentation" passHref style={{ textDecoration: 'none' }}>
                   <Button 
                     variant="outlined" 
                     color="inherit" 
                     size="large"
-                    sx={{ width: buttonWidth, px: 4, py: 1.5, borderRadius: 8, textTransform: 'none', fontWeight: 600, fontSize: '1.1rem' }}
+                    sx={{ width: buttonWidth, px: 4, py: 1.5, borderRadius: 2.5, textTransform: 'none', fontWeight: 600, fontSize: '1.1rem' }}
                   >
                     Read Documentation
                   </Button>
                 </Link>
               </Stack>
               
+              {/* Native App Downloads */}
               {!isNative && (
                 <Stack 
                   direction={{ xs: 'column', sm: 'row' }} 
@@ -188,46 +195,50 @@ export default function Hero() {
                       </Typography>
                     </Box>
                   </Button>
-                  <Button 
-                    onClick={() => alert("iOS apps cannot be sideloaded directly from websites. They must be downloaded from the official App Store. This link will be updated once published.")}
-                    sx={{ 
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: buttonWidth,
-                      minWidth: { xs: 0, sm: 220 },
-                      backgroundColor: '#000000',
-                      color: '#FFFFFF',
-                      border: '1px solid',
-                      borderColor: 'rgba(255,255,255,0.1)',
-                      borderRadius: '12px',
-                      padding: '8px 20px',
-                      textTransform: 'none',
-                      justifyContent: 'flex-start',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        backgroundColor: '#111111',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 12px 24px rgba(0,0,0,0.5)',
-                        borderColor: 'rgba(255,255,255,0.2)'
-                      }
-                    }}
-                  >
-                    <AppleIcon sx={{ fontSize: 36, mr: 2 }} />
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                      <Typography variant="caption" sx={{ fontSize: '0.65rem', lineHeight: 1, mb: 0.5, opacity: 0.7, letterSpacing: '0.05em' }}>
-                        DOWNLOAD ON THE
-                      </Typography>
-                      <Typography variant="subtitle1" sx={{ fontSize: '1.15rem', fontWeight: 600, lineHeight: 1, fontFamily: 'inherit' }}>
-                        App Store
-                      </Typography>
+
+                  <Tooltip title="iOS App Store build is pending review. Web app & APK downloads are live." arrow placement="top">
+                    <Box component="span" sx={{ width: buttonWidth }}>
+                      <Button 
+                        sx={{ 
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '100%',
+                          minWidth: { xs: 0, sm: 220 },
+                          backgroundColor: '#000000',
+                          color: '#FFFFFF',
+                          border: '1px solid',
+                          borderColor: 'rgba(255,255,255,0.1)',
+                          borderRadius: '12px',
+                          padding: '8px 20px',
+                          textTransform: 'none',
+                          justifyContent: 'flex-start',
+                          transition: 'all 0.2s ease-in-out',
+                          opacity: 0.85,
+                          '&:hover': {
+                            backgroundColor: '#111111',
+                            borderColor: 'rgba(255,255,255,0.2)',
+                            opacity: 1,
+                          }
+                        }}
+                      >
+                        <AppleIcon sx={{ fontSize: 36, mr: 2 }} />
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                          <Typography variant="caption" sx={{ fontSize: '0.65rem', lineHeight: 1, mb: 0.5, opacity: 0.7, letterSpacing: '0.05em' }}>
+                            DOWNLOAD ON THE
+                          </Typography>
+                          <Typography variant="subtitle1" sx={{ fontSize: '1.15rem', fontWeight: 600, lineHeight: 1, fontFamily: 'inherit' }}>
+                            App Store (Soon)
+                          </Typography>
+                        </Box>
+                      </Button>
                     </Box>
-                  </Button>
+                  </Tooltip>
                 </Stack>
               )}
             </Box>
           </Grid>
 
-          {/* Visual column — one product window: the designer, and the system she generated */}
+          {/* Product Window Visual */}
           <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ animation: 'fadeUp 0.9s ease-out 0.15s', animationFillMode: 'both', display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' } }}>
               <Paper 
@@ -255,38 +266,38 @@ export default function Hero() {
                   <Code2 size={16} style={{ opacity: 0.5 }} />
                 </Box>
 
-                {/* Body: designer photo + generated output */}
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
-                  {/* Designer */}
-                  <Box sx={{ position: 'relative', width: { xs: '100%', md: '46%' }, minHeight: { xs: 300, md: 420 } }}>
+                {/* Window Body: designer photo + generated output */}
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
+                  {/* Designer image */}
+                  <Box sx={{ position: 'relative', width: { xs: '100%', sm: '46%' }, minHeight: { xs: 260, sm: 380 } }}>
                     <Box 
                       component="img" 
                       src="/images/hero-woman.jpg" 
-                      alt="Black African woman designer working on a laptop in a modern studio" 
+                      alt="Designer working on design system" 
                       sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                     />
-                    <Box sx={{ position: 'absolute', bottom: 12, left: 12, px: 1.5, py: 1, borderRadius: 2, bgcolor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}>
+                    <Box sx={{ position: 'absolute', bottom: 12, left: 12, px: 1.5, py: 1, borderRadius: 2, bgcolor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}>
                       <Typography variant="caption" sx={{ color: '#FFFFFF', fontWeight: 600, lineHeight: 1.2 }}>
                         5 colors → 800+ tokens
                       </Typography>
                     </Box>
                   </Box>
 
-                  {/* Generated output */}
+                  {/* Generated token output preview */}
                   <Box sx={{ flex: 1, p: { xs: 2.5, md: 3 }, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                    {/* Colors */}
+                    {/* Swatches */}
                     <Box>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1 }}>
                         <Palette size={14} />
                         <Typography variant="caption" sx={{ fontWeight: 700, letterSpacing: '0.02em' }}>
-                          COLORS · MD3
+                          COLORS · MD3 SYSTEM
                         </Typography>
                       </Box>
                       <Stack direction="row" spacing={1}>
                         {paletteSwatches.map((s) => (
                           <Box key={s.label} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                            <Box sx={{ width: { xs: 36, md: 40 }, height: { xs: 36, md: 40 }, borderRadius: 2, bgcolor: s.color, border: '1px solid', borderColor: 'divider' }} />
-                            <Typography variant="caption" sx={{ fontSize: '0.6rem', opacity: 0.6, whiteSpace: 'nowrap' }}>
+                            <Box sx={{ width: { xs: 32, sm: 38 }, height: { xs: 32, sm: 38 }, borderRadius: 2, bgcolor: s.color, border: '1px solid', borderColor: 'divider' }} />
+                            <Typography variant="caption" sx={{ fontSize: '0.6rem', opacity: 0.65, whiteSpace: 'nowrap' }}>
                               {s.label}
                             </Typography>
                           </Box>
@@ -294,15 +305,15 @@ export default function Hero() {
                       </Stack>
                     </Box>
 
-                    {/* Type scale */}
+                    {/* Typography Scale */}
                     <Box>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1 }}>
                         <Type size={14} />
                         <Typography variant="caption" sx={{ fontWeight: 700, letterSpacing: '0.02em' }}>
-                          TYPE SCALE · DISPLAY LARGE
+                          TYPE SCALE · FLUID CLAMP
                         </Typography>
                       </Box>
-                      <Typography sx={{ fontSize: { xs: '1.9rem', md: '2.4rem' }, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+                      <Typography sx={{ fontSize: { xs: '1.8rem', sm: '2.2rem' }, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
                         Display Large
                       </Typography>
                       <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.55, display: 'block', mt: 0.5 }}>
@@ -310,7 +321,7 @@ export default function Hero() {
                       </Typography>
                     </Box>
 
-                    {/* Export status */}
+                    {/* Export Card */}
                     <Box sx={{ mt: 'auto', pt: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 1.5, py: 1.5, borderRadius: 2, bgcolor: 'primary.light', color: 'primary.dark' }}>
                         <CheckCircle2 size={18} />
@@ -331,6 +342,7 @@ export default function Hero() {
           </Grid>
         </Grid>
       </Container>
+
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(30px); }
