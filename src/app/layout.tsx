@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import ThemeRegistry from './ThemeRegistry';
 import CapgoInit from './CapgoInit';
@@ -37,25 +37,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.className}>
-      <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-DW5HFVCJP3"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-DW5HFVCJP3');
-          `}
-        </Script>
-      </head>
       <body>
         <CapgoInit />
         <ThemeRegistry>{children}</ThemeRegistry>
       </body>
+      <GoogleAnalytics gaId="G-DW5HFVCJP3" />
     </html>
   );
 }
