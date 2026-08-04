@@ -491,26 +491,49 @@ export default function Footer() {
           </Box>
         </Box>
 
-        <Divider sx={{ mb: 4 }} />
+        <Divider sx={{ mb: 5 }} />
 
         {/* Bottom Bar */}
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 2,
+            alignItems: { xs: 'center', md: 'flex-end' },
+            gap: { xs: 3, md: 4 },
+            textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-            &copy; {new Date().getFullYear()} Oluwasegun Design System. Architected with Next.js, Material UI & Zustand.
-          </Typography>
-
-          <Stack direction="row" spacing={3}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-              Crafted for Designers & Developers
+          {/* Copyright */}
+          <Box>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.875rem' }}>
+              &copy; {new Date().getFullYear()} Oluwasegun Design System
             </Typography>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', opacity: 0.75, display: 'block', mt: 0.5, letterSpacing: '0.02em' }}
+            >
+              All rights reserved &middot; Crafted for Designers &amp; Developers
+            </Typography>
+          </Box>
+
+          {/* Tech stack */}
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', rowGap: 1 }}
+          >
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', opacity: 0.7, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', fontSize: '0.65rem' }}
+            >
+              Architected with
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              <TechPill label="Next.js" />
+              <TechPill label="Material UI" />
+              <TechPill label="Zustand" />
+            </Stack>
           </Stack>
         </Box>
 
@@ -518,7 +541,7 @@ export default function Footer() {
         <Typography
           variant="h1"
           sx={{
-            mt: 6,
+            mt: { xs: 7, md: 9 },
             fontWeight: 900,
             fontSize: { xs: '3rem', sm: '5.5rem', md: '8rem' },
             letterSpacing: '-0.05em',
@@ -551,6 +574,30 @@ export default function Footer() {
           {snackMessage}
         </Alert>
       </Snackbar>
+    </Box>
+  );
+}
+
+function TechPill({ label }: { label: string }) {
+  return (
+    <Box
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        px: 1.25,
+        py: 0.5,
+        borderRadius: 999,
+        border: '1px solid',
+        borderColor: 'divider',
+        bgcolor: 'action.hover',
+        color: 'text.secondary',
+        fontSize: '0.7rem',
+        fontWeight: 700,
+        letterSpacing: '0.02em',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
     </Box>
   );
 }
