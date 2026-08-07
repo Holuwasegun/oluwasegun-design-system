@@ -10,6 +10,7 @@ import {
   DEFAULT_THEME_CONFIG,
   generateSchemeFromConfig,
 } from "@/theme/scheme";
+import { type TokenScope, type TokenFormat, generateTokenExport } from "@/lib/export-utils";
 
 const capacitorStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
@@ -53,6 +54,7 @@ interface ThemeStore {
   resetConfig: () => void;
   exportConfig: () => string;
   exportCssTokens: () => string;
+  exportTokenFile: (scope: TokenScope, format: TokenFormat) => string;
   importConfig: (json: string) => boolean;
 }
 
@@ -187,10 +189,12 @@ export const useThemeStore = create<ThemeStore>()(
           const cssKey = k.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
           css += `    --md-sys-color-${cssKey}: var(--md-sys-color-${cssKey}-dark);\n`;
         }
-        css += "  }\n}\n";
+        css += "  }\n}";
 
         return css;
       },
+
+      exportTokenFile: (scope, format) => generateTokenExport(get().config, scope, format),
 
       importConfig: (json) => {
         try {

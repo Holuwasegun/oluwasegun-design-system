@@ -30,6 +30,7 @@ import {
 } from "@mui/icons-material";
 import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
+import ExportTokenModal from "./ExportTokenModal";
 
 const pageTitles: Record<string, string> = {
   "home": "Dashboard",
@@ -51,37 +52,14 @@ export default function TopBar() {
   const searchParams = useSearchParams();
   const currentView = searchParams.get("view") || "home";
   const { toggleSidebar } = useAppStore();
-  const { config, toggleMode, exportConfig, exportCssTokens, currentProjectId } = useThemeStore();
+  const { config, toggleMode, currentProjectId } = useThemeStore();
   const { projects } = useProjectStore();
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
 
   const title = pageTitles[currentView] || "Design System";
   const currentProject = projects.find((p) => p.id === currentProjectId);
-
-  const handleExport = () => {
-    const json = exportConfig();
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${currentProject ? currentProject.name.replace(/\s+/g, "-").toLowerCase() : "oluwasegun-design-system"}-theme.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setMobileMenuAnchor(null);
-  };
-
-  const handleExportCss = () => {
-    const css = exportCssTokens();
-    const blob = new Blob([css], { type: "text/css" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${currentProject ? currentProject.name.replace(/\s+/g, "-").toLowerCase() : "oluwasegun-design-system"}-tokens.css`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setMobileMenuAnchor(null);
-  };
 
   const handleImport = () => {
     setMobileMenuAnchor(null);
@@ -169,13 +147,13 @@ export default function TopBar() {
           {/* Desktop & Tablet Export/Import Action Buttons */}
           {!isSmallScreen && (
             <>
-              <Tooltip title="Export theme as JSON">
+              <Tooltip title="Export tokens">
                 <Button
                   size="small"
                   tabIndex={0}
-                  aria-label="Export theme as JSON"
+                  aria-label="Export tokens"
                   startIcon={<ExportIcon sx={{ fontSize: "1rem !important" }} />}
-                  onClick={handleExport}
+                  onClick={() => setExportModalOpen(true)}
                   sx={{
                     textTransform: "none",
                     color: "text.secondary",
@@ -189,31 +167,7 @@ export default function TopBar() {
                     },
                   }}
                 >
-                  JSON
-                </Button>
-              </Tooltip>
-
-              <Tooltip title="Export CSS tokens">
-                <Button
-                  size="small"
-                  tabIndex={0}
-                  aria-label="Export CSS tokens"
-                  startIcon={<ExportIcon sx={{ fontSize: "1rem !important" }} />}
-                  onClick={handleExportCss}
-                  sx={{
-                    textTransform: "none",
-                    color: "text.secondary",
-                    minWidth: 0,
-                    px: 1.5,
-                    borderRadius: 2,
-                    '&:focus-visible, &.Mui-focusVisible': {
-                      outline: '2px solid',
-                      outlineColor: 'primary.main',
-                      outlineOffset: '2px',
-                    },
-                  }}
-                >
-                  CSS
+                  Export
                 </Button>
               </Tooltip>
 
@@ -343,13 +297,9 @@ export default function TopBar() {
           }
         }}
       >
-        <MenuItem onClick={handleExport}>
+        <MenuItem onClick={() => { setExportModalOpen(true); setMobileMenuAnchor(null); }}>
           <ListItemIcon><ExportIcon fontSize="small" /></ListItemIcon>
-          <ListItemText primary="Export JSON" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
-        </MenuItem>
-        <MenuItem onClick={handleExportCss}>
-          <ListItemIcon><ExportIcon fontSize="small" /></ListItemIcon>
-          <ListItemText primary="Export CSS" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
+          <ListItemText primary="Export Tokens" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
         </MenuItem>
         <MenuItem onClick={handleImport}>
           <ListItemIcon><ImportIcon fontSize="small" /></ListItemIcon>
@@ -358,6 +308,7 @@ export default function TopBar() {
       </Menu>
 
       <ProjectManager open={projectManagerOpen} onClose={() => setProjectManagerOpen(false)} />
+      <ExportTokenModal open={exportModalOpen} onClose={() => setExportModalOpen(false)} />
     </>
   );
 }
