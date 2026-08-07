@@ -164,11 +164,37 @@ export function generateColorScheme(
   };
 }
 
+export interface FontWeightsConfig {
+  thin?: number;
+  light?: number;
+  regular?: number;
+  medium?: number;
+  semibold?: number;
+  bold?: number;
+  extrabold?: number;
+  black?: number;
+}
+
+export const DEFAULT_FONT_WEIGHTS: FontWeightsConfig = {
+  thin: 100,
+  light: 300,
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  extrabold: 800,
+  black: 900,
+};
+
 export interface TypographyScale {
   baseSize: number;
   scale: number;
   letterSpacingOverrides?: Record<string, number>;
+  fontSizeOverrides?: Record<string, number>;
+  lineHeightOverrides?: Record<string, number>;
+  fontWeightOverrides?: Record<string, number>;
   fontFamily?: string;
+  weights?: FontWeightsConfig;
 }
 
 export interface SpacingConfig {
@@ -232,32 +258,34 @@ export interface TypeStyle {
 }
 
 export function generateTypeScale(config: TypographyScale): TypeStyle[] {
-  const { baseSize, scale, letterSpacingOverrides } = config;
+  const { baseSize, scale, letterSpacingOverrides, fontSizeOverrides, lineHeightOverrides, fontWeightOverrides, weights } = config;
+  const resolvedWeights: FontWeightsConfig = { ...DEFAULT_FONT_WEIGHTS, ...(weights ?? {}) };
+
   const styles: [string, TypeStyle["family"], TypeStyle["size"], number, number, number, number][] = [
-    ["Display Large",   "display",  "large",  5, 64, 400, -0.25],
-    ["Display Medium",  "display",  "medium", 4, 52, 400, 0],
-    ["Display Small",   "display",  "small",  3, 44, 400, 0],
-    ["Headline Large",  "headline", "large",  3, 40, 400, 0],
-    ["Headline Medium", "headline", "medium", 2, 36, 400, 0],
-    ["Headline Small",  "headline", "small",  2, 32, 400, 0],
-    ["Title Large",     "title",    "large",  2, 28, 400, 0],
-    ["Title Medium",    "title",    "medium", 1, 24, 500, 0.15],
-    ["Title Small",     "title",    "small",  1, 20, 500, 0.1],
-    ["Body Large",      "body",     "large",  0, 24, 400, 0.5],
-    ["Body Medium",     "body",     "medium", 0, 20, 400, 0.25],
-    ["Body Small",      "body",     "small", -1, 16, 400, 0.4],
-    ["Label Large",     "label",    "large",  0, 20, 500, 0.1],
-    ["Label Medium",    "label",    "medium",-1, 16, 500, 0.5],
-    ["Label Small",     "label",    "small", -2, 16, 500, 0.5],
+    ["Display Large",   "display",  "large",  5, 64, resolvedWeights.regular ?? 400, -0.25],
+    ["Display Medium",  "display",  "medium", 4, 52, resolvedWeights.regular ?? 400, 0],
+    ["Display Small",   "display",  "small",  3, 44, resolvedWeights.regular ?? 400, 0],
+    ["Headline Large",  "headline", "large",  3, 40, resolvedWeights.regular ?? 400, 0],
+    ["Headline Medium", "headline", "medium", 2, 36, resolvedWeights.regular ?? 400, 0],
+    ["Headline Small",  "headline", "small",  2, 32, resolvedWeights.regular ?? 400, 0],
+    ["Title Large",     "title",    "large",  2, 28, resolvedWeights.regular ?? 400, 0],
+    ["Title Medium",    "title",    "medium", 1, 24, resolvedWeights.medium ?? 500, 0.15],
+    ["Title Small",     "title",    "small",  1, 20, resolvedWeights.medium ?? 500, 0.1],
+    ["Body Large",      "body",     "large",  0, 24, resolvedWeights.regular ?? 400, 0.5],
+    ["Body Medium",     "body",     "medium", 0, 20, resolvedWeights.regular ?? 400, 0.25],
+    ["Body Small",      "body",     "small", -1, 16, resolvedWeights.regular ?? 400, 0.4],
+    ["Label Large",     "label",    "large",  0, 20, resolvedWeights.medium ?? 500, 0.1],
+    ["Label Medium",    "label",    "medium",-1, 16, resolvedWeights.medium ?? 500, 0.5],
+    ["Label Small",     "label",    "small", -2, 16, resolvedWeights.medium ?? 500, 0.5],
   ];
 
   return styles.map(([name, family, size, step, lh, fw, ls]) => ({
     name,
     family,
     size,
-    fontSize: Math.round(baseSize * Math.pow(scale, step) * 100) / 100,
-    lineHeight: lh,
-    fontWeight: fw,
+    fontSize: fontSizeOverrides?.[name] ?? Math.round(baseSize * Math.pow(scale, step) * 100) / 100,
+    lineHeight: lineHeightOverrides?.[name] ?? lh,
+    fontWeight: fontWeightOverrides?.[name] ?? fw,
     letterSpacing: letterSpacingOverrides?.[name] ?? ls,
   }));
 }
