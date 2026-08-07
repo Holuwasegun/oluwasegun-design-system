@@ -1377,38 +1377,38 @@ export default function ColorPage() {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: "auto" }}>
+    <Box sx={{ p: { xs: 1.5, sm: 2, md: 3 }, maxWidth: 1400, mx: "auto" }}>
       {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1, gap: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' } }}>
           Color
         </Typography>
         <Tooltip title="Reset all colors to defaults">
-          <IconButton onClick={resetConfig} size="small">
+          <IconButton onClick={resetConfig} size="small" sx={{ flexShrink: 0 }}>
             <RestartAltRoundedIcon />
           </IconButton>
         </Tooltip>
       </Box>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
         Material Design 3 color system — pick key colors and watch the full palette generate automatically
       </Typography>
 
       {/* Key Color Pickers */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5, gap: 1, flexWrap: 'wrap' }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
           Key Colors
         </Typography>
         <Button
           size="small"
           startIcon={<AddRoundedIcon />}
           onClick={() => setAddDialogOpen(true)}
-          sx={{ textTransform: "none" }}
+          sx={{ textTransform: "none", borderRadius: 2 }}
         >
           Add Key Color
         </Button>
       </Box>
 
-      <Grid container spacing={2} sx={{ mb: 4 }}>
+      <Grid container spacing={1.5} sx={{ mb: 3 }}>
         {SCHEME_KEY_ORDER.map((key) => (
           <Grid key={key} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <KeyColorPicker
@@ -1440,10 +1440,10 @@ export default function ColorPage() {
       </Grid>
 
       {/* Tonal Palettes */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
         Tonal Palettes
       </Typography>
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 3 }}>
         {SCHEME_KEY_ORDER.map((key) => (
           <TonalPaletteStrip
             key={key}
@@ -1467,22 +1467,22 @@ export default function ColorPage() {
         ))}
       </Box>
 
-      <Divider sx={{ my: 4 }} />
+      <Divider sx={{ my: 3 }} />
 
       {/* Generated Color Scheme */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
         Generated Color Scheme ({config.mode})
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
         All 30 color roles derived from your key colors using MD3 tonal mapping
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={1.5}>
         {SCHEME_GROUPS.map((group) => (
           <Grid key={group.label} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <Card variant="outlined" sx={{ height: "100%" }}>
-              <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5 }}>
+            <Card variant="outlined" sx={{ height: "100%", borderRadius: 2.5 }}>
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 }, "&:last-child": { pb: { xs: 1.5, sm: 2 } } }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   {group.label}
                 </Typography>
                 {group.keys.map((key) => (

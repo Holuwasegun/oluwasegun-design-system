@@ -81,10 +81,10 @@ function RadiusBuilder() {
   ];
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+    <Card sx={{ mb: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 2.5, md: 4 } } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, gap: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
             Radius Builder
           </Typography>
           <Button
@@ -92,7 +92,7 @@ function RadiusBuilder() {
             size="small"
             startIcon={<RestartAltIcon />}
             onClick={handleReset}
-            sx={{ textTransform: 'none' }}
+            sx={{ textTransform: 'none', borderRadius: 2 }}
           >
             Reset
           </Button>
@@ -102,14 +102,14 @@ function RadiusBuilder() {
           sx={{
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-            gap: { xs: 3, md: 4 },
+            gap: { xs: 2, md: 3 },
             alignItems: 'start',
           }}
         >
-          <Stack spacing={2.5}>
+          <Stack spacing={2}>
             <Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Uniform Radius
                 </Typography>
                 <Typography variant="caption" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
@@ -134,7 +134,7 @@ function RadiusBuilder() {
             {corners.map(({ key, label }) => (
               <Box key={key}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                     {label}
                   </Typography>
                   <Typography variant="caption" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
@@ -155,21 +155,21 @@ function RadiusBuilder() {
             ))}
           </Stack>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: 200,
+                minHeight: { xs: 150, sm: 200 },
                 bgcolor: 'grey.100',
                 borderRadius: 2,
               }}
             >
               <Box
                 sx={{
-                  width: 160,
-                  height: 120,
+                  width: { xs: 140, sm: 160 },
+                  height: { xs: 100, sm: 120 },
                   bgcolor: 'primary.main',
                   borderRadius: radiusCSS,
                   opacity: 0.8,
@@ -178,8 +178,8 @@ function RadiusBuilder() {
               />
             </Box>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>Component Preview</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Component Preview</Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
                 <Button variant="contained" sx={{ borderRadius: radiusCSS, textTransform: 'none' }}>Button</Button>
                 <Button variant="outlined" sx={{ borderRadius: radiusCSS, textTransform: 'none' }}>Outlined</Button>
@@ -198,7 +198,7 @@ function RadiusBuilder() {
                 multiline
                 rows={2}
                 value={cssCode}
-                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13, pr: 8 } } }}
+                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 12, pr: 8 } } }}
                 size="small"
               />
               <Button
@@ -224,47 +224,47 @@ function RadiusBuilder() {
 
 export default function RadiusPage() {
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
+    <Box sx={{ p: { xs: 1.5, sm: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' } }}>
         Border Radius
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
         Shape scale for corners
       </Typography>
 
       <RadiusBuilder />
 
-      <Divider sx={{ my: 4 }} />
+      <Divider sx={{ my: 3 }} />
 
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 1.5, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
         MD3 Shape Scale
       </Typography>
-      <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
         {shapeScale.map(({ name, value, token }) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
-            <Card>
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} key={name}>
+            <Card sx={{ borderRadius: 2.5 }}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, p: { xs: 1.5, sm: 2 } }}>
                 <Box
                   sx={{
-                    width: 120,
-                    height: 80,
+                    width: { xs: 80, sm: 120 },
+                    height: { xs: 56, sm: 80 },
                     bgcolor: 'primary.main',
                     opacity: 0.8,
                     borderRadius: value,
                     transition: 'border-radius 0.3s ease',
                   }}
                 />
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   {name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                   {value === 9999 ? '9999px' : `${value}px`}
                 </Typography>
                 <Chip
                   label={token}
                   size="small"
                   variant="outlined"
-                  sx={{ fontFamily: 'monospace', fontSize: 11 }}
+                  sx={{ fontFamily: 'monospace', fontSize: { xs: 9, sm: 11 } }}
                 />
               </CardContent>
             </Card>
@@ -272,57 +272,42 @@ export default function RadiusPage() {
         ))}
       </Grid>
 
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 1.5, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
         Chips & Buttons
       </Typography>
-      <Stack spacing={3} sx={{ mb: 4 }}>
+      <Stack spacing={2} sx={{ mb: 3 }}>
         {shapeScale.map(({ name, value }) => (
-          <Stack key={`btn-${name}`} direction="row" spacing={2} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography variant="body2" sx={{ width: { xs: 80, sm: 120 }, color: 'text.secondary', flexShrink: 0 }}>
+          <Stack key={`btn-${name}`} direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2 }} useFlexGap sx={{ alignItems: { xs: 'flex-start', sm: 'center' } }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', flexShrink: 0, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
               {name}
             </Typography>
-            <Chip
-              label="Chip"
-              sx={{ borderRadius: value, bgcolor: 'primary.main', color: 'primary.contrastText' }}
-            />
-            <Chip
-              label="Outlined"
-              variant="outlined"
-              sx={{ borderRadius: value, color: 'primary.main' }}
-            />
-            <Button
-              variant="contained"
-              sx={{ borderRadius: value, textTransform: 'none' }}
-            >
-              Button
-            </Button>
-            <Button
-              variant="outlined"
-              sx={{ borderRadius: value, textTransform: 'none' }}
-            >
-              Outlined
-            </Button>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+              <Chip label="Chip" sx={{ borderRadius: value, bgcolor: 'primary.main', color: 'primary.contrastText' }} />
+              <Chip label="Outlined" variant="outlined" sx={{ borderRadius: value, color: 'primary.main' }} />
+              <Button variant="contained" sx={{ borderRadius: value, textTransform: 'none' }}>Button</Button>
+              <Button variant="outlined" sx={{ borderRadius: value, textTransform: 'none' }}>Outlined</Button>
+            </Box>
           </Stack>
         ))}
       </Stack>
 
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 1.5, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
         Square Examples
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={1.5}>
         {shapeScale.map(({ name, value }) => (
           <Grid size={{ xs: 6, sm: 4, md: 3 }} key={`sq-${name}`}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75 }}>
               <Box
                 sx={{
-                  width: 64,
-                  height: 64,
+                  width: { xs: 48, sm: 64 },
+                  height: { xs: 48, sm: 64 },
                   bgcolor: 'secondary.main',
                   borderRadius: value,
                   transition: 'border-radius 0.3s ease',
                 }}
               />
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                 {name}: {value === 9999 ? 'full' : `${value}px`}
               </Typography>
             </Box>

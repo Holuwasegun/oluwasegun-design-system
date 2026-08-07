@@ -77,7 +77,7 @@ export default function ElevationPage() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         Elevation Levels
       </Typography>
-      <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 5 }}>
         {elevationLevels.map(({ level, label, description, shadow }) => {
           const isHovered = hoveredCard === `level-${level}`;
           return (
@@ -87,23 +87,24 @@ export default function ElevationPage() {
                 onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => handleTap(`level-${level}`)}
                 sx={{
-                  height: { xs: 140, sm: 180 },
+                  height: { xs: 120, sm: 180 },
+                  minHeight: { xs: 48, sm: 'auto' },
                   boxShadow: isHovered ? liftedShadows[level] : shadow,
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.3s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
                 }}
               >
-                <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', py: { xs: 1.5, md: 2 } }}>
                   <Box>
-                    <Typography variant="h2" color="primary.main" sx={{ fontWeight: 700, fontSize: { xs: '1.75rem', sm: '2rem' } }}>
+                    <Typography variant="h2" color="primary.main" sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                       {level}
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 0.5 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                       {label}
                     </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                     {description}
                   </Typography>
                 </CardContent>
@@ -119,7 +120,7 @@ export default function ElevationPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Hover over any card (or tap on mobile) to see it transition from its resting elevation to a lifted state.
       </Typography>
-      <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 5 }}>
         {elevationLevels.map(({ level, shadow }) => {
           const id = `demo-${level}`;
           const isHovered = hoveredCard === id;
@@ -130,15 +131,16 @@ export default function ElevationPage() {
                 onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => handleTap(id)}
                 sx={{
-                  height: 120,
+                  height: { xs: 100, sm: 120 },
+                  minHeight: { xs: 48, sm: 'auto' },
                   boxShadow: isHovered ? liftedShadows[level] : shadow,
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                   transition: 'all 0.4s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
                 }}
               >
-                <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <Typography variant="body1" color={isHovered ? 'primary.main' : 'text.secondary'} sx={{ fontWeight: isHovered ? 600 : 400 }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', py: { xs: 1.5, md: 2 } }}>
+                  <Typography variant="body1" color={isHovered ? 'primary.main' : 'text.secondary'} sx={{ fontWeight: isHovered ? 600 : 400, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                     Level {level}
                   </Typography>
                 </CardContent>
@@ -154,15 +156,16 @@ export default function ElevationPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Side-by-side view: component at rest vs. component lifted to a higher elevation.
       </Typography>
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 2, md: 3 }}>
         {elevationLevels.filter((_, i) => i < 5).map(({ level, label, shadow }) => (
           <Grid size={{ xs: 12, sm: 6 }} key={`compare-${level}`}>
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'stretch' }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 2, sm: 3 }, alignItems: 'stretch' }}>
               <Paper
                 elevation={0}
                 sx={{
                   flex: 1,
-                  p: 3,
+                  p: { xs: 2, sm: 3 },
+                  minHeight: { xs: 120, sm: 'auto' },
                   boxShadow: shadow,
                   display: 'flex',
                   flexDirection: 'column',
@@ -174,10 +177,10 @@ export default function ElevationPage() {
                 <Typography variant="caption" color="text.secondary" gutterBottom>
                   At Rest
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                   Level {level}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   {label}
                 </Typography>
               </Paper>
@@ -185,7 +188,8 @@ export default function ElevationPage() {
                 elevation={0}
                 sx={{
                   flex: 1,
-                  p: 3,
+                  p: { xs: 2, sm: 3 },
+                  minHeight: { xs: 120, sm: 'auto' },
                   boxShadow: liftedShadows[level],
                   transform: 'translateY(-2px)',
                   display: 'flex',
@@ -198,10 +202,10 @@ export default function ElevationPage() {
                 <Typography variant="caption" color="primary.main" gutterBottom sx={{ fontWeight: 600 }}>
                   Lifted
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                   Level {level + 1}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Elevated state
                 </Typography>
               </Paper>

@@ -132,11 +132,11 @@ function ShadowBuilder() {
           sx={{
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-            gap: { xs: 3, md: 4 },
+            gap: { xs: 2, md: 4 },
             alignItems: 'start',
           }}
         >
-          <Stack spacing={2.5}>
+          <Stack spacing={{ xs: 2, md: 2.5 }}>
             {sliders.map(({ key, label, min, max, step, unit }) => (
               <Box key={key}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
@@ -167,15 +167,15 @@ function ShadowBuilder() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: 200,
+                minHeight: { xs: 160, md: 200 },
                 bgcolor: 'grey.100',
                 borderRadius: 2,
               }}
             >
               <Box
                 sx={{
-                  width: 140,
-                  height: 100,
+                  width: { xs: 120, md: 140 },
+                  height: { xs: 80, md: 100 },
                   bgcolor: 'background.paper',
                   borderRadius: 2,
                   boxShadow: shadowCSS,
@@ -190,7 +190,7 @@ function ShadowBuilder() {
                 multiline
                 rows={2}
                 value={cssCode}
-                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: 13, pr: 8 } } }}
+                slotProps={{ input: { readOnly: true, sx: { fontFamily: 'monospace', fontSize: { xs: 12, md: 13 }, pr: 8 } } }}
                 size="small"
               />
               <Button
@@ -231,12 +231,12 @@ export default function ShadowsPage() {
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
         MD3 Shadow Tokens
       </Typography>
-      <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 5 }}>
         {shadowLevels.filter((s) => s.level <= 5).map(({ level, shadow, label }) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={level}>
             <Card
               sx={{
-                height: 140,
+                height: { xs: 110, sm: 140 },
                 boxShadow: shadow,
                 transition: 'box-shadow 0.3s ease',
                 '&:hover': {
@@ -244,14 +244,14 @@ export default function ShadowsPage() {
                 },
               }}
             >
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', py: { xs: 1.5, md: 2 } }}>
                 <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                     {level}
                   </Typography>
                   <Chip label={`Level ${level}`} size="small" color="primary" variant="outlined" />
                 </Stack>
-                <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 10, lineHeight: 1.4, wordBreak: 'break-all' }}>
+                <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: { xs: 9, sm: 10 }, lineHeight: 1.4, wordBreak: 'break-all' }}>
                   {label}
                 </Typography>
               </CardContent>
@@ -266,12 +266,12 @@ export default function ShadowsPage() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Increasing shadow intensity for deeper surfaces. Hover to preview a higher level.
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={{ xs: 1.5, sm: 2 }}>
         {shadowLevels.filter((s) => s.level >= 6).map(({ level, shadow }) => (
-          <Grid size={{ xs: 6, sm: 4, md: 3, lg: 2 }} key={level}>
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} key={level}>
             <Card
               sx={{
-                height: 100,
+                height: { xs: 80, sm: 100 },
                 boxShadow: shadow,
                 transition: 'box-shadow 0.3s ease',
                 cursor: 'pointer',
@@ -282,10 +282,10 @@ export default function ShadowsPage() {
               }}
             >
               <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%', py: 1 }}>
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
                   {level}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   Elevation
                 </Typography>
               </CardContent>

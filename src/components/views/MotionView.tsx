@@ -76,31 +76,31 @@ function DurationControls() {
   const hasChanges = scale !== 1 || Object.keys(overrides).length > 0;
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+    <Card sx={{ mb: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 2.5, md: 4 } } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, gap: 1, flexWrap: 'wrap' }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Duration Tokens</Typography>
-            <Typography variant="body2" color="text.secondary">Edit individual durations or scale all by a factor</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.1rem' } }}>Duration Tokens</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Edit individual durations or scale all by a factor</Typography>
           </Box>
           {hasChanges && (
-            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none' }}>
+            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none', borderRadius: 2 }}>
               Reset All
             </Button>
           )}
         </Box>
 
         {/* Global scale slider */}
-        <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>Global Duration Scale</Typography>
+        <Box sx={{ mb: 2.5, p: { xs: 1.5, sm: 2 }, bgcolor: 'grey.50', borderRadius: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
+            <Typography variant="body2" sx={{ fontWeight: 500, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Global Duration Scale</Typography>
             <Chip label={`${scale.toFixed(2)}x`} size="small" color={scale !== 1 ? 'primary' : 'default'} variant={scale !== 1 ? 'filled' : 'outlined'} sx={{ fontFamily: 'monospace' }} />
           </Box>
           <Slider value={scale} min={0.1} max={3} step={0.05} onChange={handleScaleChange} valueLabelDisplay="auto" valueLabelFormat={(v) => `${v.toFixed(2)}x`} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="caption" color="text.secondary">0.1x (faster)</Typography>
-            <Typography variant="caption" color="text.secondary">1x (default)</Typography>
-            <Typography variant="caption" color="text.secondary">3x (slower)</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>0.1x (faster)</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>1x (default)</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>3x (slower)</Typography>
           </Box>
         </Box>
 
@@ -113,10 +113,10 @@ function DurationControls() {
             const isOverridden = name in overrides;
 
             return (
-              <Grid size={{ xs: 6, sm: 4, md: 3 }} key={name}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={name}>
                 <Box sx={{ p: 1.5, borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 500, fontSize: '0.7rem' }}>{name}</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, gap: 0.5 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.8rem' } }}>{name}</Typography>
                     {isOverridden && (
                       <Button size="small" onClick={() => handleResetOne(name)} sx={{ minWidth: 0, px: 0.5, textTransform: 'none', fontSize: '0.6rem' }}>
                         Reset
@@ -131,9 +131,9 @@ function DurationControls() {
                       if (!isNaN(num) && num >= 0) handleOverride(name, num);
                     }}
                     slotProps={{ htmlInput: { type: 'number', min: 0, max: 2000, step: 10 } }}
-                    sx={{ '& .MuiInputBase-input': { fontSize: '0.8rem', fontFamily: 'monospace', py: 0.5, px: 1 }, '& .MuiOutlinedInput-root': { borderRadius: 1 } }}
+                    sx={{ '& .MuiInputBase-input': { fontSize: { xs: '0.8rem', sm: '0.875rem' }, fontFamily: 'monospace', py: 0.5, px: 1 }, '& .MuiOutlinedInput-root': { borderRadius: 1.5 } }}
                   />
-                  <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem' }}>
+                  <Typography variant="caption" color="text.disabled" sx={{ fontSize: { xs: '0.65rem', sm: '0.7rem' } }}>
                     {isOverridden ? `was ${scaledMs}ms` : 'ms'}
                   </Typography>
                 </Box>
@@ -171,31 +171,31 @@ function EasingControls() {
   const hasChanges = Object.keys(overrides).length > 0;
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+    <Card sx={{ mb: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 2.5, md: 4 } } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, gap: 1, flexWrap: 'wrap' }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Easing Curves</Typography>
-            <Typography variant="body2" color="text.secondary">Override cubic-bezier values for each easing curve</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.1rem' } }}>Easing Curves</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Override cubic-bezier values for each easing curve</Typography>
           </Box>
           {hasChanges && (
-            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none' }}>
+            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={handleResetAll} sx={{ textTransform: 'none', borderRadius: 2 }}>
               Reset All
             </Button>
           )}
         </Box>
 
-        <Stack spacing={2}>
+        <Stack spacing={1.5}>
           {Object.entries(DEFAULT_EASINGS).map(([name, defaultValue]) => {
             const currentValue = overrides[name] ?? defaultValue;
             const isOverridden = name in overrides;
 
             return (
-              <Box key={name} sx={{ p: 2, borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>{name}</Typography>
+              <Box key={name} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 1, bgcolor: isOverridden ? 'primary.50' : 'transparent' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1, gap: 1, flexWrap: 'wrap' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>{name}</Typography>
                   {isOverridden && (
-                    <Button size="small" onClick={() => handleResetOne(name)} sx={{ textTransform: 'none' }}>Reset</Button>
+                    <Button size="small" onClick={() => handleResetOne(name)} sx={{ textTransform: 'none', borderRadius: 1.5 }}>Reset</Button>
                   )}
                 </Box>
                 <TextField
@@ -203,9 +203,9 @@ function EasingControls() {
                   size="small"
                   value={currentValue}
                   onChange={(e) => handleOverride(name, e.target.value)}
-                  slotProps={{ input: { sx: { fontFamily: 'monospace', fontSize: '0.8rem' } } }}
+                  slotProps={{ input: { sx: { fontFamily: 'monospace', fontSize: { xs: '0.8rem', sm: '0.875rem' } } } }}
                 />
-                <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block' }}>
+                <Typography variant="caption" color="text.disabled" sx={{ mt: 0.5, display: 'block', fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>
                   {isOverridden ? `Default: ${defaultValue}` : 'cubic-bezier(x1, y1, x2, y2)'}
                 </Typography>
               </Box>
@@ -236,47 +236,47 @@ function DelayControl() {
   };
 
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent sx={{ p: { xs: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+    <Card sx={{ mb: 3 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 2.5, md: 4 } } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, gap: 1, flexWrap: 'wrap' }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Delay & Preview</Typography>
-            <Typography variant="body2" color="text.secondary">Set animation delay and test with current duration/easing settings</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.1rem' } }}>Delay & Preview</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Set animation delay and test with current duration/easing settings</Typography>
           </Box>
           {delay !== DEFAULT_DELAY && (
-            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={() => setDelay(DEFAULT_DELAY)} sx={{ textTransform: 'none' }}>
+            <Button variant="outlined" size="small" startIcon={<RestartAltIcon />} onClick={() => setDelay(DEFAULT_DELAY)} sx={{ textTransform: 'none', borderRadius: 2 }}>
               Reset Delay
             </Button>
           )}
         </Box>
 
-        <Stack spacing={3}>
+        <Stack spacing={2.5}>
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>Delay</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Delay</Typography>
               <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>{delay}ms</Typography>
             </Box>
             <Slider value={delay} min={0} max={1000} step={50} onChange={(_e, val) => setDelay(val as number)} valueLabelDisplay="auto" valueLabelFormat={(v) => `${v}ms`} />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">0ms</Typography>
-              <Typography variant="caption" color="text.secondary">1000ms</Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>0ms</Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}>1000ms</Typography>
             </Box>
           </Box>
 
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Test Duration: {testDuration}ms
               </Typography>
             </Box>
           </Box>
 
           {/* Animation track */}
-          <Box sx={{ height: 60, bgcolor: 'grey.100', borderRadius: 1, position: 'relative', overflow: 'hidden' }}>
+          <Box sx={{ height: { xs: 50, sm: 60 }, bgcolor: 'grey.100', borderRadius: 1, position: 'relative', overflow: 'hidden' }}>
             <Box
               sx={{
-                width: 60,
-                height: 60,
+                width: { xs: 48, sm: 60 },
+                height: { xs: 48, sm: 60 },
                 bgcolor: 'primary.main',
                 borderRadius: 1,
                 position: 'absolute',
@@ -287,7 +287,7 @@ function DelayControl() {
             />
           </Box>
 
-          <Button variant="contained" onClick={handleAnimate} sx={{ alignSelf: 'flex-start', textTransform: 'none' }}>
+          <Button variant="contained" onClick={handleAnimate} sx={{ alignSelf: 'flex-start', textTransform: 'none', borderRadius: 2 }}>
             Animate
           </Button>
         </Stack>
@@ -299,9 +299,9 @@ function DelayControl() {
 // ---------- Main Page ----------
 export default function MotionPage() {
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>Motion</Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+    <Box sx={{ p: { xs: 1.5, sm: 2, md: 4 }, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' } }}>Motion</Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
         Animation principles for Material Design 3 — edit durations, easings, and delays
       </Typography>
 
