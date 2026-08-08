@@ -81,7 +81,7 @@ function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
         displayFontFamily: persistedConfig?.typography?.displayFontFamily ?? c.typography.displayFontFamily,
         monoFontFamily: persistedConfig?.typography?.monoFontFamily ?? c.typography.monoFontFamily,
       },
-      spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}) },
+      spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}), spacingOverrides: { ...(c.spacing.spacingOverrides ?? {}), ...(persistedConfig?.spacing?.spacingOverrides ?? {}) } },
       motion: { durationScale: 1, ...c.motion, ...(persistedConfig?.motion ?? {}), durationOverrides: { ...c.motion?.durationOverrides, ...(persistedConfig?.motion?.durationOverrides ?? {}) }, easingOverrides: { ...c.motion?.easingOverrides, ...(persistedConfig?.motion?.easingOverrides ?? {}) } },
       mode: persistedConfig?.mode ?? c.mode,
     },
@@ -216,7 +216,7 @@ export const useThemeStore = create<ThemeStore>()(
               ...parsed,
               keyColors: parsed.keyColors,
               typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) }, fontFamily: parsed.typography?.fontFamily ?? DEFAULT_THEME_CONFIG.typography.fontFamily },
-              spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing },
+              spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing, spacingOverrides: { ...DEFAULT_THEME_CONFIG.spacing.spacingOverrides, ...(parsed.spacing?.spacingOverrides ?? {}) } },
               motion: { durationScale: 1, ...DEFAULT_THEME_CONFIG.motion, ...(parsed.motion ?? {}), durationOverrides: { ...DEFAULT_THEME_CONFIG.motion?.durationOverrides, ...(parsed.motion?.durationOverrides ?? {}) }, easingOverrides: { ...DEFAULT_THEME_CONFIG.motion?.easingOverrides, ...(parsed.motion?.easingOverrides ?? {}) } },
             };
             set({ config: merged, currentProjectId: null });

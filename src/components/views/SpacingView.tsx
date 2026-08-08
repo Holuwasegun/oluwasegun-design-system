@@ -7,465 +7,217 @@ import {
   Card,
   CardContent,
   Slider,
+  TextField,
   IconButton,
-  Tooltip,
-  Divider,
-  Stack,
-  Chip,
 } from '@mui/material';
-import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAlt';
 import { useThemeStore } from '@/store';
 import { generateSpacingScale } from '@/theme/scheme';
-
-const DEFAULT_BASE_UNIT = 2;
-const GRID_COLUMNS = 8;
 
 export default function SpacingPage() {
   const { config, setSpacing } = useThemeStore();
   const baseUnit = config.spacing.baseUnit;
-  const spacingScale = useMemo(() => generateSpacingScale(baseUnit), [baseUnit]);
+  const spacingOverrides = useMemo(() => config.spacing.spacingOverrides ?? {}, [config.spacing.spacingOverrides]);
+  const spacingScale = useMemo(() => generateSpacingScale(baseUnit, spacingOverrides), [baseUnit, spacingOverrides]);
 
-  const maxPx = spacingScale[spacingScale.length - 1].px;
+  const maxPx = Math.max(...spacingScale.map((s) => s.px), 1);
+
+  const handleBaseUnitChange = (_e: unknown, value: number | number[]) => {
+    setSpacing({ baseUnit: value as number });
+  };
+
+  const handleStepChange = (label: string, valueStr: string) => {
+    const num = parseInt(valueStr, 10);
+    if (!isNaN(num) && num >= 0) {
+      const next = { ...spacingOverrides, [label]: num };
+      setSpacing({ spacingOverrides: next });
+    }
+  };
+
+  const handleResetStep = (label: string) => {
+    const next = { ...spacingOverrides };
+    delete next[label];
+    setSpacing({ spacingOverrides: next });
+  };
+
+  const handleResetAll = () => {
+    setSpacing({ spacingOverrides: {} });
+  };
+
+  const hasAnyOverride = Object.keys(spacingOverrides).length > 0;
+
+  const previewSteps = useMemo(() => {
+    const wanted = ['1', '2', '3', '4', '6', '8', '12'];
+    return spacingScale.filter((s) => wanted.includes(s.label));
+  }, [spacingScale]);
 
   return (
     <Box sx={{ p: { xs: 1.5, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 0.5, md: 1 }, flexWrap: 'wrap', gap: { xs: 0.5, md: 1 } }}>
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+      <Box sx={{ mb: { xs: 2, md: 3 } }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: '1.35rem', sm: '2rem', md: '2.125rem' }, mb: 0.75 }}>
           Spacing
         </Typography>
-        <Tooltip title="Reset base unit to default">
-          <IconButton
-            size="small"
-            onClick={() => setSpacing({ baseUnit: DEFAULT_BASE_UNIT })}
-          >
-            <RestartAltRoundedIcon />
-          </IconButton>
-        </Tooltip>
+        <Typography variant="body1" color="text.secondary" sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}>
+          Configurable base spacing unit with generated scale, grid system, and usage patterns
+        </Typography>
       </Box>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 2, md: 3 } }}>
-        Configurable base spacing unit with generated scale, grid system, and usage patterns
-      </Typography>
 
-      {/* ---- 1. Base Spacing Unit Control ---- */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: { xs: 1, md: 1.5 } }}>
-        Base Spacing Unit
-      </Typography>
-      <Card variant="outlined" sx={{ mb: { xs: 3, md: 4 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 }, mb: { xs: 1.5, md: 2 } }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-              Base Unit
-            </Typography>
-            <Chip
-              label={`${baseUnit}px`}
-              size="small"
-              color={baseUnit === DEFAULT_BASE_UNIT ? 'default' : 'primary'}
-              sx={{ fontFamily: 'monospace', fontWeight: 600 }}
-            />
-            {baseUnit !== DEFAULT_BASE_UNIT && (
-              <Tooltip title={`Reset to ${DEFAULT_BASE_UNIT}px`}>
-                <IconButton
-                  size="small"
-                  onClick={() => setSpacing({ baseUnit: DEFAULT_BASE_UNIT })}
-                >
-                  <RestartAltRoundedIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-          <Box sx={{ px: { xs: 1, sm: 2 } }}>
-            <Slider
-              value={baseUnit}
-              onChange={(_, value) => setSpacing({ baseUnit: value as number })}
-              min={2}
-              max={8}
-              step={1}
-              marks={[
-                { value: 2, label: '2' },
-                { value: 4, label: '4' },
-                { value: 6, label: '6' },
-                { value: 8, label: '8' },
-              ]}
-              valueLabelDisplay="auto"
-              valueLabelFormat={(v) => `${v}px`}
-            />
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.5 }}>
-            <Typography variant="caption" color="text.secondary">
-              Compact
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Default
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Spacious
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' }, gap: { xs: 3, md: 4 }, alignItems: 'start' }}>
+        {/* LEFT COLUMN */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+          {/* Card 1: Base Spacing Unit */}
+          <Card sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.05rem', sm: '1.25rem' }, mb: 0.5 }}>
+                Base Spacing Unit
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                Change the base grid step (in pixels) to scale the layout spacing steps mathematically.
+              </Typography>
 
-      {/* ---- 2. Spacing Scale ---- */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: { xs: 1, md: 1.5 } }}>
-        Spacing Scale
-      </Typography>
-      <Card variant="outlined" sx={{ mb: { xs: 3, md: 4 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } } }}>
-          <Box sx={{ overflowX: 'auto' }}>
-            <Stack spacing={{ xs: 0.75, sm: 1 }}>
-              {spacingScale.map(({ label, value, px }, i) => {
-                const barWidth = maxPx > 0 ? Math.max((px / maxPx) * 100, 0.5) : 0;
-                const opacity = 0.35 + (i / (spacingScale.length - 1)) * 0.55;
-                return (
-                  <Box
-                    key={label}
-                    sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}
-                  >
-                    <Chip
-                      label={value % 1 === 0 ? value : value}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        width: { xs: 30, sm: 44 },
-                        fontFamily: 'monospace',
-                        fontSize: { xs: '0.65rem', sm: '0.7rem' },
-                        fontWeight: 600,
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Box
-                        sx={{
-                          height: { xs: 20, sm: 28 },
-                          width: `${barWidth}%`,
-                          bgcolor: 'primary.main',
-                          opacity,
-                          borderRadius: 1,
-                          transition: 'width 0.3s ease, opacity 0.2s ease',
-                          minWidth: px > 0 ? 2 : 0,
-                        }}
-                      />
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        width: { xs: 44, sm: 56 },
-                        textAlign: 'right',
-                        fontFamily: 'monospace',
-                        fontSize: { xs: '0.7rem', sm: '0.8rem' },
-                        fontWeight: 600,
-                        fontVariantNumeric: 'tabular-nums',
-                        color: 'text.secondary',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {px}px
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </Stack>
-          </Box>
-        </CardContent>
-      </Card>
+              <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 1 }}>
+                Base Step Unit (Slider)
+              </Typography>
 
-      <Divider sx={{ my: { xs: 3, md: 4 } }} />
-
-      {/* ---- 3. Grid System Visualization ---- */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: { xs: 1, md: 1.5 } }}>
-        Grid System
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: { xs: 1.5, md: 2 } }}>
-        {GRID_COLUMNS}-column grid using {baseUnit}px base unit &middot; gutter = 1 &times; base
-      </Typography>
-      <Card variant="outlined" sx={{ mb: { xs: 3, md: 4 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } } }}>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: `repeat(4, 1fr)`, sm: `repeat(${GRID_COLUMNS}, 1fr)` },
-              gap: `${baseUnit}px`,
-            }}
-          >
-            {Array.from({ length: GRID_COLUMNS }).map((_, i) => (
-              <Box
-                key={i}
-                sx={{
-                  bgcolor: 'primary.main',
-                  opacity: 0.15,
-                  borderRadius: 1,
-                  height: { xs: 40, sm: 64 },
-                  display: { xs: i < 4 ? 'flex' : 'none', sm: 'flex' },
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  sx={{
-                    fontFamily: 'monospace',
-                    fontSize: { xs: '0.6rem', sm: '0.65rem' },
-                    color: 'primary.main',
-                    fontWeight: 600,
-                  }}
-                >
-                  {i + 1}
-                </Typography>
+              <Box sx={{ px: { xs: 1, sm: 2 } }}>
+                <Slider
+                  value={baseUnit}
+                  onChange={handleBaseUnitChange}
+                  min={2}
+                  max={8}
+                  step={1}
+                  marks={[
+                    { value: 2, label: '2' },
+                    { value: 4, label: '4' },
+                    { value: 6, label: '6' },
+                    { value: 8, label: '8' },
+                  ]}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(v) => `${v}px`}
+                  sx={{ color: 'primary.main', '& .MuiSlider-thumb': { bgcolor: 'primary.main' } }}
+                />
               </Box>
-            ))}
-          </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 0.5, mt: 0.5 }}>
+                <Typography variant="caption" color="text.secondary">Compact</Typography>
+                <Typography variant="caption" color="text.secondary">Default</Typography>
+                <Typography variant="caption" color="text.secondary">Spacious</Typography>
+              </Box>
+            </CardContent>
+          </Card>
 
-          <Box sx={{ mt: { xs: 1.5, md: 2 }, display: 'flex', gap: { xs: 1.5, sm: 3 }, flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <Box sx={{ width: 16, height: 16, borderRadius: 0.5, bgcolor: 'primary.main', opacity: 0.15 }} />
-              <Typography variant="caption" color="text.secondary">
-                Column
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <Box sx={{ width: 16, height: 16, borderRadius: 0.5, bgcolor: 'text.secondary', opacity: 0.3 }} />
-              <Typography variant="caption" color="text.secondary">
-                Gutter ({baseUnit}px)
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <Box sx={{ width: 16, height: 16, borderRadius: 0.5, bgcolor: 'grey.300' }} />
-              <Typography variant="caption" color="text.secondary">
-                Margin ({baseUnit}px each side)
-              </Typography>
-            </Box>
-          </Box>
+          {/* Card 2: Manual Spacing Steps */}
+          <Card sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, sm: 2 } }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.05rem', sm: '1.25rem' } }}>
+                  Manual Spacing Steps
+                </Typography>
+                {hasAnyOverride && (
+                  <IconButton size="small" onClick={handleResetAll} sx={{ p: 0.5 }}>
+                    <RestartAltRoundedIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                )}
+              </Box>
 
-          {/* Content area with margins */}
-          <Box sx={{ mt: { xs: 1.5, md: 2.5 } }}>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-              With outer margins
-            </Typography>
-            <Box
-              sx={{
-                borderRadius: 1.5,
-                p: `${baseUnit}px`,
-              }}
-            >
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: { xs: `repeat(4, 1fr)`, sm: `repeat(${GRID_COLUMNS}, 1fr)` },
-                  gap: `${baseUnit}px`,
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                  gap: { xs: 1.5, sm: 2 },
+                  maxHeight: { xs: 360, sm: 420, md: 480 },
+                  overflowY: 'auto',
+                  pr: { xs: 0.5, sm: 1 },
+                  '&::-webkit-scrollbar': { width: 6 },
+                  '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
+                  '&::-webkit-scrollbar-thumb': { bgcolor: 'text.disabled', borderRadius: 3 },
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'text.disabled transparent',
                 }}
               >
-                {Array.from({ length: GRID_COLUMNS }).map((_, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      bgcolor: 'primary.main',
-                      opacity: 0.3,
-                      borderRadius: 0.5,
-                      height: { xs: 28, sm: 32 },
-                    }}
-                  />
-                ))}
+                {spacingScale.map((step) => {
+                  const currentPx = step.px;
+                  const isOverridden = step.label in spacingOverrides;
+
+                  return (
+                    <Box key={step.label} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary' }}>
+                          STEP {step.label}
+                        </Typography>
+                        {isOverridden && (
+                          <IconButton size="small" onClick={() => handleResetStep(step.label)} sx={{ p: 0.25, ml: 0.5 }}>
+                            <RestartAltRoundedIcon sx={{ fontSize: 14 }} />
+                          </IconButton>
+                        )}
+                      </Box>
+                      <TextField
+                        type="number"
+                        value={currentPx}
+                        onChange={(e) => handleStepChange(step.label, e.target.value)}
+                        slotProps={{
+                          htmlInput: { min: 0, max: 200, step: 1 },
+                          input: {
+                            endAdornment: (
+                              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.75rem' }}>
+                                px
+                              </Typography>
+                            ),
+                          },
+                        }}
+                        size="small"
+                        fullWidth
+                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper', fontFamily: 'monospace', fontWeight: 600 } }}
+                      />
+                    </Box>
+                  );
+                })}
               </Box>
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </Box>
 
-      <Divider sx={{ my: { xs: 3, md: 4 } }} />
-
-      {/* ---- 4. Usage Examples ---- */}
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: { xs: 1, md: 1.5 } }}>
-        Usage Examples
-      </Typography>
-
-      {/* Code reference */}
-      <Card variant="outlined" sx={{ mb: { xs: 2, md: 2.5 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: { xs: 1, md: 1.5 } }}>
-            Function Reference
+        {/* RIGHT COLUMN */}
+        <Box sx={{ position: { lg: 'sticky' }, top: { lg: '88px' }, alignSelf: 'start' }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.05rem', sm: '1.25rem' }, mb: { xs: 1.5, sm: 2 } }}>
+            Grid Layout Preview
           </Typography>
-          <Box
-            component="pre"
-            sx={{
-              m: 0,
-              p: { xs: 1.5, sm: 2 },
-              bgcolor: 'action.hover',
-              borderRadius: 1.5,
-              fontFamily: 'monospace',
-              fontSize: { xs: '0.7rem', sm: '0.8rem' },
-              lineHeight: 1.8,
-              overflowX: 'auto',
-              whiteSpace: 'pre',
-            }}
-          >
-{spacingScale.filter(s => s.value > 0).map(
-  (s) => `spacing(${s.label.padStart(2)})  = ${String(s.px).padStart(3)}px`
-).join('\n')}
-          </Box>
-        </CardContent>
-      </Card>
+          <Card sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
+            <CardContent sx={{ p: { xs: 2.5, sm: 3.5, md: 4 }, '&:last-child': { pb: { xs: 2.5, sm: 3.5, md: 4 } } }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: { xs: 2, sm: 3 } }}>
+                Visual representation of spacer tokens:
+              </Typography>
 
-      {/* Component Padding */}
-      <Card variant="outlined" sx={{ mb: { xs: 2, md: 2.5 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: { xs: 1.5, md: 2 } }}>
-            Component Padding
-          </Typography>
-          <Box sx={{ display: 'flex', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
-            {[
-              { label: 'Dense', value: 1 },
-              { label: 'Normal', value: 2 },
-              { label: 'Comfortable', value: 3 },
-              { label: 'Spacious', value: 4 },
-            ].map(({ label, value }) => (
-              <Box key={label} sx={{ textAlign: 'center', flexBasis: { xs: 'calc(50% - 12px)', sm: 120 }, minWidth: 0, flexShrink: 0 }}>
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: { xs: 56, sm: 64 },
-                    bgcolor: 'primary.main',
-                    color: 'primary.contrastText',
-                    borderRadius: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: { xs: '0.65rem', sm: '0.7rem' },
-                    fontWeight: 500,
-                    p: `${value * baseUnit}px`,
-                  }}
-                >
-                  p: {value}
-                </Box>
-                <Typography variant="caption" color="text.secondary" sx={{ mt: { xs: 0.5, sm: 0.75 }, display: 'block' }}>
-                  {label} ({value * baseUnit}px)
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 2.5 } }}>
+                {previewSteps.map((step) => {
+                  const rem = (step.px / 16).toFixed(step.px % 16 === 0 ? 2 : 4);
+                  const barHeight = maxPx > 0 ? Math.max((step.px / maxPx) * 120, 2) : 2;
 
-      {/* Section Margins */}
-      <Card variant="outlined" sx={{ mb: { xs: 2, md: 2.5 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: { xs: 1.5, md: 2 } }}>
-            Section Margins
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, md: 2 } }}>
-            {[
-              { label: 'Tight section', mb: 1 },
-              { label: 'Standard section', mb: 2 },
-              { label: 'Spacious section', mb: 3 },
-            ].map(({ label, mb }) => (
-              <Box key={label}>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                  mb: {mb} ({mb * baseUnit}px)
-                </Typography>
-                <Box sx={{ mb: `${mb * baseUnit}px`, '&:last-child': { mb: 0 } }}>
-                  <Box
-                    sx={{
-                      height: { xs: 32, sm: 36 },
-                      bgcolor: 'primary.main',
-                      opacity: 0.25,
-                      borderRadius: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      px: 1.5,
-                    }}
-                  >
-                    <Typography variant="caption" sx={{ fontWeight: 500 }}>
-                      {label}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Element Gaps */}
-      <Card variant="outlined" sx={{ mb: { xs: 2, md: 2.5 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: { xs: 1.5, md: 2 } }}>
-            Element Gaps
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, md: 2.5 } }}>
-            {[
-              { label: 'Tight', gap: 1 },
-              { label: 'Normal', gap: 2 },
-              { label: 'Loose', gap: 3 },
-            ].map(({ label, gap }) => (
-              <Box key={label}>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.75 }}>
-                  gap: {gap} ({gap * baseUnit}px)
-                </Typography>
-                <Box sx={{ display: 'flex', gap: `${gap * baseUnit}px` }}>
-                  {[0, 1, 2].map((n) => (
-                    <Box
-                      key={n}
-                      sx={{
-                        flex: 1,
-                        height: { xs: 36, sm: 40 },
-                        bgcolor: 'primary.main',
-                        opacity: 0.2,
-                        borderRadius: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minWidth: 0,
-                      }}
-                    >
-                      <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main' }}>
-                        {String.fromCharCode(65 + n)}
+                  return (
+                    <Box key={step.label} sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 } }}>
+                      <Typography variant="caption" sx={{ fontWeight: 700, fontFamily: 'monospace', width: { xs: 28, sm: 36 }, flexShrink: 0 }}>
+                        {step.label}
+                      </Typography>
+                      <Box
+                        sx={{
+                          width: 4,
+                          height: barHeight,
+                          bgcolor: 'primary.main',
+                          borderRadius: 2,
+                          opacity: 0.7 + (step.px / maxPx) * 0.3,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary', fontWeight: 600 }}>
+                        {rem}rem
                       </Typography>
                     </Box>
-                  ))}
-                </Box>
+                  );
+                })}
               </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Nested Insets */}
-      <Card variant="outlined" sx={{ mb: { xs: 2, md: 2.5 } }}>
-        <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: { xs: 2, sm: 2.5 } } }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: { xs: 1.5, md: 2 } }}>
-            Nested Insets
-          </Typography>
-          <Box
-            sx={{
-              p: `${2 * baseUnit}px`,
-              bgcolor: 'action.hover',
-              borderRadius: 1.5,
-            }}
-          >
-            <Box
-              sx={{
-                p: `${2 * baseUnit}px`,
-                bgcolor: 'primary.main',
-                opacity: 0.1,
-                borderRadius: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  p: `${2 * baseUnit}px`,
-                  bgcolor: 'primary.main',
-                  opacity: 0.2,
-                  borderRadius: 1,
-                  textAlign: 'center',
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                  p: 2 → p: 2 → p: 2
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </Box>
+      </Box>
     </Box>
   );
 }

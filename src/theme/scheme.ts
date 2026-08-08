@@ -201,6 +201,7 @@ export interface TypographyScale {
 
 export interface SpacingConfig {
   baseUnit: number;
+  spacingOverrides?: Record<string, number>;
 }
 
 export interface DurationOverride {
@@ -245,7 +246,7 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   keyColors: { ...DEFAULT_KEY_COLORS },
   mode: "system",
   typography: { baseSize: 14, scale: 1.25, fontFamily: 'Inter', displayFontFamily: 'Playfair Display', monoFontFamily: 'JetBrains Mono' },
-  spacing: { baseUnit: 2 },
+  spacing: { baseUnit: 2, spacingOverrides: {} },
   motion: { durationScale: 1 },
 };
 
@@ -292,22 +293,44 @@ export function generateTypeScale(config: TypographyScale): TypeStyle[] {
   }));
 }
 
-export function generateSpacingScale(baseUnit: number): { label: string; value: number; px: number }[] {
-  return [
-    { label: "0", value: 0, px: 0 },
-    { label: "0.5", value: 0.5, px: baseUnit * 0.5 },
-    { label: "1", value: 1, px: baseUnit },
-    { label: "1.5", value: 1.5, px: baseUnit * 1.5 },
-    { label: "2", value: 2, px: baseUnit * 2 },
-    { label: "3", value: 3, px: baseUnit * 3 },
-    { label: "4", value: 4, px: baseUnit * 4 },
-    { label: "5", value: 5, px: baseUnit * 5 },
-    { label: "6", value: 6, px: baseUnit * 6 },
-    { label: "8", value: 8, px: baseUnit * 8 },
-    { label: "10", value: 10, px: baseUnit * 10 },
-    { label: "12", value: 12, px: baseUnit * 12 },
-    { label: "16", value: 16, px: baseUnit * 16 },
+export function generateSpacingScale(baseUnit: number, overrides?: Record<string, number>): { label: string; value: number; px: number }[] {
+  const steps = [
+    { label: '0', value: 0 },
+    { label: '0.5', value: 0.5 },
+    { label: '1', value: 1 },
+    { label: '1.5', value: 1.5 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+    { label: '6', value: 6 },
+    { label: '8', value: 8 },
+    { label: '10', value: 10 },
+    { label: '12', value: 12 },
+    { label: '14', value: 14 },
+    { label: '16', value: 16 },
+    { label: '20', value: 20 },
+    { label: '24', value: 24 },
+    { label: '28', value: 28 },
+    { label: '32', value: 32 },
+    { label: '36', value: 36 },
+    { label: '40', value: 40 },
+    { label: '44', value: 44 },
+    { label: '48', value: 48 },
+    { label: '52', value: 52 },
+    { label: '56', value: 56 },
+    { label: '60', value: 60 },
+    { label: '64', value: 64 },
+    { label: '72', value: 72 },
+    { label: '80', value: 80 },
+    { label: '96', value: 96 },
   ];
+
+  return steps.map(({ label, value }) => ({
+    label,
+    value,
+    px: overrides?.[label] ?? baseUnit * value,
+  }));
 }
 
 export const DEFAULT_KEY_COLOR_NAMES: Record<string, string> = {
