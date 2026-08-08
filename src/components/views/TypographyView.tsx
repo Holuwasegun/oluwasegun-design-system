@@ -108,6 +108,7 @@ function FontFamilyCard() {
   const displayFont = config.typography.displayFontFamily ?? DEFAULT_DISPLAY_FONT;
   const monoFont = config.typography.monoFontFamily ?? DEFAULT_MONO_FONT;
   const customFonts = useMemo(() => config.typography.customFonts ?? [], [config.typography.customFonts]);
+  const [fontRole, setFontRole] = useState<'fontFamily' | 'displayFontFamily' | 'monoFontFamily'>('fontFamily');
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [fontSearch, setFontSearch] = useState('');
@@ -156,7 +157,7 @@ function FontFamilyCard() {
       const entry: CustomFontEntry = { name: fontName, base64 };
       setCustomFont(entry);
 
-      setTypography({ fontFamily: fontName });
+      setTypography({ [fontRole]: fontName });
     } catch {
       setUploadError('Failed to process font file.');
     }
@@ -170,14 +171,14 @@ function FontFamilyCard() {
     const existing = customFonts.find((f) => f.name === fontUrlName);
     if (existing) {
       registerCustomFont(fontUrlName, existing.base64);
-      setTypography({ fontFamily: fontUrlName });
+      setTypography({ [fontRole]: fontUrlName });
       setFontUrlName('');
       return;
     }
 
     const entry: CustomFontEntry = { name: fontUrlName, base64: '' };
     setCustomFont(entry);
-    setTypography({ fontFamily: fontUrlName });
+    setTypography({ [fontRole]: fontUrlName });
     setFontUrlName('');
   };
 
@@ -279,32 +280,63 @@ function FontFamilyCard() {
           />
         </Box>
 
-        <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
-          <Select
-            value={sansFont}
-            onChange={(e) => setTypography({ fontFamily: e.target.value })}
-            size="small"
-            fullWidth
-            displayEmpty
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                bgcolor: 'background.paper',
-                fontSize: { xs: '0.85rem', sm: '1rem' },
-              },
-            }}
-          >
-            {filteredFonts.map((font) => (
-              <MenuItem
-                key={font.name}
-                value={font.name}
-                sx={{ fontFamily: font.name, fontSize: { xs: '0.85rem', sm: '1rem' } }}
-              >
-                {font.name}
-                {font.category === 'custom' && '  (Custom)'}
-              </MenuItem>
-            ))}
-          </Select>
+        <Box sx={{ display: 'flex', gap: { xs: 1.5, sm: 2 }, alignItems: 'flex-end', flexWrap: { xs: 'wrap' } }}>
+          <Box sx={{ flex: 1, minWidth: { xs: 120, sm: 160 } }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 0.5 }}>
+              Apply To
+            </Typography>
+            <Select
+              value={fontRole}
+              onChange={(e) => setFontRole(e.target.value as 'fontFamily' | 'displayFontFamily' | 'monoFontFamily')}
+              size="small"
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper',
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                },
+              }}
+            >
+              <MenuItem value="fontFamily" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Sans</MenuItem>
+              <MenuItem value="displayFontFamily" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Display</MenuItem>
+              <MenuItem value="monoFontFamily" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>Mono</MenuItem>
+            </Select>
+          </Box>
+
+          <Box sx={{ flex: 2, minWidth: { xs: 140, sm: 180 } }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 0.5 }}>
+              Font
+            </Typography>
+            <Select
+              value={fontRole === 'fontFamily' ? sansFont : fontRole === 'displayFontFamily' ? displayFont : monoFont}
+              onChange={(e) => {
+                setTypography({ [fontRole]: e.target.value });
+                loadGoogleFont(e.target.value, getFontWeights(e.target.value));
+              }}
+              size="small"
+              fullWidth
+              displayEmpty
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper',
+                  fontSize: { xs: '0.85rem', sm: '1rem' },
+                },
+              }}
+            >
+              {filteredFonts.map((font) => (
+                <MenuItem
+                  key={font.name}
+                  value={font.name}
+                  sx={{ fontFamily: font.name, fontSize: { xs: '0.85rem', sm: '1rem' } }}
+                >
+                  {font.name}
+                  {font.category === 'custom' && '  (Custom)'}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
         </Box>
 
         <input
