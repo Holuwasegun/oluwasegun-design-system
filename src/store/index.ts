@@ -78,6 +78,8 @@ function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
         fontWeightOverrides: { ...(c.typography.fontWeightOverrides ?? {}), ...(persistedConfig?.typography?.fontWeightOverrides ?? {}) },
         weights: { ...(c.typography.weights ?? {}), ...(persistedConfig?.typography?.weights ?? {}) },
         fontFamily: persistedConfig?.typography?.fontFamily ?? c.typography.fontFamily,
+        displayFontFamily: persistedConfig?.typography?.displayFontFamily ?? c.typography.displayFontFamily,
+        monoFontFamily: persistedConfig?.typography?.monoFontFamily ?? c.typography.monoFontFamily,
       },
       spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}) },
       motion: { durationScale: 1, ...c.motion, ...(persistedConfig?.motion ?? {}), durationOverrides: { ...c.motion?.durationOverrides, ...(persistedConfig?.motion?.durationOverrides ?? {}) }, easingOverrides: { ...c.motion?.easingOverrides, ...(persistedConfig?.motion?.easingOverrides ?? {}) } },

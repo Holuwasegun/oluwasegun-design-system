@@ -194,6 +194,8 @@ export interface TypographyScale {
   lineHeightOverrides?: Record<string, number>;
   fontWeightOverrides?: Record<string, number>;
   fontFamily?: string;
+  displayFontFamily?: string;
+  monoFontFamily?: string;
   weights?: FontWeightsConfig;
 }
 
@@ -242,7 +244,7 @@ export const DEFAULT_KEY_COLORS: Record<string, string> = {
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   keyColors: { ...DEFAULT_KEY_COLORS },
   mode: "system",
-  typography: { baseSize: 14, scale: 1.25 },
+  typography: { baseSize: 14, scale: 1.25, fontFamily: 'Inter', displayFontFamily: 'Playfair Display', monoFontFamily: 'JetBrains Mono' },
   spacing: { baseUnit: 2 },
   motion: { durationScale: 1 },
 };
