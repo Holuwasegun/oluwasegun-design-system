@@ -16,7 +16,6 @@ import {
   TableRow,
   Paper,
   Chip,
-  Divider,
   Stack,
   Autocomplete,
   Tooltip,
@@ -34,7 +33,6 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useThemeStore } from '@/store';
 import {
   generateTypeScale,
@@ -479,7 +477,7 @@ function ScaleControls() {
             <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 1 }}>
               Base Size
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
               <TextField
                 type="number"
                 value={baseSize}
@@ -491,15 +489,16 @@ function ScaleControls() {
                   },
                 }}
                 size="small"
-                fullWidth
-                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
+                sx={{ flex: 1, minWidth: 0, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
               />
-              <IconButton size="small" onClick={() => handleBaseSizeStep(-1)} sx={{ bgcolor: 'action.hover', borderRadius: 1.5 }}>
-                <RemoveIcon fontSize="small" />
-              </IconButton>
-              <IconButton size="small" onClick={() => handleBaseSizeStep(1)} sx={{ bgcolor: 'action.hover', borderRadius: 1.5 }}>
-                <AddIcon fontSize="small" />
-              </IconButton>
+              <Box sx={{ display: 'flex', gap: 0.5 }}>
+                <IconButton size="small" onClick={() => handleBaseSizeStep(-1)} sx={{ bgcolor: 'action.hover', borderRadius: 1.5 }}>
+                  <RemoveIcon fontSize="small" />
+                </IconButton>
+                <IconButton size="small" onClick={() => handleBaseSizeStep(1)} sx={{ bgcolor: 'action.hover', borderRadius: 1.5 }}>
+                  <AddIcon fontSize="small" />
+                </IconButton>
+              </Box>
             </Box>
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
               Standard root font size (default: 14px)
@@ -572,10 +571,7 @@ function FontScaleSizes({
   const fontSizeOverrides = config.typography.fontSizeOverrides ?? {};
 
   const handleStepSizeChange = (key: string, valueStr: string) => {
-    let num = parseFloat(valueStr);
-    if (valueStr.endsWith('rem')) {
-      num = parseFloat(valueStr) * 16;
-    }
+    const num = parseFloat(valueStr);
     if (!isNaN(num) && num > 0) {
       setTypography({
         fontSizeOverrides: {
@@ -626,10 +622,8 @@ function FontScaleSizes({
           }}
         >
           {SCALE_STEP_DEFINITIONS.map((stepDef, idx) => {
-            // Compute dynamic size based on step index from middle or use default rem
             const dynamicPx = Math.round(baseSize * Math.pow(scale, (SCALE_STEP_DEFINITIONS.length - 1 - idx) - 4) * 100) / 100;
             const currentPx = fontSizeOverrides[stepDef.key] ?? dynamicPx;
-            const currentRem = (currentPx / 16).toFixed(currentPx % 16 === 0 ? 1 : 3).replace(/\.?0+$/, '') + 'rem';
             const isOverridden = stepDef.key in fontSizeOverrides;
 
             return (
@@ -644,7 +638,7 @@ function FontScaleSizes({
                   transition: 'all 0.2s',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.75 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.75, flexWrap: 'wrap', gap: 0.5 }}>
                   <Typography
                     variant="caption"
                     sx={{
@@ -671,9 +665,16 @@ function FontScaleSizes({
                 <TextField
                   fullWidth
                   size="small"
-                  value={isOverridden ? `${(currentPx / 16).toFixed(3)}rem` : currentRem}
+                  type="number"
+                  value={currentPx}
                   onChange={(e) => handleStepSizeChange(stepDef.key, e.target.value)}
-                  placeholder={`${(dynamicPx / 16).toFixed(2)}rem`}
+                  placeholder={`${dynamicPx.toFixed(1)}px`}
+                  slotProps={{
+                    htmlInput: { min: 1, max: 200, step: 1 },
+                    input: {
+                      endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                    },
+                  }}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
