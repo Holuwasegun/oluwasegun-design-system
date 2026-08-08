@@ -1,15 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
 import { Preferences } from '@capacitor/preferences';
-import {
-  type ThemeConfig,
-  type SchemeMode,
-  type TypographyScale,
-  type SpacingConfig,
-  type MotionConfig,
-  DEFAULT_THEME_CONFIG,
-  generateSchemeFromConfig,
-} from "@/theme/scheme";
+import { type ThemeConfig, type SchemeMode, type TypographyScale, type SpacingConfig, type MotionConfig, type CustomFontEntry, DEFAULT_THEME_CONFIG, generateSchemeFromConfig } from "@/theme/scheme";
 import { type TokenScope, type TokenFormat, generateTokenExport } from "@/lib/export-utils";
 
 const capacitorStorage: StateStorage = {
@@ -49,6 +41,7 @@ interface ThemeStore {
   setMode: (mode: SchemeMode) => void;
   toggleMode: () => void;
   setTypography: (typography: Partial<TypographyScale>) => void;
+  setCustomFont: (font: CustomFontEntry) => void;
   setSpacing: (spacing: Partial<SpacingConfig>) => void;
   setMotion: (motion: Partial<MotionConfig>) => void;
   resetConfig: () => void;
@@ -80,6 +73,7 @@ function mergeConfig(persisted: unknown, current: ThemeStore): ThemeStore {
         fontFamily: persistedConfig?.typography?.fontFamily ?? c.typography.fontFamily,
         displayFontFamily: persistedConfig?.typography?.displayFontFamily ?? c.typography.displayFontFamily,
         monoFontFamily: persistedConfig?.typography?.monoFontFamily ?? c.typography.monoFontFamily,
+        customFonts: [...(c.typography.customFonts ?? []), ...(persistedConfig?.typography?.customFonts ?? [])],
       },
       spacing: { ...c.spacing, ...(persistedConfig?.spacing ?? {}), spacingOverrides: { ...(c.spacing.spacingOverrides ?? {}), ...(persistedConfig?.spacing?.spacingOverrides ?? {}) } },
       motion: { durationScale: 1, ...c.motion, ...(persistedConfig?.motion ?? {}), durationOverrides: { ...c.motion?.durationOverrides, ...(persistedConfig?.motion?.durationOverrides ?? {}) }, easingOverrides: { ...c.motion?.easingOverrides, ...(persistedConfig?.motion?.easingOverrides ?? {}) } },
@@ -151,6 +145,18 @@ export const useThemeStore = create<ThemeStore>()(
           },
         })),
 
+      setCustomFont: (font) =>
+        set((state) => {
+          const customFonts = state.config.typography.customFonts ?? [];
+          const rest = customFonts.filter((f) => f.name !== font.name);
+          return {
+            config: {
+              ...state.config,
+              typography: { ...state.config.typography, customFonts: [...rest, font] },
+            },
+          };
+        }),
+
       setSpacing: (spacing) =>
         set((state) => ({
           config: {
@@ -215,7 +221,7 @@ export const useThemeStore = create<ThemeStore>()(
               ...DEFAULT_THEME_CONFIG,
               ...parsed,
               keyColors: parsed.keyColors,
-              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) }, fontFamily: parsed.typography?.fontFamily ?? DEFAULT_THEME_CONFIG.typography.fontFamily },
+              typography: { ...DEFAULT_THEME_CONFIG.typography, ...parsed.typography, letterSpacingOverrides: { ...DEFAULT_THEME_CONFIG.typography.letterSpacingOverrides, ...(parsed.typography?.letterSpacingOverrides ?? {}) }, fontFamily: parsed.typography?.fontFamily ?? DEFAULT_THEME_CONFIG.typography.fontFamily, customFonts: parsed.typography?.customFonts ?? [] },
               spacing: { ...DEFAULT_THEME_CONFIG.spacing, ...parsed.spacing, spacingOverrides: { ...DEFAULT_THEME_CONFIG.spacing.spacingOverrides, ...(parsed.spacing?.spacingOverrides ?? {}) } },
               motion: { durationScale: 1, ...DEFAULT_THEME_CONFIG.motion, ...(parsed.motion ?? {}), durationOverrides: { ...DEFAULT_THEME_CONFIG.motion?.durationOverrides, ...(parsed.motion?.durationOverrides ?? {}) }, easingOverrides: { ...DEFAULT_THEME_CONFIG.motion?.easingOverrides, ...(parsed.motion?.easingOverrides ?? {}) } },
             };

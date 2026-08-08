@@ -186,6 +186,11 @@ export const DEFAULT_FONT_WEIGHTS: FontWeightsConfig = {
   black: 900,
 };
 
+export interface CustomFontEntry {
+  name: string;
+  base64: string;
+}
+
 export interface TypographyScale {
   baseSize: number;
   scale: number;
@@ -197,6 +202,7 @@ export interface TypographyScale {
   displayFontFamily?: string;
   monoFontFamily?: string;
   weights?: FontWeightsConfig;
+  customFonts?: CustomFontEntry[];
 }
 
 export interface SpacingConfig {
@@ -245,7 +251,7 @@ export const DEFAULT_KEY_COLORS: Record<string, string> = {
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   keyColors: { ...DEFAULT_KEY_COLORS },
   mode: "system",
-  typography: { baseSize: 14, scale: 1.25, fontFamily: 'Inter', displayFontFamily: 'Playfair Display', monoFontFamily: 'JetBrains Mono' },
+  typography: { baseSize: 14, scale: 1.25, fontFamily: 'Inter', displayFontFamily: 'Playfair Display', monoFontFamily: 'JetBrains Mono', customFonts: [] },
   spacing: { baseUnit: 2, spacingOverrides: {} },
   motion: { durationScale: 1 },
 };
