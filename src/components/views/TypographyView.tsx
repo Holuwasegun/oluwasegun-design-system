@@ -12,10 +12,10 @@ import {
   MenuItem,
   IconButton,
   InputAdornment,
-  Tooltip,
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import UploadIcon from '@mui/icons-material/Upload';
+import LinkIcon from '@mui/icons-material/Link';
 import { useThemeStore } from '@/store';
 import {
   generateTypeScale,
@@ -34,6 +34,15 @@ import { registerCustomFont, unregisterCustomFont, hasCustomFont } from '@/lib/f
 const DEFAULT_FONT = 'Inter';
 const DEFAULT_DISPLAY_FONT = 'Playfair Display';
 const DEFAULT_MONO_FONT = 'JetBrains Mono';
+
+const CATEGORY_PILLS = [
+  { key: 'all', label: 'All' },
+  { key: 'sans-serif', label: 'Sans-Serif' },
+  { key: 'serif', label: 'Serif' },
+  { key: 'display', label: 'Display' },
+  { key: 'handwriting', label: 'Handwriting' },
+  { key: 'monospace', label: 'Monospace' },
+] as const;
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -63,10 +72,6 @@ function getFontWeights(fontName: string): number[] {
   const font = GOOGLE_FONTS.find((f) => f.name === fontName);
   return font?.weights ?? [400];
 }
-
-const SANS_FONTS = GOOGLE_FONTS.filter((f) => f.category === 'sans-serif');
-const DISPLAY_FONTS = GOOGLE_FONTS.filter((f) => f.category === 'serif' || f.category === 'display');
-const MONO_FONTS = GOOGLE_FONTS.filter((f) => f.category === 'monospace');
 
 const FONT_SIZE_STEPS = [
   { key: 'XS', label: 'XS', styleName: 'Label Small' },
@@ -102,8 +107,11 @@ function FontFamilyCard() {
   const sansFont = config.typography.fontFamily ?? DEFAULT_FONT;
   const displayFont = config.typography.displayFontFamily ?? DEFAULT_DISPLAY_FONT;
   const monoFont = config.typography.monoFontFamily ?? DEFAULT_MONO_FONT;
-   const customFonts = useMemo(() => config.typography.customFonts ?? [], [config.typography.customFonts]);
+  const customFonts = useMemo(() => config.typography.customFonts ?? [], [config.typography.customFonts]);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [fontSearch, setFontSearch] = useState('');
+  const [fontUrlName, setFontUrlName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -125,16 +133,6 @@ function FontFamilyCard() {
       }
     }
   }, [customFonts]);
-
-  const handleChange = (role: 'fontFamily' | 'displayFontFamily' | 'monoFontFamily') => (
-    e: { target: { value: string } }
-  ) => {
-    setTypography({ [role]: e.target.value });
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -166,6 +164,23 @@ function FontFamilyCard() {
     e.target.value = '';
   };
 
+  const handleUrlFontAdd = () => {
+    if (!fontUrlName.trim()) return;
+
+    const existing = customFonts.find((f) => f.name === fontUrlName);
+    if (existing) {
+      registerCustomFont(fontUrlName, existing.base64);
+      setTypography({ fontFamily: fontUrlName });
+      setFontUrlName('');
+      return;
+    }
+
+    const entry: CustomFontEntry = { name: fontUrlName, base64: '' };
+    setCustomFont(entry);
+    setTypography({ fontFamily: fontUrlName });
+    setFontUrlName('');
+  };
+
   const handleRemoveCustomFont = (fontName: string) => {
     const font = customFonts.find((f) => f.name === fontName);
     if (font) {
@@ -179,26 +194,119 @@ function FontFamilyCard() {
     if (monoFont === fontName) setTypography({ monoFontFamily: DEFAULT_MONO_FONT });
   };
 
-  const allFontOptions = (category: 'sans-serif' | 'serif' | 'display' | 'monospace') => {
-    const base = category === 'monospace' ? MONO_FONTS : category === 'sans-serif' ? SANS_FONTS : DISPLAY_FONTS;
-    return [...base, ...customFonts.map((f) => ({ name: f.name, category: 'custom' as const, weights: [400], isCustom: true }))];
+  const handleCategoryClick = (cat: string) => {
+    setActiveCategory(cat);
   };
+
+   const filteredFonts = useMemo(() => {
+    let fonts = GOOGLE_FONTS;
+    if (activeCategory !== 'all') {
+      fonts = fonts.filter((f) => f.category === activeCategory);
+    }
+    if (fontSearch.trim()) {
+      fonts = fonts.filter((f) => f.name.toLowerCase().includes(fontSearch.toLowerCase()));
+    }
+    const custom = customFonts.map((f) => ({ name: f.name, category: 'custom' as const }));
+    const searchedCustom = fontSearch.trim()
+      ? custom.filter((f) => f.name.toLowerCase().includes(fontSearch.toLowerCase()))
+      : custom;
+    return [...fonts, ...searchedCustom];
+  }, [activeCategory, fontSearch, customFonts]);
 
   return (
     <Card sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
       <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 }, '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, sm: 2 } }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.05rem', sm: '1.25rem' } }}>
-            Font Families
-          </Typography>
-          <Tooltip title="Upload custom font (TTF/OTF/WOFF/WOFF2)">
-            <span>
-              <IconButton size="small" onClick={handleUploadClick} sx={{ p: 0.5 }}>
-                <UploadIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-            </span>
-          </Tooltip>
+        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: { xs: '1.15rem', sm: '1.35rem' }, mb: 0.5 }}>
+          Font Family
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: { xs: 2, sm: 2.5 }, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
+          Choose from Google Fonts or upload your own font files
+        </Typography>
+
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 0.75, sm: 1 }, mb: { xs: 2, sm: 2.5 } }}>
+          {CATEGORY_PILLS.map((pill) => {
+            const isActive = activeCategory === pill.key;
+            return (
+              <Button
+                key={pill.key}
+                size="small"
+                variant={isActive ? 'contained' : 'outlined'}
+                onClick={() => handleCategoryClick(pill.key)}
+                sx={{
+                  borderRadius: 999,
+                  px: { xs: 1.5, sm: 2 },
+                  py: { xs: 0.5, sm: 1 },
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  fontWeight: 600,
+                  textTransform: 'capitalize',
+                  ...(isActive
+                    ? {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      }
+                    : {
+                        borderColor: 'divider',
+                        color: 'text.secondary',
+                        '&:hover': { bgcolor: 'action.hover' },
+                      }),
+                }}
+              >
+                {pill.label}
+              </Button>
+            );
+          })}
         </Box>
+
+        <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
+          <TextField
+            placeholder="Search fonts..."
+            value={fontSearch}
+            onChange={(e) => setFontSearch(e.target.value)}
+            size="small"
+            fullWidth
+            slotProps={{
+              htmlInput: { 'aria-label': 'Search fonts' },
+              input: { sx: { '&::placeholder': { opacity: 0.6 } } },
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+                fontSize: { xs: '0.85rem', sm: '1rem' },
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ mb: { xs: 2, sm: 2.5 } }}>
+          <Select
+            value={sansFont}
+            onChange={(e) => setTypography({ fontFamily: e.target.value })}
+            size="small"
+            fullWidth
+            displayEmpty
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+                fontSize: { xs: '0.85rem', sm: '1rem' },
+              },
+            }}
+          >
+            {filteredFonts.map((font) => (
+              <MenuItem
+                key={font.name}
+                value={font.name}
+                sx={{ fontFamily: font.name, fontSize: { xs: '0.85rem', sm: '1rem' } }}
+              >
+                {font.name}
+                {font.category === 'custom' && '  (Custom)'}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+
         <input
           type="file"
           ref={fileInputRef}
@@ -206,20 +314,96 @@ function FontFamilyCard() {
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 }, flexWrap: 'wrap', mb: { xs: 1.5, sm: 2 } }}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => fileInputRef.current?.click()}
+            startIcon={<UploadIcon sx={{ fontSize: 18 }} />}
+            sx={{
+              borderRadius: 999,
+              textTransform: 'none',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              px: { xs: 1.5, sm: 2 },
+            }}
+          >
+            Upload Font File
+          </Button>
+
+          <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+            or
+          </Typography>
+
+          <TextField
+            placeholder="Font name"
+            value={fontUrlName}
+            onChange={(e) => setFontUrlName(e.target.value)}
+            size="small"
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      onClick={handleUrlFontAdd}
+                      disabled={!fontUrlName.trim()}
+                      edge="end"
+                      sx={{ p: 0.5 }}
+                    >
+                      <LinkIcon sx={{ fontSize: 16 }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+                minWidth: { xs: 140, sm: 180 },
+              },
+            }}
+          />
+        </Box>
+
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+          Upload .woff2, .woff, .ttf, or .otf files, or load from a direct URL
+        </Typography>
         {uploadError && (
-          <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1 }}>
+          <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5 }}>
             {uploadError}
           </Typography>
         )}
         {customFonts.length > 0 && (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 0.5, sm: 1 }, mb: { xs: 1, sm: 2 } }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 0.5, sm: 1 }, mt: { xs: 1.5, sm: 2 } }}>
             {customFonts.map((f) => (
-              <Box key={f.name} sx={{ display: 'flex', alignItems: 'center', gap: 0.5, px: 1, py: 0.5, borderRadius: 1, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
-                <Typography variant="caption" sx={{ fontFamily: f.name, fontWeight: 600 }}>
+              <Box
+                key={f.name}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 999,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  bgcolor: 'background.paper',
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{ fontFamily: f.name, fontWeight: 600, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                >
                   {f.name}
                 </Typography>
-                <IconButton size="small" onClick={() => handleRemoveCustomFont(f.name)} sx={{ p: 0, minWidth: 'auto' }}>
-                  <Typography variant="caption" color="error" sx={{ fontSize: '1rem' }}>
+                <IconButton
+                  size="small"
+                  onClick={() => handleRemoveCustomFont(f.name)}
+                  sx={{ p: 0, minWidth: 'auto' }}
+                >
+                  <Typography variant="caption" color="error" sx={{ fontSize: '1rem', lineHeight: 1 }}>
                     ×
                   </Typography>
                 </IconButton>
@@ -227,65 +411,6 @@ function FontFamilyCard() {
             ))}
           </Box>
         )}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
-          <Box>
-            <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 0.75 }}>
-              SANS
-            </Typography>
-            <Select
-              value={sansFont}
-              onChange={handleChange('fontFamily')}
-              size="small"
-              fullWidth
-              displayEmpty
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
-            >
-              {allFontOptions('sans-serif').map((font) => (
-                <MenuItem key={font.name} value={font.name} sx={{ fontFamily: font.name }}>
-                  {font.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-          <Box>
-            <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 0.75 }}>
-              DISPLAY
-            </Typography>
-            <Select
-              value={displayFont}
-              onChange={handleChange('displayFontFamily')}
-              size="small"
-              fullWidth
-              displayEmpty
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
-            >
-              {allFontOptions('serif').map((font) => (
-                <MenuItem key={font.name} value={font.name} sx={{ fontFamily: font.name }}>
-                  {font.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-          <Box>
-            <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'text.secondary', display: 'block', mb: 0.75 }}>
-              MONO
-            </Typography>
-            <Select
-              value={monoFont}
-              onChange={handleChange('monoFontFamily')}
-              size="small"
-              fullWidth
-              displayEmpty
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}
-            >
-              {allFontOptions('monospace').map((font) => (
-                <MenuItem key={font.name} value={font.name} sx={{ fontFamily: font.name }}>
-                  {font.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-        </Box>
       </CardContent>
     </Card>
   );
@@ -363,7 +488,7 @@ function ScaleGeneratorCard({ onGenerate }: { onGenerate: () => void }) {
 
 function ManualFontSizesCard() {
   const { config, setTypography } = useThemeStore();
-  const fontSizeOverrides = config.typography.fontSizeOverrides ?? {};
+  const fontSizeOverrides = useMemo(() => config.typography.fontSizeOverrides ?? {}, [config.typography]);
   const baseSize = config.typography.baseSize;
   const scale = config.typography.scale;
 
@@ -515,7 +640,7 @@ function FontWeightsCard() {
 
 function LetterSpacingOverridesCard() {
   const { config, setTypography } = useThemeStore();
-  const letterSpacingOverrides = useMemo(() => config.typography.letterSpacingOverrides ?? {}, [config.typography.letterSpacingOverrides]);
+  const letterSpacingOverrides = useMemo(() => config.typography.letterSpacingOverrides ?? {}, [config.typography]);
   const styles = useMemo(() => generateTypeScale(config.typography), [config.typography]);
   const styleMap = useMemo(() => {
     const map = new Map<string, TypeStyle>();
@@ -711,9 +836,9 @@ export default function TypographyView() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
           <FontFamilyCard />
           <ScaleGeneratorCard onGenerate={handleGenerate} />
-           <ManualFontSizesCard />
-           <LetterSpacingOverridesCard />
-           <FontWeightsCard />
+          <ManualFontSizesCard />
+          <LetterSpacingOverridesCard />
+          <FontWeightsCard />
         </Box>
 
         <Box ref={previewRef}>
