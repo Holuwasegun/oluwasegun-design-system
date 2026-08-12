@@ -115,7 +115,7 @@ export default function Hero() {
                 spacing={2} 
                 sx={{ justifyContent: { xs: 'center', md: 'flex-start' }, alignItems: { xs: 'stretch', sm: 'center' } }}
               >
-                <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
+                <Link href="/signup" passHref style={{ textDecoration: 'none' }}>
                   <Button 
                     variant="contained" 
                     color="primary" 
@@ -137,7 +137,7 @@ export default function Hero() {
                       }
                     }}
                   >
-                    Launch Dashboard
+                    Start Free Trial
                   </Button>
                 </Link>
                 <Link href="#documentation" passHref style={{ textDecoration: 'none' }}>

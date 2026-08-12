@@ -5,7 +5,7 @@ import './globals.css';
 import ThemeRegistry from './ThemeRegistry';
 import CapgoInit from './CapgoInit';
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
+const inter = Inter({ subsets: ['latin'], display: 'swap', fallback: ['system-ui', '-apple-system', 'sans-serif'] });
 
 export const viewport: Viewport = {
   width: 'device-width',

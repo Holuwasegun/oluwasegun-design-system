@@ -75,32 +75,47 @@ export default function Header() {
           </Link>
         </Stack>
 
-        <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
-          <Button 
-            variant="contained" 
-            color="primary"
-            disableElevation
-            sx={{
-              borderRadius: 8,
-              px: 3,
-              py: 1,
-              fontWeight: 700,
-              textTransform: 'none',
-              boxShadow: (theme) => theme.palette.mode === 'dark'
-                ? '-6px -6px 14px rgba(255,255,255,0.08), 6px 6px 14px rgba(0,0,0,0.6)'
-                : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)',
-              transition: 'all 0.2s ease-in-out',
-              '&:hover': {
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Link href="/login" passHref style={{ textDecoration: 'none' }}>
+            <Button
+              variant="text"
+              sx={{
+                fontWeight: 700,
+                textTransform: 'none',
+                color: 'text.primary',
+                px: 2,
+              }}
+            >
+              Sign In
+            </Button>
+          </Link>
+          <Link href="/signup" passHref style={{ textDecoration: 'none' }}>
+            <Button 
+              variant="contained" 
+              color="primary"
+              disableElevation
+              sx={{
+                borderRadius: 8,
+                px: 3,
+                py: 1,
+                fontWeight: 700,
+                textTransform: 'none',
                 boxShadow: (theme) => theme.palette.mode === 'dark'
-                  ? '-8px -8px 18px rgba(255,255,255,0.12), 8px 8px 18px rgba(0,0,0,0.75)'
-                  : '-8px -8px 18px #ffffff, 8px 8px 18px rgba(0,0,0,0.22)',
-                transform: 'translateY(-2px)',
-              },
-            }}
-          >
-            Open Dashboard
-          </Button>
-        </Link>
+                  ? '-6px -6px 14px rgba(255,255,255,0.08), 6px 6px 14px rgba(0,0,0,0.6)'
+                  : '-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.15)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  boxShadow: (theme) => theme.palette.mode === 'dark'
+                    ? '-8px -8px 18px rgba(255,255,255,0.12), 8px 8px 18px rgba(0,0,0,0.75)'
+                    : '-8px -8px 18px #ffffff, 8px 8px 18px rgba(0,0,0,0.22)',
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              Get Started
+            </Button>
+          </Link>
+        </Stack>
       </Container>
     </Box>
   );
