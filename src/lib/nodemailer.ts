@@ -45,7 +45,7 @@ function getTransporter() {
   */
 export async function sendVerificationEmail({ to, name, token, code }: SendVerificationEmailParams) {
   const transporter = getTransporter();
-  const from = process.env.SMTP_FROM || '"Oluwasegun Design System" <noreply@oluwasegun.design>';
+  const from = process.env.SMTP_FROM || process.env.EMAIL_FROM || '"Oluwasegun Design System" <oluwasegunawodeyi@gmail.com>';
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const verifyLink = `${appUrl}/verify?token=${encodeURIComponent(token)}&email=${encodeURIComponent(to)}`;
   const displayCode = code || token.slice(0, 6).toUpperCase();
