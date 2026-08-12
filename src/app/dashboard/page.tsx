@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
 import { useAppStore } from "@/store";
@@ -27,16 +27,20 @@ function DashboardContent() {
   const { currentView } = useAppStore();
   const theme = useTheme();
   const router = useRouter();
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const isAuthChecked = useSyncExternalStore(
+    () => () => {},
+    () => {
+      if (typeof window === "undefined") return false;
+      return Boolean(localStorage.getItem("auth_user"));
+    },
+    () => false
+  );
 
   useEffect(() => {
-    const user = typeof window !== 'undefined' ? localStorage.getItem('auth_user') : null;
-    if (!user) {
-      router.replace('/login?redirect=/dashboard');
-    } else {
-      setIsAuthChecked(true);
+    if (!isAuthChecked) {
+      router.replace("/login?redirect=/dashboard");
     }
-  }, [router]);
+  }, [isAuthChecked, router]);
 
   if (!isAuthChecked) {
     return (

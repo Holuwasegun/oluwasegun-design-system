@@ -82,9 +82,6 @@ export function CustomColorPicker({
   const draggingRef = useRef<"sv" | "hue" | null>(null);
 
   const isDark = theme.palette.mode === "dark";
-  const shadowProtruding = isDark
-    ? "-6px -6px 14px rgba(255,255,255,0.06), 6px 6px 14px rgba(0,0,0,0.75)"
-    : "-6px -6px 14px #ffffff, 6px 6px 14px rgba(0,0,0,0.16)";
   const shadowInset = isDark
     ? "inset 5px 5px 10px rgba(0,0,0,0.75), inset -5px -5px 10px rgba(255,255,255,0.05)"
     : "inset 5px 5px 10px rgba(0,0,0,0.15), inset -5px -5px 10px rgba(255,255,255,0.95)";

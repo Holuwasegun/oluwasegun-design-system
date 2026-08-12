@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   Box,
   TextField,
@@ -58,8 +58,14 @@ function AuthContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const initialMode = searchParams.get('mode');
-  const [tabValue, setTabValue] = useState<number>(initialMode === 'signup' ? 1 : 0);
+  const mode = searchParams.get('mode');
+  const [tabValue, setTabValue] = useState<number>(mode === 'signup' ? 1 : 0);
+  const [prevMode, setPrevMode] = useState<string | null>(mode);
+
+  if (prevMode !== mode) {
+    setPrevMode(mode);
+    setTabValue(mode === 'signup' ? 1 : 0);
+  }
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -73,12 +79,6 @@ function AuthContainer() {
   const [signupPassword, setSignupPassword] = useState('');
   const [signupLoading, setSignupLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const mode = searchParams.get('mode');
-    if (mode === 'signup') setTabValue(1);
-    else if (mode === 'login') setTabValue(0);
-  }, [searchParams]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);

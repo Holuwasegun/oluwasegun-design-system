@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AppBar,
@@ -29,9 +29,7 @@ import {
   MoreVert as MoreVertIcon,
   Login as LoginIcon,
   Logout as LogoutIcon,
-  Person as PersonIcon,
 } from "@mui/icons-material";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
@@ -50,6 +48,8 @@ const pageTitles: Record<string, string> = {
   "preview": "Preview",
 };
 
+let authSnapshot: { email?: string; name?: string } | null | undefined;
+
 export default function TopBar() {
   const theme = useTheme();
   const router = useRouter();
@@ -64,20 +64,23 @@ export default function TopBar() {
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   const [exportModalOpen, setExportModalOpen] = useState(false);
-  const [authUser, setAuthUser] = useState<{ email?: string; name?: string } | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("auth_user");
-      if (stored) {
+  const authUser = useSyncExternalStore(
+    () => () => {},
+    () => {
+      if (typeof window === "undefined") return null;
+      if (authSnapshot === undefined) {
         try {
-          setAuthUser(JSON.parse(stored));
+          const stored = localStorage.getItem("auth_user");
+          authSnapshot = stored ? JSON.parse(stored) : null;
         } catch {
-          setAuthUser(null);
+          authSnapshot = null;
         }
       }
-    }
-  }, []);
+      return authSnapshot;
+    },
+    () => null
+  );
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {

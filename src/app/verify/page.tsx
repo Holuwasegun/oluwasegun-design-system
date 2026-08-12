@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   Box,
   TextField,
@@ -29,17 +29,20 @@ function VerifyForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    const urlEmail = searchParams.get('email');
-    const urlToken = searchParams.get('token');
-    const sentParam = searchParams.get('sent');
+  const urlEmail = searchParams.get('email');
+  const urlToken = searchParams.get('token');
+  const urlSent = searchParams.get('sent');
+  const paramsKey = searchParams.toString();
+  const [prevParamsKey, setPrevParamsKey] = useState(paramsKey);
 
+  if (prevParamsKey !== paramsKey) {
+    setPrevParamsKey(paramsKey);
     if (urlEmail) setEmail(urlEmail);
     if (urlToken) setCode(urlToken);
-    if (sentParam) {
+    if (urlSent) {
       setSuccess('A verification code generated via 32-byte crypto service has been sent to your email.');
     }
-  }, [searchParams]);
+  }
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
