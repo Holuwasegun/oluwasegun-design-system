@@ -58,7 +58,12 @@ export default function LoginPage() {
       }
 
       // Successful login
-      router.push('/dashboard');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_user', JSON.stringify(data.user || { email }));
+      }
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTo = searchParams.get('redirect') || '/dashboard';
+      router.push(redirectTo);
     } catch {
       setError('A network error occurred. Please try again.');
     } finally {
