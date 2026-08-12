@@ -1,6 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -10,37 +8,81 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# Next.js & Build Outputs
 /.next/
 /out/
+/build/
+/dist/
+/.build/
+/coverage/
 
-# production
-/build
-
-# misc
-.DS_Store
+# Environment Variables & Secrets
+.env
+.env*
+!.env.example
 *.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+*.keystore
+*.jks
 
-# debug
+# Vercel
+.vercel
+
+# TypeScript & Linters
+*.tsbuildinfo
+next-env.d.ts
+.eslintcache
+
+# Debug & Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
-# env files (can opt-in for committing if needed)
-.env*
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# vercel
-.vercel
+# IDE & Editor Files
+.idea/
+*.swp
+*.swo
+*~
+.antigravity/
+.antigravityignore
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# Temporary JDK downloads
+# Temporary & Build Tools / Scripts
 jdk*
 jdk*.zip
 build_apk.ps1
+
+# Android Build & Auto-Generated Capacitor Artifacts
+android/.gradle/
+android/app/build/
+android/build/
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/local.properties
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+
+# iOS Build & Auto-Generated Capacitor Artifacts
+ios/App/Pods/
+ios/App/App.xcworkspace/
+ios/App/App/public/
+ios/App/DerivedData/
+ios/App/build/
+ios/App/App/capacitor.config.json
