@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import {
-  saveVerificationToken,
+  saveVerificationTokens,
   findVerificationToken,
   markUserEmailVerified,
-  deleteVerificationToken,
+  deleteVerificationTokensForEmail,
 } from '@/lib/auth-store';
 
 /**
@@ -24,16 +24,17 @@ export function generateVerificationCode(): { rawToken: string; hexToken: string
 }
 
 /**
- * Creates and stores a new verification token generated via crypto.randomBytes(32).
+ * Creates and stores new verification tokens generated via crypto.randomBytes(32).
+ * Stores both hexToken (for URL links) and numericCode (for 6-digit input form).
  * Expires in 24 hours.
  */
 export async function createVerificationToken(email: string) {
   const { hexToken, numericCode } = generateVerificationCode();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-  const tokenRecord = await saveVerificationToken({
+  const tokenRecord = await saveVerificationTokens({
     email,
-    token: hexToken,
+    tokens: [hexToken, numericCode],
     expiresAt,
   });
 
@@ -58,12 +59,13 @@ export async function verifyUserToken(email: string, tokenOrCode: string) {
   }
 
   if (record.expiresAt < new Date()) {
-    await deleteVerificationToken(record.id, record.token);
+    await deleteVerificationTokensForEmail(normalizedEmail);
     return { success: false, error: 'Verification code has expired. Please request a new code.' };
   }
 
   await markUserEmailVerified(normalizedEmail);
-  await deleteVerificationToken(record.id, record.token);
+  await deleteVerificationTokensForEmail(normalizedEmail);
 
   return { success: true };
 }
+

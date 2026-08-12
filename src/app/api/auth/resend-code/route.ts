@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const user = await findUserByEmail(normalizedEmail);
 
     if (!user) {
-      return NextResponse.json({ error: 'No account found with this email address.' }, { status: 444 });
+      return NextResponse.json({ error: 'No account found with this email address.' }, { status: 404 });
     }
 
     if (user.emailVerified) {

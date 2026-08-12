@@ -107,11 +107,26 @@ export async function markUserEmailVerified(email: string): Promise<void> {
 }
 
 /**
- * Creates and saves a verification token created via crypto.randomBytes(32).
+ * Creates and saves verification tokens created via crypto.randomBytes(32).
  */
 export async function saveVerificationToken(data: {
   email: string;
   token: string;
+  expiresAt: Date;
+}): Promise<VerificationTokenRecord> {
+  return saveVerificationTokens({
+    email: data.email,
+    tokens: [data.token],
+    expiresAt: data.expiresAt,
+  });
+}
+
+/**
+ * Creates and saves multiple verification tokens/codes for an email.
+ */
+export async function saveVerificationTokens(data: {
+  email: string;
+  tokens: string[];
   expiresAt: Date;
 }): Promise<VerificationTokenRecord> {
   const normalized = data.email.trim().toLowerCase();
@@ -120,33 +135,41 @@ export async function saveVerificationToken(data: {
       where: { email: normalized },
     });
 
-    const record = await prisma.verificationToken.create({
-      data: {
-        email: normalized,
-        token: data.token,
-        expiresAt: data.expiresAt,
-      },
-    });
-    return record as VerificationTokenRecord;
+    const records = await Promise.all(
+      data.tokens.map((t) =>
+        prisma.verificationToken.create({
+          data: {
+            email: normalized,
+            token: t,
+            expiresAt: data.expiresAt,
+          },
+        })
+      )
+    );
+    return records[0] as VerificationTokenRecord;
   } catch (err: unknown) {
-    console.warn('⚠️ [DB Warning] Saving token in dev memory store:', (err as Error).message);
+    console.warn('⚠️ [DB Warning] Saving tokens in dev memory store:', (err as Error).message);
 
-    // Delete existing dev tokens
+    // Delete existing dev tokens for this email
     for (const [key, val] of Array.from(devTokens.entries())) {
       if (val.email === normalized) {
         devTokens.delete(key);
       }
     }
 
-    const tokenRecord: VerificationTokenRecord = {
-      id: `dev-token-${Date.now()}`,
-      email: normalized,
-      token: data.token,
-      expiresAt: data.expiresAt,
-      createdAt: new Date(),
-    };
-    devTokens.set(data.token, tokenRecord);
-    return tokenRecord;
+    let firstRecord: VerificationTokenRecord | null = null;
+    for (const t of data.tokens) {
+      const tokenRecord: VerificationTokenRecord = {
+        id: `dev-token-${Date.now()}-${t}`,
+        email: normalized,
+        token: t,
+        expiresAt: data.expiresAt,
+        createdAt: new Date(),
+      };
+      devTokens.set(t, tokenRecord);
+      if (!firstRecord) firstRecord = tokenRecord;
+    }
+    return firstRecord!;
   }
 }
 
@@ -195,3 +218,23 @@ export async function deleteVerificationToken(id: string, tokenString?: string):
     devTokens.delete(tokenString);
   }
 }
+
+/**
+ * Deletes all verification tokens for a given email address.
+ */
+export async function deleteVerificationTokensForEmail(email: string): Promise<void> {
+  const normalized = email.trim().toLowerCase();
+  try {
+    await prisma.verificationToken.deleteMany({
+      where: { email: normalized },
+    });
+  } catch {
+    // Ignore error
+  }
+  for (const [key, val] of Array.from(devTokens.entries())) {
+    if (val.email === normalized) {
+      devTokens.delete(key);
+    }
+  }
+}
+
