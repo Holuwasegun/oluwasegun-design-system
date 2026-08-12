@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { findUserByEmail } from '@/lib/auth-store';
 import { createVerificationToken } from '@/lib/verification';
 import { sendVerificationEmail } from '@/lib/nodemailer';
 
@@ -14,9 +14,7 @@ export async function POST(request: Request) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
+    const user = await findUserByEmail(normalizedEmail);
 
     if (!user) {
       return NextResponse.json({ error: 'No account found with this email address.' }, { status: 444 });

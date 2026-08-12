@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import prisma from '@/lib/prisma';
+import { findUserByEmail } from '@/lib/auth-store';
 
 function verifyPassword(password: string, storedHash: string): boolean {
   const [salt, originalHash] = storedHash.split(':');
@@ -20,9 +20,7 @@ export async function POST(request: Request) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
+    const user = await findUserByEmail(normalizedEmail);
 
     if (!user || !user.passwordHash) {
       return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 });

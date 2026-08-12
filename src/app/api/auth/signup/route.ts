@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import prisma from '@/lib/prisma';
+import { findUserByEmail, createUser } from '@/lib/auth-store';
 import { createVerificationToken } from '@/lib/verification';
 import { sendVerificationEmail } from '@/lib/nodemailer';
 
@@ -26,9 +26,7 @@ export async function POST(request: Request) {
     const normalizedEmail = email.trim().toLowerCase();
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
+    const existingUser = await findUserByEmail(normalizedEmail);
 
     if (existingUser) {
       return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 });
@@ -36,13 +34,11 @@ export async function POST(request: Request) {
 
     const passwordHash = hashPassword(password);
 
-    // Create user in database
-    const user = await prisma.user.create({
-      data: {
-        email: normalizedEmail,
-        name: name ? name.trim() : null,
-        passwordHash,
-      },
+    // Create user in database store (Prisma with fallback)
+    const user = await createUser({
+      email: normalizedEmail,
+      name: name ? name.trim() : null,
+      passwordHash,
     });
 
     // Generate 32-byte verification token via crypto.randomBytes(32)
