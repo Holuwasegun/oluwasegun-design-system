@@ -5,8 +5,21 @@ import { findUserByEmail } from '@/lib/auth-store';
 function verifyPassword(password: string, storedHash: string): boolean {
   const [salt, originalHash] = storedHash.split(':');
   if (!salt || !originalHash) return false;
+
+  let expected: Buffer;
+  try {
+    expected = Buffer.from(originalHash, 'hex');
+  } catch {
+    return false;
+  }
+
   const hash = crypto.scryptSync(password, salt, 64).toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(originalHash, 'hex'));
+  const actual = Buffer.from(hash, 'hex');
+
+  // timingSafeEqual throws when the buffers differ in length; treat any
+  // malformed stored hash as a failed login rather than a 500.
+  if (expected.length !== actual.length) return false;
+  return crypto.timingSafeEqual(actual, expected);
 }
 
 export async function POST(request: Request) {

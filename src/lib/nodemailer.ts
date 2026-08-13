@@ -111,11 +111,23 @@ This code expires in 24 hours.
 If you did not create an account, please ignore this message.
   `.trim();
 
-  return await transporter.sendMail({
-    from,
-    to,
-    subject: `Verify your account - ${displayCode}`,
-    text: textContent,
-    html: htmlContent,
-  });
+  try {
+    return await transporter.sendMail({
+      from,
+      to,
+      subject: `Verify your account - ${displayCode}`,
+      text: textContent,
+      html: htmlContent,
+    });
+  } catch (error: unknown) {
+    // Never let a mail-delivery failure block account creation. On restricted
+    // networks (missing SMTP route, TLS interception) the verification code is
+    // surfaced in the server log and the signup response so the flow still works.
+    console.warn(
+      '⚠️ [Email Warning] Verification email could not be sent. Falling back to server log.\n' +
+        `To: ${to}\nCode: ${displayCode}\nVerify link: ${verifyLink}\n` +
+        `Reason: ${(error as Error).message}`
+    );
+    return null;
+  }
 }
