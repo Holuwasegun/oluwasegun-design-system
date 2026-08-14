@@ -135,13 +135,13 @@ function VerifyForm() {
         </Typography>
 
         {error && (
-          <Alert severity="error" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
+          <Alert severity="error" role="alert" aria-live="assertive" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
             {error}
           </Alert>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
+          <Alert severity="success" role="status" aria-live="polite" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
             {success}
           </Alert>
         )}
@@ -180,7 +180,19 @@ function VerifyForm() {
               fullWidth
               variant="contained"
               disabled={loading}
-              sx={{ py: 1.25, borderRadius: 2, textTransform: 'none', fontWeight: 600, fontSize: '0.95rem' }}
+              sx={{
+                py: 1.25,
+                minHeight: 44,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                '&:focus-visible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.dark',
+                  outlineOffset: '2px',
+                },
+              }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Verify Account'}
             </Button>
@@ -193,7 +205,16 @@ function VerifyForm() {
             size="small"
             disabled={resending}
             onClick={handleResend}
-            sx={{ textTransform: 'none', fontWeight: 600 }}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              minHeight: 44,
+              '&:focus-visible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                borderRadius: 1,
+              },
+            }}
           >
             {resending ? 'Sending...' : 'Resend Verification Code'}
           </Button>
@@ -204,7 +225,16 @@ function VerifyForm() {
               component={Link}
               href="/login"
               variant="body2"
-              sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'underline' }}
+              sx={{
+                color: 'primary.main',
+                fontWeight: 600,
+                textDecoration: 'underline',
+                '&:focus-visible': {
+                  outline: '2px solid',
+                  outlineColor: 'primary.main',
+                  borderRadius: 1,
+                },
+              }}
             >
               Sign In
             </MuiLink>

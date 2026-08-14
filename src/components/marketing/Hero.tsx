@@ -137,7 +137,7 @@ export default function Hero() {
                       }
                     }}
                   >
-                    Start Free Trial
+                    Get Started for Free
                   </Button>
                 </Link>
                 <Link href="#documentation" passHref style={{ textDecoration: 'none' }}>
@@ -150,6 +150,22 @@ export default function Hero() {
                     Read Documentation
                   </Button>
                 </Link>
+              </Stack>
+              
+              {/* Free promise trust row */}
+              <Stack 
+                direction="row" 
+                spacing={{ xs: 1.5, sm: 2.5 }} 
+                sx={{ justifyContent: { xs: 'center', md: 'flex-start' }, alignItems: 'center', flexWrap: 'wrap', rowGap: 1, mt: 3, animation: 'fadeUp 0.8s ease-out 0.25s', animationFillMode: 'both' }}
+              >
+                {['Free forever', 'No credit card', 'Open source', 'No limits'].map((item) => (
+                  <Box key={item} sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: 'text.secondary' }}>
+                    <CheckCircle2 size={16} style={{ color: theme.palette.success.main }} />
+                    <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.9rem', lineHeight: 1.2 }}>
+                      {item}
+                    </Typography>
+                  </Box>
+                ))}
               </Stack>
               
               {/* Native App Downloads */}

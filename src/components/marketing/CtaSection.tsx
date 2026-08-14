@@ -45,9 +45,12 @@ export default function CtaSection() {
               }
             }}
           >
-            Create Free Account
+            Get Started for Free
           </Button>
         </Link>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 3, fontWeight: 500 }}>
+          100% free forever — no credit card, no trial, no limits.
+        </Typography>
       </Container>
     </Box>
   );

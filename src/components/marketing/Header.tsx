@@ -112,7 +112,7 @@ export default function Header() {
                 },
               }}
             >
-              Get Started
+              Get Started for Free
             </Button>
           </Link>
         </Stack>

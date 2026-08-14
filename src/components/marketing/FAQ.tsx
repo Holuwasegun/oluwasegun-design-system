@@ -7,6 +7,10 @@ import { ChevronDown } from 'lucide-react';
 export default function FAQ() {
   const faqs = [
     {
+      question: "Is this tool completely free to use?",
+      answer: "Yes — 100% free, forever. No credit card, no trial period, and no feature limits. The tool is open-source and free for both personal and commercial projects, now and in the future."
+    },
+    {
       question: "What is a Material Design 3 (MD3) palette?",
       answer: "MD3 introduces a tonal palette system where a single base color is mathematically interpolated into multiple distinct tones (from 0 to 100). This ensures accessible contrast ratios across light and dark modes organically."
     },
@@ -17,10 +21,6 @@ export default function FAQ() {
     {
       question: "Can I use this for non-React projects?",
       answer: "Absolutely. While the generator is built in React, the output is standard CSS that works universally across any modern web technology stack."
-    },
-    {
-      question: "Is this tool completely free to use?",
-      answer: "Yes, this tool is open-source and entirely free to use for personal and commercial projects."
     }
   ];
 

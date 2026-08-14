@@ -15,14 +15,18 @@ import {
   Tabs,
   Tab,
   Stack,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,6 +43,7 @@ function CustomTabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`auth-tabpanel-${index}`}
       aria-labelledby={`auth-tab-${index}`}
+      tabIndex={0}
       {...other}
       style={{ width: '100%' }}
     >
@@ -54,18 +59,28 @@ const features = [
   'Collaborate with your team in real-time',
 ];
 
-function AuthContainer() {
+interface AuthContainerProps {
+  initialMode?: 'login' | 'signup';
+}
+
+function AuthContainer({ initialMode }: AuthContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const mode = searchParams.get('mode');
-  const [tabValue, setTabValue] = useState<number>(mode === 'signup' ? 1 : 0);
+  const isSignup = initialMode === 'signup' || mode === 'signup' || (pathname && pathname.includes('signup'));
+  const [tabValue, setTabValue] = useState<number>(isSignup ? 1 : 0);
   const [prevMode, setPrevMode] = useState<string | null>(mode);
 
   if (prevMode !== mode) {
     setPrevMode(mode);
-    setTabValue(mode === 'signup' ? 1 : 0);
+    setTabValue(mode === 'signup' ? 1 : (isSignup ? 1 : 0));
   }
+
+  // Password visibility state for accessibility
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -105,7 +120,7 @@ function AuthContainer() {
           router.push(`/verify?email=${encodeURIComponent(data.email)}`);
           return;
         }
-        setLoginError(data.error || 'Failed to sign in.');
+        setLoginError(data.error || 'Failed to sign in. Please verify your credentials.');
         return;
       }
 
@@ -115,7 +130,7 @@ function AuthContainer() {
       const redirectTo = searchParams.get('redirect') || '/dashboard';
       router.push(redirectTo);
     } catch {
-      setLoginError('A network error occurred. Please try again.');
+      setLoginError('A network error occurred. Please check your connection and try again.');
     } finally {
       setLoginLoading(false);
     }
@@ -142,14 +157,23 @@ function AuthContainer() {
 
       router.push(`/verify?email=${encodeURIComponent(signupEmail)}&sent=true`);
     } catch {
-      setSignupError('A network error occurred. Please try again.');
+      setSignupError('A network error occurred. Please check your connection and try again.');
     } finally {
       setSignupLoading(false);
     }
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: 'background.default', p: { xs: 2, sm: 4 }, alignItems: 'center', justifyContent: 'center' }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        bgcolor: 'background.default',
+        p: { xs: 2, sm: 4 },
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <CssBaseline />
       <Box
         sx={{
@@ -162,6 +186,8 @@ function AuthContainer() {
           borderRadius: 4,
           boxShadow: 4,
           overflow: 'hidden',
+          border: '1px solid',
+          borderColor: 'divider',
         }}
       >
         {/* Left Branding & Hero Panel */}
@@ -203,7 +229,7 @@ function AuthContainer() {
             Design with<br />confidence.
           </Typography>
 
-          <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)', mb: 4, maxWidth: 320 }}>
+          <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.95)', mb: 4, maxWidth: 320, lineHeight: 1.6 }}>
             Your complete Material Design 3 toolkit. Configure tokens, preview components, and ship accessible systems.
           </Typography>
 
@@ -246,9 +272,19 @@ function AuthContainer() {
                 value={tabValue}
                 onChange={handleTabChange}
                 variant="fullWidth"
-                aria-label="Authentication mode tabs"
+                aria-label="Authentication mode selection tabs"
                 sx={{
-                  '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: '0.95rem' },
+                  '& .MuiTab-root': {
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    minHeight: 48,
+                    '&:focus-visible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.main',
+                      outlineOffset: '2px',
+                    },
+                  },
                 }}
               >
                 <Tab label="Sign In" id="auth-tab-0" aria-controls="auth-tabpanel-0" />
@@ -259,7 +295,7 @@ function AuthContainer() {
             {/* Tab 0: Sign In Form */}
             <CustomTabPanel value={tabValue} index={0}>
               {loginError && (
-                <Alert severity="error" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
+                <Alert severity="error" role="alert" aria-live="assertive" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
                   {loginError}
                 </Alert>
               )}
@@ -286,11 +322,27 @@ function AuthContainer() {
                   id="auth-login-password"
                   label="Password"
                   name="password"
-                  type="password"
+                  type={showLoginPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   size="small"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                            onClick={() => setShowLoginPassword((prev) => !prev)}
+                            edge="end"
+                            size="small"
+                          >
+                            {showLoginPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1, mb: 2 }}>
@@ -298,7 +350,16 @@ function AuthContainer() {
                     component={Link}
                     href="/verify"
                     variant="caption"
-                    sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'underline' }}
+                    sx={{
+                      color: 'primary.main',
+                      fontWeight: 600,
+                      textDecoration: 'underline',
+                      '&:focus-visible': {
+                        outline: '2px solid',
+                        outlineColor: 'primary.main',
+                        borderRadius: 1,
+                      },
+                    }}
                   >
                     Forgot password or need to verify email?
                   </MuiLink>
@@ -309,7 +370,19 @@ function AuthContainer() {
                   fullWidth
                   variant="contained"
                   disabled={loginLoading}
-                  sx={{ py: 1.25, fontWeight: 600, borderRadius: 2, textTransform: 'none', fontSize: '0.95rem' }}
+                  sx={{
+                    py: 1.25,
+                    minHeight: 44,
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontSize: '0.95rem',
+                    '&:focus-visible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.dark',
+                      outlineOffset: '2px',
+                    },
+                  }}
                 >
                   {loginLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
                 </Button>
@@ -324,10 +397,20 @@ function AuthContainer() {
               </Box>
 
               <Stack direction="row" spacing={1.5}>
-                <Button fullWidth variant="outlined" startIcon={<GoogleIcon aria-hidden="true" />} sx={{ textTransform: 'none', borderRadius: 2, py: 1 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GoogleIcon aria-hidden="true" />}
+                  sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
+                >
                   Google
                 </Button>
-                <Button fullWidth variant="outlined" startIcon={<GitHubIcon aria-hidden="true" />} sx={{ textTransform: 'none', borderRadius: 2, py: 1 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GitHubIcon aria-hidden="true" />}
+                  sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
+                >
                   GitHub
                 </Button>
               </Stack>
@@ -336,7 +419,7 @@ function AuthContainer() {
             {/* Tab 1: Create Account Form */}
             <CustomTabPanel value={tabValue} index={1}>
               {signupError && (
-                <Alert severity="error" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
+                <Alert severity="error" role="alert" aria-live="assertive" sx={{ width: '100%', mb: 2, borderRadius: 2 }}>
                   {signupError}
                 </Alert>
               )}
@@ -372,12 +455,28 @@ function AuthContainer() {
                     id="auth-signup-password"
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showSignupPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     size="small"
                     helperText="Must be at least 6 characters"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={showSignupPassword ? 'Hide password' : 'Show password'}
+                              onClick={() => setShowSignupPassword((prev) => !prev)}
+                              edge="end"
+                              size="small"
+                            >
+                              {showSignupPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
                   />
 
                   <Button
@@ -385,7 +484,20 @@ function AuthContainer() {
                     fullWidth
                     variant="contained"
                     disabled={signupLoading}
-                    sx={{ py: 1.25, borderRadius: 2, textTransform: 'none', fontWeight: 600, fontSize: '0.95rem', mt: 1 }}
+                    sx={{
+                      py: 1.25,
+                      minHeight: 44,
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      mt: 1,
+                      '&:focus-visible': {
+                        outline: '2px solid',
+                        outlineColor: 'primary.dark',
+                        outlineOffset: '2px',
+                      },
+                    }}
                   >
                     {signupLoading ? <CircularProgress size={24} color="inherit" /> : 'Create Account'}
                   </Button>
@@ -401,10 +513,20 @@ function AuthContainer() {
               </Box>
 
               <Stack direction="row" spacing={1.5}>
-                <Button fullWidth variant="outlined" startIcon={<GoogleIcon aria-hidden="true" />} sx={{ textTransform: 'none', borderRadius: 2, py: 1 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GoogleIcon aria-hidden="true" />}
+                  sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
+                >
                   Google
                 </Button>
-                <Button fullWidth variant="outlined" startIcon={<GitHubIcon aria-hidden="true" />} sx={{ textTransform: 'none', borderRadius: 2, py: 1 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GitHubIcon aria-hidden="true" />}
+                  sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
+                >
                   GitHub
                 </Button>
               </Stack>
@@ -416,10 +538,11 @@ function AuthContainer() {
   );
 }
 
-export default function UnifiedAuthPage() {
+export default function UnifiedAuthPage({ initialMode }: { initialMode?: 'login' | 'signup' }) {
   return (
     <Suspense fallback={<Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }} />}>
-      <AuthContainer />
+      <AuthContainer initialMode={initialMode} />
     </Suspense>
   );
 }
+

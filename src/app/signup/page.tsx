@@ -1,5 +1,6 @@
 import UnifiedAuthPage from '@/app/auth/page';
 
 export default function SignupPage() {
-  return <UnifiedAuthPage />;
+  return <UnifiedAuthPage initialMode="signup" />;
 }
+
