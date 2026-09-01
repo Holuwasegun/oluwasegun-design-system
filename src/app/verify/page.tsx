@@ -89,7 +89,6 @@ function VerifySidePanel() {
 }
 
 function VerifyForm() {
-  const theme = useTheme();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -109,11 +108,6 @@ function VerifyForm() {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const currentEmail = email.trim();
-
-  useEffect(() => {
-    if (urlEmail && !currentEmail) setEmail(urlEmail);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlEmail]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -153,11 +147,13 @@ function VerifyForm() {
   };
 
   useEffect(() => {
-    if (urlToken) {
-      submitCode(urlToken);
-    }
+    if (!urlToken) return;
+    const timer = setTimeout(() => {
+      void submitCode(urlToken);
+    }, 0);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [urlToken]);
 
   const handleOtpChange = (index: number, raw: string) => {
     if (error) setError(null);
@@ -406,8 +402,8 @@ function VerifyForm() {
                   'aria-label': `Code digit ${index + 1}`,
                 }}
                 sx={{
-                  width: { xs: 44, sm: 48 },
-                  height: { xs: 52, sm: 56 },
+                  width: { xs: 5.5, sm: 6 },
+                  height: { xs: 6.5, sm: 7 },
                   borderRadius: 2,
                   border: '1px solid',
                   borderColor: error ? 'error.main' : 'divider',

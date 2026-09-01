@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   Box,
   TextField,
@@ -102,12 +102,6 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
   const isSignup = !(initialMode === 'login' || mode === 'login');
   const [tabValue, setTabValue] = useState<number>(isSignup ? 1 : 0);
 
-  useEffect(() => {
-    if (mode) {
-      setTabValue(mode === 'signup' ? 1 : 0);
-    }
-  }, [mode]);
-
   // Password visibility state for accessibility
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
@@ -158,7 +152,8 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
       if (typeof window !== 'undefined') {
         localStorage.setItem('auth_user', JSON.stringify(data.user || { email: loginEmail }));
       }
-      const redirectTo = searchParams.get('redirect') || '/dashboard';
+      const redirectParam = searchParams.get('redirect');
+      const redirectTo = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//') ? redirectParam : '/dashboard';
       router.push(redirectTo);
     } catch {
       setLoginError('A network error occurred. Please check your connection and try again.');

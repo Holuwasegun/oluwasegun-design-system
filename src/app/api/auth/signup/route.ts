@@ -60,7 +60,6 @@ export async function POST(request: Request) {
       {
         message: 'Account created successfully. Please check your email for your verification code.',
         email: normalizedEmail,
-        token, // Included for development convenience
       },
       { status: 201 }
     );

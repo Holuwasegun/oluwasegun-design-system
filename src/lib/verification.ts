@@ -26,7 +26,7 @@ export function generateVerificationCode(): { rawToken: string; hexToken: string
 /**
  * Creates and stores new verification tokens generated via crypto.randomBytes(32).
  * Stores both hexToken (for URL links) and numericCode (for 6-digit input form).
- * Expires in 24 hours.
+ * Expires in 15 minutes.
  */
 export async function createVerificationToken(email: string) {
   const { hexToken, numericCode } = generateVerificationCode();
