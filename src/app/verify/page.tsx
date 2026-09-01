@@ -171,7 +171,6 @@ function VerifyForm() {
               placeholder="e.g. 123456 or 64-char token"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              helperText="Powered by Node.js crypto.randomBytes(32)"
             />
 
             <Button
