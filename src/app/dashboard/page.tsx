@@ -1,8 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useSyncExternalStore } from "react";
-import { useRouter } from "next/navigation";
-import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
+import { Suspense } from "react";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useAppStore } from "@/store";
 import { getGradientContrastTextColor } from "@/lib/token-utils";
 import Sidebar from "@/components/Sidebar";
@@ -26,29 +25,6 @@ const TOPBAR_HEIGHT = 64;
 function DashboardContent() {
   const { currentView } = useAppStore();
   const theme = useTheme();
-  const router = useRouter();
-  const isAuthChecked = useSyncExternalStore(
-    () => () => {},
-    () => {
-      if (typeof window === "undefined") return false;
-      return Boolean(localStorage.getItem("auth_user"));
-    },
-    () => false
-  );
-
-  useEffect(() => {
-    if (!isAuthChecked) {
-      router.replace("/login?redirect=/dashboard");
-    }
-  }, [isAuthChecked, router]);
-
-  if (!isAuthChecked) {
-    return (
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
-        <CircularProgress color="primary" />
-      </Box>
-    );
-  }
 
   let ViewComponent = DashboardHomeView;
   let isFullScreenView = false;

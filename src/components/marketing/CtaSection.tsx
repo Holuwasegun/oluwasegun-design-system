@@ -24,7 +24,7 @@ export default function CtaSection() {
           Join thousands of designers and engineers shipping accessible, token-driven interfaces at lightspeed.
         </Typography>
         
-        <Link href="/signup" passHref style={{ textDecoration: 'none' }}>
+        <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
           <Button 
             variant="contained" 
             color="primary" 
