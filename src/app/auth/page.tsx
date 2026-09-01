@@ -26,7 +26,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { PASSWORD_RULES, isStrongPassword } from '@/lib/password-rules';
 
 interface TabPanelProps {
@@ -97,10 +97,9 @@ interface AuthContainerProps {
 function AuthContainer({ initialMode }: AuthContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
 
   const mode = searchParams.get('mode');
-  const isSignup = initialMode === 'signup' || mode === 'signup' || (pathname && pathname.includes('signup'));
+  const isSignup = !(initialMode === 'login' || mode === 'login');
   const [tabValue, setTabValue] = useState<number>(isSignup ? 1 : 0);
 
   useEffect(() => {
@@ -297,6 +296,49 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
           }}
         >
           <Box sx={{ maxWidth: 400, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Link href="/" aria-label="Go to Oluwasegun Design System home" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  mb: 2,
+                  p: 0.75,
+                  borderRadius: 2,
+                  transition: 'opacity 0.2s',
+                  '&:hover': { opacity: 0.8 },
+                  '&:focus-visible': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '2px',
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 2,
+                    backgroundColor: 'primary.main',
+                    color: 'primary.contrastText',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 700, lineHeight: 1, fontSize: '0.9rem' }}>O</Typography>
+                </Box>
+                <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: 'text.primary' }}>
+                    Oluwasegun
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: '0.02em', display: 'block', lineHeight: 1 }}>
+                    Design System
+                  </Typography>
+                </Box>
+              </Box>
+            </Link>
             <Avatar aria-hidden="true" sx={{ m: 1, bgcolor: 'primary.light', color: 'primary.main', width: 48, height: 48 }}>
               {tabValue === 0 ? <LockOutlinedIcon aria-hidden="true" fontSize="small" /> : <PersonAddOutlinedIcon aria-hidden="true" fontSize="small" />}
             </Avatar>

@@ -30,7 +30,7 @@ export function generateVerificationCode(): { rawToken: string; hexToken: string
  */
 export async function createVerificationToken(email: string) {
   const { hexToken, numericCode } = generateVerificationCode();
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
   const tokenRecord = await saveVerificationTokens({
     email,

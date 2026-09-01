@@ -89,7 +89,7 @@ export default function Header() {
               Dashboard
             </Button>
           </Link>
-          <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
+          <Link href="/auth" passHref style={{ textDecoration: 'none' }}>
             <Button 
               variant="contained" 
               color="primary"

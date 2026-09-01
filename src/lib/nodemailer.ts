@@ -90,7 +90,7 @@ export async function sendVerificationEmail({ to, name, token, code }: SendVerif
           </p>
 
           <div class="footer">
-            If you did not request this email, you can safely ignore it. This verification link expires in 24 hours.
+            If you did not request this email, you can safely ignore it. This verification link expires in 15 minutes.
           </div>
         </div>
       </body>
@@ -107,7 +107,7 @@ Your verification code is: ${displayCode}
 Or verify directly by opening this link:
 ${verifyLink}
 
-This code expires in 24 hours.
+This code expires in 15 minutes.
 If you did not create an account, please ignore this message.
   `.trim();
 
