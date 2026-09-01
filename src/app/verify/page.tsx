@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   Box,
   TextField,
@@ -33,16 +33,15 @@ function VerifyForm() {
   const urlToken = searchParams.get('token');
   const urlSent = searchParams.get('sent');
   const paramsKey = searchParams.toString();
-  const [prevParamsKey, setPrevParamsKey] = useState(paramsKey);
 
-  if (prevParamsKey !== paramsKey) {
-    setPrevParamsKey(paramsKey);
+  useEffect(() => {
     if (urlEmail) setEmail(urlEmail);
     if (urlToken) setCode(urlToken);
     if (urlSent) {
       setSuccess('A verification code generated via 32-byte crypto service has been sent to your email.');
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsKey]);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();

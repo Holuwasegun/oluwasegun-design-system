@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   Box,
   TextField,
@@ -71,12 +71,12 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
   const mode = searchParams.get('mode');
   const isSignup = initialMode === 'signup' || mode === 'signup' || (pathname && pathname.includes('signup'));
   const [tabValue, setTabValue] = useState<number>(isSignup ? 1 : 0);
-  const [prevMode, setPrevMode] = useState<string | null>(mode);
 
-  if (prevMode !== mode) {
-    setPrevMode(mode);
-    setTabValue(mode === 'signup' ? 1 : (isSignup ? 1 : 0));
-  }
+  useEffect(() => {
+    if (mode) {
+      setTabValue(mode === 'signup' ? 1 : 0);
+    }
+  }, [mode]);
 
   // Password visibility state for accessibility
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -401,6 +401,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                   fullWidth
                   variant="outlined"
                   startIcon={<GoogleIcon aria-hidden="true" />}
+                  disabled
                   sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
                 >
                   Google
@@ -409,6 +410,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                   fullWidth
                   variant="outlined"
                   startIcon={<GitHubIcon aria-hidden="true" />}
+                  disabled
                   sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
                 >
                   GitHub
@@ -517,6 +519,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                   fullWidth
                   variant="outlined"
                   startIcon={<GoogleIcon aria-hidden="true" />}
+                  disabled
                   sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
                 >
                   Google
@@ -525,6 +528,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                   fullWidth
                   variant="outlined"
                   startIcon={<GitHubIcon aria-hidden="true" />}
+                  disabled
                   sx={{ textTransform: 'none', borderRadius: 2, py: 1, minHeight: 44 }}
                 >
                   GitHub

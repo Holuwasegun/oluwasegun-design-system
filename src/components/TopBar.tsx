@@ -1,13 +1,12 @@
 "use client";
 
-import { useSyncExternalStore, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AppBar,
   Toolbar,
   Typography,
   IconButton,
-  Avatar,
   Box,
   Tooltip,
   Button,
@@ -27,10 +26,7 @@ import {
   FileUpload as ImportIcon,
   Folder as ProjectIcon,
   MoreVert as MoreVertIcon,
-  Login as LoginIcon,
-  Logout as LogoutIcon,
 } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
 import { useAppStore, useThemeStore, useProjectStore } from "@/store";
 import ProjectManager from "./ProjectManager";
 import ExportTokenModal from "./ExportTokenModal";
@@ -48,11 +44,8 @@ const pageTitles: Record<string, string> = {
   "preview": "Preview",
 };
 
-let authSnapshot: { email?: string; name?: string } | null | undefined;
-
 export default function TopBar() {
   const theme = useTheme();
-  const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const searchParams = useSearchParams();
@@ -62,33 +55,7 @@ export default function TopBar() {
   const { projects } = useProjectStore();
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
-  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   const [exportModalOpen, setExportModalOpen] = useState(false);
-
-  const authUser = useSyncExternalStore(
-    () => () => {},
-    () => {
-      if (typeof window === "undefined") return null;
-      if (authSnapshot === undefined) {
-        try {
-          const stored = localStorage.getItem("auth_user");
-          authSnapshot = stored ? JSON.parse(stored) : null;
-        } catch {
-          authSnapshot = null;
-        }
-      }
-      return authSnapshot;
-    },
-    () => null
-  );
-
-  const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("auth_user");
-    }
-    setUserMenuAnchor(null);
-    router.push("/login");
-  };
 
   const title = pageTitles[currentView] || "Design System";
   const currentProject = projects.find((p) => p.id === currentProjectId);
@@ -289,81 +256,8 @@ export default function TopBar() {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title={authUser ? `Account (${authUser.name || authUser.email})` : "User Account & Log In"}>
-            <Avatar
-              tabIndex={0}
-              role="button"
-              aria-label="User account profile menu"
-              onClick={(e) => setUserMenuAnchor(e.currentTarget)}
-              sx={{
-                width: 34,
-                height: 34,
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
-                fontSize: '0.875rem',
-                fontWeight: 700,
-                boxShadow: (theme) => theme.palette.mode === 'dark'
-                  ? '-4px -4px 10px rgba(255,255,255,0.06), 4px 4px 10px rgba(0,0,0,0.7)'
-                  : '-4px -4px 10px #ffffff, 4px 4px 10px rgba(0,0,0,0.15)',
-                ml: 0.25,
-                flexShrink: 0,
-                cursor: 'pointer',
-                '&:focus-visible, &.Mui-focusVisible': {
-                  outline: '2px solid',
-                  outlineColor: 'primary.main',
-                  outlineOffset: '2px',
-                },
-              }}
-            >
-              {authUser?.name ? authUser.name.charAt(0).toUpperCase() : authUser?.email ? authUser.email.charAt(0).toUpperCase() : 'O'}
-            </Avatar>
-          </Tooltip>
         </Toolbar>
       </AppBar>
-
-      {/* User Account Auth Menu */}
-      <Menu
-        anchorEl={userMenuAnchor}
-        open={Boolean(userMenuAnchor)}
-        onClose={() => setUserMenuAnchor(null)}
-        slotProps={{
-          paper: {
-            sx: { borderRadius: 3, minWidth: 220, p: 1, boxShadow: '0 12px 32px rgba(0,0,0,0.2)' }
-          }
-        }}
-      >
-        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider', mb: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {authUser?.name || 'Account'}
-          </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', wordBreak: 'break-all' }}>
-            {authUser?.email || 'Logged in to workspace'}
-          </Typography>
-        </Box>
-
-        <MenuItem
-          onClick={() => {
-            setUserMenuAnchor(null);
-            router.push('/login');
-          }}
-        >
-          <ListItemIcon><LoginIcon fontSize="small" color="primary" /></ListItemIcon>
-          <ListItemText
-            primary={authUser ? "Switch Account / Log In" : "Log In"}
-            slotProps={{ primary: { sx: { fontSize: '0.875rem', fontWeight: 600 } } }}
-          />
-        </MenuItem>
-
-        {authUser && (
-          <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-            <ListItemIcon><LogoutIcon fontSize="small" color="error" /></ListItemIcon>
-            <ListItemText
-              primary="Log Out"
-              slotProps={{ primary: { sx: { fontSize: '0.875rem', fontWeight: 600 } } }}
-            />
-          </MenuItem>
-        )}
-      </Menu>
 
       {/* Mobile Overflow Menu */}
       <Menu
@@ -383,10 +277,6 @@ export default function TopBar() {
         <MenuItem onClick={handleImport}>
           <ListItemIcon><ImportIcon fontSize="small" /></ListItemIcon>
           <ListItemText primary="Import JSON" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
-        </MenuItem>
-        <MenuItem onClick={() => { setMobileMenuAnchor(null); router.push('/login'); }}>
-          <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>
-          <ListItemText primary="Log In" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 500 } } }} />
         </MenuItem>
       </Menu>
 
