@@ -74,7 +74,7 @@ export async function sendVerificationEmail({ to, name, token, code }: SendVerif
           <div class="logo">Oluwasegun Design System</div>
           <h1>Verify your email address</h1>
           <p>Hi ${recipientName},</p>
-          <p>Thank you for signing up! Please use the 32-byte verification code below or click the link to activate your account:</p>
+          <p>Thank you for signing up! Please use the verification code below or click the link to activate your account:</p>
           
           <div class="code-box">
             <div class="code-text">${displayCode}</div>

@@ -27,6 +27,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { PASSWORD_RULES, isStrongPassword } from '@/lib/password-rules';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,6 +59,36 @@ const features = [
   'Export to JSON, CSS, or Tailwind',
   'Collaborate with your team in real-time',
 ];
+
+function PasswordRequirements({ password }: { password: string }) {
+  const remaining = password.length > 0 ? PASSWORD_RULES.filter((rule) => !rule.test(password)) : [];
+
+  if (remaining.length === 0) return null;
+
+  return (
+    <Box
+      component="ul"
+      sx={{
+        listStyle: 'none',
+        m: 0,
+        mt: 0.5,
+        p: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 0.5,
+        alignSelf: 'stretch',
+      }}
+    >
+      {remaining.map((rule) => (
+        <Box key={rule.id} component="li" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            {rule.label}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
 
 interface AuthContainerProps {
   initialMode?: 'login' | 'signup';
@@ -94,6 +125,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
   const [signupPassword, setSignupPassword] = useState('');
   const [signupLoading, setSignupLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
+  const [signupPasswordError, setSignupPasswordError] = useState<string | null>(null);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -140,6 +172,13 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
     e.preventDefault();
     setSignupLoading(true);
     setSignupError(null);
+
+    if (!isStrongPassword(signupPassword)) {
+      setSignupPasswordError('Your password must meet all requirements below.');
+      setSignupLoading(false);
+      return;
+    }
+    setSignupPasswordError(null);
 
     try {
       const res = await fetch('/api/auth/signup', {
@@ -460,9 +499,13 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                     type={showSignupPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     size="small"
-                    helperText="Must be at least 6 characters"
+                    error={Boolean(signupPasswordError)}
+                    helperText={signupPasswordError || ''}
                     value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
+                    onChange={(e) => {
+                      setSignupPassword(e.target.value);
+                      if (signupPasswordError) setSignupPasswordError(null);
+                    }}
                     slotProps={{
                       input: {
                         endAdornment: (
@@ -480,6 +523,7 @@ function AuthContainer({ initialMode }: AuthContainerProps) {
                       },
                     }}
                   />
+                  <PasswordRequirements password={signupPassword} />
 
                   <Button
                     type="submit"

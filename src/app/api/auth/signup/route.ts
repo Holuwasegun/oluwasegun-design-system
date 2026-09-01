@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { findUserByEmail, createUser } from '@/lib/auth-store';
 import { createVerificationToken } from '@/lib/verification';
 import { sendVerificationEmail } from '@/lib/nodemailer';
+import { isStrongPassword } from '@/lib/password-rules';
 
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -19,8 +20,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 400 });
     }
 
-    if (!password || typeof password !== 'string' || password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters long.' }, { status: 400 });
+    if (!password || typeof password !== 'string' || !isStrongPassword(password)) {
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters and include a lowercase letter, an uppercase letter, a number, and a special character (#@>^*).' },
+        { status: 400 }
+      );
     }
 
     const normalizedEmail = email.trim().toLowerCase();
