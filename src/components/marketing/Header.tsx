@@ -78,20 +78,7 @@ export default function Header() {
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Link href="/dashboard" passHref style={{ textDecoration: 'none' }}>
             <Button
-              variant="text"
-              sx={{
-                fontWeight: 700,
-                textTransform: 'none',
-                color: 'text.primary',
-                px: 2,
-              }}
-            >
-              Dashboard
-            </Button>
-          </Link>
-          <Link href="/auth" passHref style={{ textDecoration: 'none' }}>
-            <Button 
-              variant="contained" 
+              variant="contained"
               color="primary"
               disableElevation
               sx={{
@@ -112,7 +99,7 @@ export default function Header() {
                 },
               }}
             >
-              Get Started for Free
+              Dashboard
             </Button>
           </Link>
         </Stack>

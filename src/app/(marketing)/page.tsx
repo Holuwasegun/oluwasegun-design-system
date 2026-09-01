@@ -9,7 +9,6 @@ import Features from '@/components/marketing/Features';
 import HowItWorks from '@/components/marketing/HowItWorks';
 import FAQ from '@/components/marketing/FAQ';
 import DocumentationSection from '@/components/marketing/DocumentationSection';
-import CtaSection from '@/components/marketing/CtaSection';
 import Footer from '@/components/marketing/Footer';
 import ScrollToTop from '@/components/marketing/ScrollToTop';
 
@@ -23,7 +22,6 @@ export default function Home() {
         <HowItWorks />
         <DocumentationSection />
         <FAQ />
-        <CtaSection />
       </Box>
       <Footer />
       <ScrollToTop />

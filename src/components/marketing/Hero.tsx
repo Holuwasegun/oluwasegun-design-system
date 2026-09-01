@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Grid, Stack, Typography, Paper, useTheme, Tooltip } from '@mui/material';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Code2, Palette, Type, Sparkles } from 'lucide-react';
+import { CheckCircle2, Code2, Palette, Type, Sparkles } from 'lucide-react';
 import AndroidIcon from '@mui/icons-material/Android';
 import AppleIcon from '@mui/icons-material/Apple';
 import { Capacitor } from '@capacitor/core';
@@ -115,31 +115,6 @@ export default function Hero() {
                 spacing={2} 
                 sx={{ justifyContent: { xs: 'center', md: 'flex-start' }, alignItems: { xs: 'stretch', sm: 'center' } }}
               >
-                <Link href="/auth" passHref style={{ textDecoration: 'none' }}>
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    size="large"
-                    endIcon={<ArrowRight size={18} />}
-                    disableElevation
-                    sx={{ 
-                      width: buttonWidth,
-                      px: 4, 
-                      py: 1.5, 
-                      borderRadius: 2.5, 
-                      textTransform: 'none', 
-                      fontWeight: 600,
-                      fontSize: '1.1rem',
-                      boxShadow: `0 8px 24px ${theme.palette.primary.main}40`,
-                      '&:hover': {
-                        boxShadow: `0 12px 32px ${theme.palette.primary.main}60`,
-                        transform: 'translateY(-1px)',
-                      }
-                    }}
-                  >
-                    Get Started for Free
-                  </Button>
-                </Link>
                 <Link href="#documentation" passHref style={{ textDecoration: 'none' }}>
                   <Button 
                     variant="outlined" 
